@@ -16,11 +16,14 @@
     "screenshots:zip": "node scripts/build-screenshots-index.mjs && cd screenshots && zip -r ../phplus-screenshots.zip . -x '.playwright-output/*' -x '.report/*'"
   },
   "dependencies": {
+    "@supabase/ssr": "^0.10.3",
+    "@supabase/supabase-js": "^2.106.1",
     "clsx": "^2.1.1",
     "nanoid": "^5.1.11",
     "next": "16.2.6",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "server-only": "^0.0.1",
     "tailwind-merge": "^3.6.0",
     "zod": "^4.4.3",
     "zustand": "^5.0.13"
