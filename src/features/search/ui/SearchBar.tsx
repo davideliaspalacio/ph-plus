@@ -119,6 +119,12 @@ export function SearchBar({
 
   return (
     <div ref={containerRef} className={"relative " + (className ?? "")}>
+      <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-ink-muted">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+          <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+          <path d="M20 20l-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+      </div>
       <input
         type="search"
         role="searchbox"
@@ -140,11 +146,11 @@ export function SearchBar({
         aria-controls={shouldShow ? listboxId : undefined}
         aria-expanded={shouldShow}
         aria-autocomplete="list"
-        className="w-full rounded-full border border-card-border bg-white px-4 py-2 text-[14px] outline-none focus:border-brand"
+        className="w-full rounded-full border border-card-border bg-white pl-10 pr-4 py-2 text-[14px] text-ink placeholder:text-ink-muted caret-brand outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 [&::-webkit-search-cancel-button]:appearance-none"
       />
 
       {shouldShow ? (
-        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl border border-card-border bg-white shadow-lg">
+        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-2xl border border-card-border bg-white text-ink shadow-lg">
           <SearchResultsList
             products={results}
             onSelect={handleSelect}
