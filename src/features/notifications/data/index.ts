@@ -1,12 +1,14 @@
 import { MockOutboxRepo } from "./mock.repo";
+import { SupabaseOutboxRepo } from "./supabase.repo";
 import type { OutboxRepository } from "./ports";
 
 /**
- * Singleton del repositorio del outbox. El flag `NEXT_PUBLIC_DATA_BACKEND`
- * podrá enrutar a un proveedor real (Resend, Postmark...) cuando exista.
+ * Singleton del repositorio del outbox. Switch por `NEXT_PUBLIC_DATA_BACKEND`:
+ *  - "supabase" → `SupabaseOutboxRepo` (tabla `notifications_outbox`)
+ *  - cualquier otro → `MockOutboxRepo` (localStorage)
  */
 
 const backend = process.env.NEXT_PUBLIC_DATA_BACKEND ?? "mock";
 
 export const outboxRepo: OutboxRepository =
-  backend === "supabase" ? new MockOutboxRepo() : new MockOutboxRepo();
+  backend === "supabase" ? new SupabaseOutboxRepo() : new MockOutboxRepo();
