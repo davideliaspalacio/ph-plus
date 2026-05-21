@@ -1,0 +1,22 @@
+# Lo que Cursor NO debe indexar (mismo que .gitignore + cosas locales)
+node_modules
+.next
+out
+build
+coverage
+
+# Playwright artifacts y screenshots (pesados, no son código)
+screenshots
+playwright-report
+test-results
+phplus-screenshots.zip
+*.zip
+
+# Logs y tooling local
+*.log
+.claude
+2026-*-local-command-*.txt
+
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts
