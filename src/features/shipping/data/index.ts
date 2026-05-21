@@ -1,16 +1,17 @@
 /**
  * Selector del repositorio de zonas de envío.
  *
- * Hoy sólo está el mock. Cuando exista `SupabaseShippingZoneRepo` se elige por
- * `NEXT_PUBLIC_DATA_BACKEND`, igual que el resto de features.
+ * Cuando `NEXT_PUBLIC_DATA_BACKEND === "supabase"` se usa el repo de Supabase;
+ * por defecto cae al mock con `localStorage`.
  */
 
 import { MockShippingZoneRepo } from "./mock.repo";
+import { SupabaseShippingZoneRepo } from "./supabase.repo";
 import type { ShippingZoneRepository } from "./ports";
 
 const backend = process.env.NEXT_PUBLIC_DATA_BACKEND ?? "mock";
 
 export const shippingRepo: ShippingZoneRepository =
   backend === "supabase"
-    ? new MockShippingZoneRepo() // TODO: SupabaseShippingZoneRepo
+    ? new SupabaseShippingZoneRepo()
     : new MockShippingZoneRepo();
