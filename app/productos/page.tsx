@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -9,16 +9,15 @@ import ProductVisual from "../components/ProductVisual";
 import AddToCartButton from "../components/AddToCartButton";
 import Reveal from "../components/Reveal";
 import { ProductCardSkeleton } from "../components/Skeletons";
-import { useMockLoading } from "../components/useMockLoading";
 import {
   CATEGORY_LABEL,
-  PRODUCTS,
   SIZE_LABEL,
   formatCOP,
   type Product,
   type ProductCategory,
   type ProductSize,
 } from "../lib/products";
+import { productRepo } from "@/src/features/catalog";
 
 type SortKey = "relevance" | "price-asc" | "price-desc";
 
@@ -173,7 +172,8 @@ function ProductCard({ product, index }: { product: Product; index: number }) {
 }
 
 export default function ProductsListingPage() {
-  const initialLoading = useMockLoading();
+  // Productos cargados desde el repo (Supabase en prod, mock en dev).
+  const [products, setProducts] = useState<Product[] | null>(null);
   const [query, setQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<
     ProductCategory[]
@@ -183,9 +183,28 @@ export default function ProductsListingPage() {
   const [sort, setSort] = useState<SortKey>("relevance");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
+  // `null` mientras carga, `[]` cuando no hay productos, lleno cuando llegó.
+  const initialLoading = products == null;
+
+  useEffect(() => {
+    let cancelled = false;
+    productRepo
+      .list()
+      .then((result) => {
+        if (!cancelled) setProducts(result.items);
+      })
+      .catch(() => {
+        if (!cancelled) setProducts([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const filtered = useMemo(() => {
+    if (!products) return [];
     const q = query.trim().toLowerCase();
-    let list = PRODUCTS.filter((p) => {
+    let list = products.filter((p) => {
       if (q && !p.title.toLowerCase().includes(q) && !p.tagline.toLowerCase().includes(q)) {
         return false;
       }
@@ -209,7 +228,7 @@ export default function ProductsListingPage() {
       list = [...list].sort((a, b) => b.popularity - a.popularity);
     }
     return list;
-  }, [query, selectedCategories, selectedSizes, onlyPromo, sort]);
+  }, [products, query, selectedCategories, selectedSizes, onlyPromo, sort]);
 
   function toggleCategory(c: ProductCategory) {
     setSelectedCategories((prev) =>

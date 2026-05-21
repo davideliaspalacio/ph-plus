@@ -10,14 +10,15 @@ import ProductVisual from "../../components/ProductVisual";
 import ProductGallery from "../../components/ProductGallery";
 import ProductTabs from "../../components/ProductTabs";
 import AddToCartButton from "../../components/AddToCartButton";
-import { PRODUCTS, getProduct } from "../../lib/products";
-import { mockServerDelay } from "../../lib/mock-loading";
+import type { Product } from "../../lib/products";
+import { productRepo } from "@/src/features/catalog";
 
 export const dynamic = "force-dynamic";
 
-export function generateStaticParams() {
-  return PRODUCTS.map((p) => ({ slug: p.slug }));
-}
+// generateStaticParams se omite a propósito: con `dynamic = "force-dynamic"`,
+// cada slug se resuelve en runtime contra Supabase. Esto deja que los
+// productos creados desde el admin aparezcan inmediatamente, sin necesidad
+// de rebuild.
 
 export async function generateMetadata({
   params,
@@ -25,7 +26,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const product = getProduct(slug);
+  const product = await productRepo.bySlug(slug);
   if (!product) return { title: "Producto no encontrado — PH PLUS" };
   return {
     title: `${product.title} — PH PLUS`,
@@ -73,11 +74,15 @@ export default async function ProductDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  await mockServerDelay();
-  const product = getProduct(slug);
+  const product = await productRepo.bySlug(slug);
   if (!product) notFound();
 
-  const related = PRODUCTS.filter((p) => p.slug !== product.slug).slice(0, 4);
+  // Cargamos todo el catálogo (o un subset por categoría) para construir
+  // los relacionados.
+  const all = await productRepo.list();
+  const related: Product[] = all.items
+    .filter((p: Product) => p.slug !== product.slug)
+    .slice(0, 4);
   const waMessage = encodeURIComponent(
     `Hola, quiero comprar ${product.title} (${product.price}).`,
   );
