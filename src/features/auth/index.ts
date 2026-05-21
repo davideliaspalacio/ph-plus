@@ -22,6 +22,11 @@ export {
 } from "./service";
 
 export {
+  syncSessionFromSupabase,
+  useSupabaseSessionSync,
+} from "./sync";
+
+export {
   EmailSchema,
   PasswordSchema,
   LoginCredentialsSchema,

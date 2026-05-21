@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { login, logout, signup, recoverPassword } from "./service";
+import { login, logout, signup, recoverPassword } from "./service.mock";
 import { useSession, SESSION_STORAGE_KEY } from "./store/useSession";
 import { userRepo } from "./data";
 import { makeNamespacedStorage } from "@/src/shared/lib/storage";
