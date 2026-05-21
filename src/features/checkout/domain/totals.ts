@@ -158,8 +158,8 @@ export async function submitOrder<P extends ProductLike = ProductLike>(
       address: input.shipping.address,
       city: input.shipping.city,
       department: input.shipping.department ?? DEFAULT_DEPARTMENT,
-      postalCode: input.shipping.postalCode,
-      notes: input.shipping.notes,
+      postalCode: input.shipping.postalCode ?? "",
+      notes: input.shipping.notes ?? "",
     },
     payment: {
       method: mapPaymentMethod(input.payment.method),

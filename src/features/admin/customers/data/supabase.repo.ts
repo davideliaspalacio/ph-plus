@@ -87,12 +87,12 @@ function orderRowToOrder(row: OrderDbRow): Order {
     ],
     totals: row.totals,
     contact: { name: "", email: "noop@example.com", phone: "0000000" },
-    shipping: { address: "_", city: "_", department: "_" },
+    shipping: { address: "", city: "", department: "", postalCode: "", notes: "" },
     payment: { method: "mock" },
     notes: [],
     createdAt: row.created_at,
     updatedAt: row.created_at,
-  } as Order;
+  } as unknown as Order;
 }
 
 export class SupabaseCustomerAdminRepo implements CustomerAdminRepository {

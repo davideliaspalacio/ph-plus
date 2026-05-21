@@ -50,11 +50,15 @@ export const OrderContactSchema = z.object({
 export type OrderContact = z.infer<typeof OrderContactSchema>;
 
 export const OrderShippingSchema = z.object({
-  address: z.string().min(1),
-  city: z.string().min(1),
-  department: z.string().min(1),
-  postalCode: z.string().optional(),
-  notes: z.string().optional(),
+  // address/city/department pueden estar vacíos cuando la orden está en
+  // estado `draft` (carrito abandonado, sin checkout completo). Los checks
+  // reales de "está completo" se hacen al pasar a `pending_payment` y los
+  // valida el form de checkout (ShippingAddressSchema en features/checkout).
+  address: z.string().default(""),
+  city: z.string().default(""),
+  department: z.string().default(""),
+  postalCode: z.string().optional().default(""),
+  notes: z.string().optional().default(""),
 });
 export type OrderShipping = z.infer<typeof OrderShippingSchema>;
 
