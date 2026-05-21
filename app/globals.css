@@ -1,26 +1,87 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-brand: #1b22a6;
+  --color-brand-dark: #141980;
+  --color-brand-deep: #0f1466;
+  --color-brand-tint: #2b35c7;
+  --color-accent-cyan: #7fc7df;
+  --color-whatsapp: #25d366;
+  --color-whatsapp-dark: #1fb055;
+  --color-ink: #2a2a2a;
+  --color-ink-muted: #6b6b6b;
+  --color-card-border: #e6e7ec;
+  --color-page-bg: #ffffff;
+
+  --font-sans: var(--font-montserrat), "Helvetica Neue", Arial, sans-serif;
+
+  --container-page: 1440px;
+
+  --animate-shimmer: shimmer 1.6s linear infinite;
+  --animate-float-up: floatUp 0.8s ease-out both;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }
 
+@keyframes floatUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cartBounce {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.45);
+  }
+  60% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.cart-badge-bounce {
+  animation: cartBounce 0.5s ease-out;
+}
+
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-page-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #eef0f5 0%,
+    #f6f7fb 50%,
+    #eef0f5 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
 }

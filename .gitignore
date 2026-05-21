@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# playwright
+/playwright-report
+/screenshots
+/test-results
+phplus-screenshots.zip
+
+# tooling local artifacts
+/.claude
+*.log
+2026-*-local-command-*.txt
