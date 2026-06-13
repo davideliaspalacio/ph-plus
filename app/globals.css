@@ -5,15 +5,21 @@
   --color-brand-dark: #141980;
   --color-brand-deep: #0f1466;
   --color-brand-tint: #2b35c7;
+  --color-figma-blue: #1e3a8a;
+  --color-header-blue: #1e2aab;
   --color-accent-cyan: #7fc7df;
+  --color-accent-neon: #25f4ee;
   --color-whatsapp: #25d366;
   --color-whatsapp-dark: #1fb055;
+  --color-whatsapp-deep: #2f6b4f;
   --color-ink: #2a2a2a;
   --color-ink-muted: #6b6b6b;
   --color-card-border: #e6e7ec;
   --color-page-bg: #ffffff;
 
   --font-sans: var(--font-montserrat), "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-bebas), Impact, "Arial Narrow", sans-serif;
+  --font-condensed: var(--font-oswald), "Arial Narrow", Arial, sans-serif;
 
   --container-page: 1440px;
 
@@ -67,6 +73,16 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+.ph-display {
+  font-family: "Bebas Neue", var(--font-bebas, Impact), Impact, "Arial Narrow",
+    sans-serif;
+}
+
+.ph-condensed {
+  font-family: "Oswald", var(--font-oswald, "Arial Narrow"), "Arial Narrow",
+    Arial, sans-serif;
 }
 
 .skeleton {
