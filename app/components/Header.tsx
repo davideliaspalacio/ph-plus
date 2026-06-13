@@ -5,8 +5,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useCart } from "./CartProvider";
 import { MiniCart } from "@/src/features/cart/ui/MiniCart";
-import { useSession } from "@/src/features/auth";
-import { SearchBar } from "@/src/features/search";
 
 const NAV = [
   { label: "INICIO", href: "/" },
@@ -14,20 +12,6 @@ const NAV = [
   { label: "PRODUCTOS", href: "/productos" },
   { label: "PUNTOS DE VENTA", href: "/#puntos-venta" },
 ];
-
-function UserIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" />
-      <path
-        d="M4 21c0-4 4-6 8-6s8 2 8 6"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
 
 function CartIcon() {
   return (
@@ -50,12 +34,24 @@ function CartIcon() {
   );
 }
 
+function SearchIcon() {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" aria-hidden className="h-full w-full">
+      <circle cx="27" cy="27" r="18" stroke="currentColor" strokeWidth="5" />
+      <path
+        d="M41 41l15 15"
+        stroke="currentColor"
+        strokeWidth="5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [miniCartOpen, setMiniCartOpen] = useState(false);
   const { totalItems, hydrated } = useCart();
-  const session = useSession((s) => s.session);
-  const isAuth = session != null && session.expiresAt > Date.now();
   const showBadge = hydrated && totalItems > 0;
   const prevTotal = useRef(totalItems);
   const [bouncing, setBouncing] = useState(false);
@@ -75,11 +71,11 @@ export default function Header() {
   }, [totalItems]);
 
   return (
-    <header className="sticky top-0 z-40 w-full bg-brand text-white shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
-      <div className="mx-auto flex h-[64px] max-w-page items-center gap-4 px-4 sm:h-[70px] sm:px-6 lg:gap-10 lg:px-10">
+    <header className="sticky top-0 z-40 w-full bg-[#1e2aab] text-white shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+      <div className="mx-auto flex h-[64px] max-w-[1440px] items-center gap-4 px-4 sm:h-[70px] sm:px-6 lg:hidden">
         <Link href="/" className="flex shrink-0 items-center gap-4">
           <Image
-            src="/brand/logo-ph-plus.png"
+            src="/brand/logo-ph-plus-figma.png"
             alt="PH PLUS"
             width={160}
             height={48}
@@ -88,31 +84,7 @@ export default function Header() {
           />
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-[12px] font-semibold tracking-[0.06em]">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="transition-opacity hover:opacity-80"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="hidden flex-1 max-w-md md:block">
-          <SearchBar />
-        </div>
-
         <div className="ml-auto flex items-center gap-3 sm:gap-5">
-          <Link
-            href={isAuth ? "/cuenta" : "/login"}
-            aria-label={isAuth ? "Mi cuenta" : "Iniciar sesión"}
-            className="hidden transition-opacity hover:opacity-80 md:inline-flex"
-          >
-            <UserIcon />
-          </Link>
-
           <button
             type="button"
             onClick={() => setMiniCartOpen(true)}
@@ -127,7 +99,7 @@ export default function Header() {
             {showBadge && (
               <span
                 className={
-                  "absolute -right-2 -top-2 grid h-5 min-w-[20px] place-items-center rounded-full bg-white px-1 text-[11px] font-extrabold text-brand shadow-[0_2px_6px_rgba(0,0,0,0.18)] " +
+                  "absolute -right-2 -top-2 grid h-5 min-w-[20px] place-items-center rounded-full bg-white px-1 text-[11px] font-extrabold text-[#1e3a8a] shadow-[0_2px_6px_rgba(0,0,0,0.18)] " +
                   (bouncing ? "cart-badge-bounce" : "")
                 }
               >
@@ -141,7 +113,7 @@ export default function Header() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Contáctanos por WhatsApp"
-            className="grid h-10 w-10 place-items-center rounded-full bg-whatsapp transition-colors hover:bg-whatsapp-dark sm:h-11 sm:w-11"
+            className="grid h-10 w-10 place-items-center rounded-full bg-[#25d366] transition-colors hover:bg-[#1fb055] sm:h-11 sm:w-11"
           >
             <Image
               src="/icons/whatsapp.svg"
@@ -180,9 +152,94 @@ export default function Header() {
         </div>
       </div>
 
+      <div className="mx-auto hidden h-[96px] max-w-[1200px] items-center px-6 lg:flex">
+        <Link
+          href="/"
+          aria-label="Ir al inicio"
+          className="relative h-[92px] w-[250px] shrink-0"
+        >
+          <Image
+            src="/brand/logo-ph-plus-figma.png"
+            alt="PH PLUS"
+            width={295}
+            height={123}
+            priority
+            className="h-full w-full object-contain"
+          />
+        </Link>
+
+        <Image
+          src="/home/ph9-drop.png"
+          alt=""
+          width={98}
+          height={155}
+          priority
+          className="ml-4 h-[92px] w-[52px] shrink-0 object-contain"
+        />
+
+        <nav className="ph-display ml-9 flex flex-1 items-center justify-center gap-7 whitespace-nowrap text-[21px] uppercase leading-none">
+          {NAV.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="transition-opacity hover:opacity-80"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <Link
+          href="/buscar"
+          aria-label="Buscar productos"
+          className="ml-8 grid h-10 w-10 shrink-0 place-items-center transition-opacity hover:opacity-80"
+        >
+          <SearchIcon />
+        </Link>
+
+        <button
+          type="button"
+          onClick={() => setMiniCartOpen(true)}
+          aria-label={`Abrir carrito${
+            showBadge
+              ? ` con ${totalItems} producto${totalItems === 1 ? "" : "s"}`
+              : ""
+          }`}
+          className="ml-7 grid h-10 w-10 shrink-0 place-items-center transition-opacity hover:opacity-80"
+        >
+          <CartIcon />
+          {showBadge && (
+            <span
+              className={
+                "absolute -right-2 -top-2 grid h-6 min-w-[24px] place-items-center rounded-full bg-white px-1 text-[12px] font-extrabold text-[#1e3a8a] shadow-[0_2px_6px_rgba(0,0,0,0.18)] " +
+                (bouncing ? "cart-badge-bounce" : "")
+              }
+            >
+              {totalItems > 99 ? "99+" : totalItems}
+            </span>
+          )}
+        </button>
+
+        <a
+          href="https://wa.me/573234392470"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Contáctanos por WhatsApp"
+          className="ml-8 grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full bg-[#25d366] transition-colors hover:bg-[#1fb055]"
+        >
+          <Image
+            src="/icons/whatsapp.svg"
+            alt=""
+            width={42}
+            height={42}
+            className="h-8 w-8"
+          />
+        </a>
+      </div>
+
       {open && (
-        <nav className="border-t border-white/15 bg-brand lg:hidden">
-          <ul className="mx-auto flex max-w-page flex-col px-4 py-2 text-[13px] font-semibold tracking-[0.06em] sm:px-6">
+        <nav className="border-t border-white/15 bg-[#1e2aab] lg:hidden">
+          <ul className="mx-auto flex max-w-[1440px] flex-col px-4 py-2 text-[13px] font-semibold tracking-[0.06em] sm:px-6">
             {NAV.map((item) => (
               <li key={item.href}>
                 <Link
