@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
@@ -7,12 +8,10 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ProductVisual from "../components/ProductVisual";
 import AddToCartButton from "../components/AddToCartButton";
-import Reveal from "../components/Reveal";
 import { ProductCardSkeleton } from "../components/Skeletons";
 import {
   CATEGORY_LABEL,
   SIZE_LABEL,
-  formatCOP,
   type Product,
   type ProductCategory,
   type ProductSize,
@@ -21,14 +20,27 @@ import { productRepo } from "@/src/features/catalog";
 
 type SortKey = "relevance" | "price-asc" | "price-desc";
 
+type ProductSection = {
+  id: string;
+  title: string;
+  subtitle: string;
+  products: Product[];
+};
+
 const CATEGORIES = Object.keys(CATEGORY_LABEL) as ProductCategory[];
 const SIZES = Object.keys(SIZE_LABEL) as ProductSize[];
+const FEATURED_SLUGS = [
+  "promocion-garrafas",
+  "kit-inicial-botellon-19lts",
+  "recarga-19lts-individual",
+  "recargas-19lts",
+];
 
 function SearchIcon() {
   return (
     <svg
       viewBox="0 0 24 24"
-      className="h-4 w-4 shrink-0 text-ink-muted"
+      className="h-4 w-4 shrink-0 text-[#6b7280]"
       fill="none"
       aria-hidden
     >
@@ -36,8 +48,8 @@ function SearchIcon() {
       <path
         d="M20 20l-3.5-3.5"
         stroke="currentColor"
-        strokeWidth="2"
         strokeLinecap="round"
+        strokeWidth="2"
       />
     </svg>
   );
@@ -49,10 +61,51 @@ function FilterIcon() {
       <path
         d="M3 6h18M6 12h12M10 18h4"
         stroke="currentColor"
-        strokeWidth="2"
         strokeLinecap="round"
+        strokeWidth="2"
       />
     </svg>
+  );
+}
+
+function TrustStrip() {
+  return (
+    <div className="mx-auto mt-4 flex max-w-[700px] flex-wrap items-center justify-center gap-3 px-5 lg:mt-5">
+      <div className="ph-condensed flex h-[54px] min-w-[145px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.18)]">
+        <Image
+          src="/home/icon-truck.png"
+          alt=""
+          width={36}
+          height={36}
+          className="h-9 w-9 object-contain"
+        />
+        <span>
+          servicio a domicilio
+          <br />
+          a nivel nacional
+        </span>
+      </div>
+      <div className="ph-condensed flex h-[54px] min-w-[145px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.18)]">
+        <Image
+          src="/home/icon-lock.png"
+          alt=""
+          width={34}
+          height={34}
+          className="h-8 w-8 object-contain"
+        />
+        <span>
+          pago seguro con SSL.
+          <br />
+          Bancolombia, Nequi, PSE
+        </span>
+      </div>
+      <Link
+        href="/envios"
+        className="ph-condensed inline-flex h-[24px] min-w-[196px] items-center justify-center rounded-full border-2 border-[#1e3a8a] bg-white px-4 text-[10px] font-bold text-[#6b7280] shadow-[2px_3px_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 lg:min-w-[250px] lg:text-[12px]"
+      >
+        Ver costos de envío y tiempos de entrega
+      </Link>
+    </div>
   );
 }
 
@@ -70,10 +123,10 @@ function PillToggle({
       type="button"
       onClick={onClick}
       className={
-        "rounded-full border px-3 py-1.5 text-[12px] font-semibold transition-colors " +
+        "ph-condensed rounded-full border px-3 py-1 text-[12px] font-bold transition-colors " +
         (active
-          ? "border-brand bg-brand text-white"
-          : "border-card-border bg-white text-ink hover:border-brand hover:text-brand")
+          ? "border-[#1e3a8a] bg-[#1e3a8a] text-white"
+          : "border-[#d9d9d9] bg-white text-[#1e3a8a] hover:border-[#1e3a8a]")
       }
     >
       {children}
@@ -89,8 +142,8 @@ function FilterSection({
   children: React.ReactNode;
 }) {
   return (
-    <div className="border-b border-card-border py-4 last:border-b-0">
-      <p className="text-[12px] font-semibold uppercase tracking-wide text-brand">
+    <div className="border-b border-[#e5e7eb] py-4 last:border-b-0">
+      <p className="ph-display text-[18px] uppercase leading-none text-[#1e3a8a]">
         {title}
       </p>
       <div className="mt-3 flex flex-wrap gap-2">{children}</div>
@@ -98,81 +151,124 @@ function FilterSection({
   );
 }
 
-function ProductCard({ product, index }: { product: Product; index: number }) {
+function ProductTile({
+  product,
+  featured = false,
+}: {
+  product: Product;
+  featured?: boolean;
+}) {
   return (
-    <Reveal delay={index * 60}>
-      <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-card-border bg-white transition-shadow hover:shadow-[0_10px_30px_rgba(27,34,166,0.10)]">
+    <article className="ph-condensed flex min-w-0 flex-col items-center text-center">
+      <Link
+        href={`/productos/${product.slug}`}
+        className={
+          "relative grid w-full place-items-center rounded-[8px] bg-[#fbf9fb] " +
+          (featured ? "h-[132px] lg:h-[210px]" : "h-[150px] lg:h-[190px]")
+        }
+        aria-label={`Ver detalles de ${product.title}`}
+      >
+        {product.highlight && (
+          <div className="absolute left-1 top-1 z-10 rounded-[4px] bg-[#1e3a8a] px-2 py-1 text-left text-[9px] font-bold uppercase leading-tight text-white lg:text-[12px]">
+            Promoción garrafas
+            <div className="mt-1 rounded-full bg-[#42c7d2] px-2 py-0.5 text-center">
+              ¡Pague 3, lleve 5!
+            </div>
+          </div>
+        )}
+        <ProductVisual
+          visualKey={product.visualKey}
+          className={
+            product.visualKey === "garrafas"
+              ? "h-[104px] w-auto lg:h-[160px]"
+              : "h-[118px] w-auto lg:h-[165px]"
+          }
+        />
+      </Link>
+
+      <div className="mt-2 min-h-[70px] lg:min-h-[86px]">
+        <div className="flex items-baseline justify-center gap-1">
+          {product.prevPrice && (
+            <span className="text-[13px] font-bold leading-none text-[#ef4444] line-through lg:text-[15px]">
+              {product.prevPrice}
+            </span>
+          )}
+          <p className="text-[18px] font-bold leading-none text-[#1e3a8a] lg:text-[21px]">
+            {product.price}
+          </p>
+        </div>
         <Link
           href={`/productos/${product.slug}`}
-          className="grid h-44 w-full place-items-center bg-[#f4f6fb] sm:h-52"
-          aria-label={`Ver detalles de ${product.title}`}
+          className="mt-2 block max-w-[120px] whitespace-pre-line text-[12px] font-bold leading-[1.15] text-[#6b7280] hover:text-[#1e3a8a] lg:max-w-[150px] lg:text-[15px]"
         >
-          <ProductVisual
-            visualKey={product.visualKey}
-            className="h-36 w-auto transition-transform duration-300 hover:scale-105 sm:h-40"
-          />
+          {product.shortTitle || product.title}
         </Link>
+      </div>
 
-        <div className="flex flex-1 flex-col gap-3 p-4 sm:p-5">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="rounded-full bg-[#eef0ff] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand">
-              {CATEGORY_LABEL[product.category]}
-            </span>
-            {product.highlight && (
-              <span className="rounded-full bg-accent-cyan px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-brand">
-                Promo
-              </span>
-            )}
-            <span className="rounded-full border border-card-border px-2 py-0.5 text-[10px] font-semibold text-ink-muted">
-              {SIZE_LABEL[product.size]}
-            </span>
-          </div>
+      <AddToCartButton
+        slug={product.slug}
+        mode="buy"
+        variant="primary"
+        label="comprar ahora"
+        className="mt-1 h-[20px] w-[86px] !gap-1 !px-0 !py-0 !text-[7px] font-bold lg:h-[28px] lg:w-[118px] lg:!text-[10px] [&_svg]:h-3 [&_svg]:w-3"
+      />
+    </article>
+  );
+}
 
-          <Link
-            href={`/productos/${product.slug}`}
-            className="text-[14px] font-bold leading-tight text-brand hover:underline sm:text-[15px]"
-          >
-            {product.title}
-          </Link>
+function SectionHeader({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle: string;
+}) {
+  return (
+    <div className="text-center">
+      <h2 className="ph-display text-[30px] uppercase leading-none text-[#1e3a8a] lg:text-[36px]">
+        {title}
+      </h2>
+      <p className="ph-condensed mt-2 text-[22px] font-bold leading-tight text-[#6b7280] lg:text-[28px]">
+        {subtitle}
+      </p>
+    </div>
+  );
+}
 
-          <p className="line-clamp-2 text-[12px] leading-[1.45] text-ink-muted sm:text-[13px]">
-            {product.tagline}
-          </p>
+function ProductsGrid({
+  products,
+  featured = false,
+}: {
+  products: Product[];
+  featured?: boolean;
+}) {
+  return (
+    <div
+      className={
+        featured
+          ? "mt-5 grid grid-cols-3 items-end gap-3 lg:grid-cols-4 lg:gap-7"
+          : "mt-7 grid grid-cols-2 gap-x-8 gap-y-9 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-12"
+      }
+    >
+      {products.map((product) => (
+        <ProductTile key={product.slug} product={product} featured={featured} />
+      ))}
+    </div>
+  );
+}
 
-          <div className="mt-auto flex items-baseline gap-2">
-            <span className="text-[18px] font-extrabold text-brand sm:text-[20px]">
-              {product.price}
-            </span>
-            {product.prevPrice && (
-              <span className="text-[12px] text-ink-muted line-through">
-                {product.prevPrice}
-              </span>
-            )}
-          </div>
+function ProductGroup({ section }: { section: ProductSection }) {
+  if (section.products.length === 0) return null;
 
-          <div className="flex flex-col gap-2">
-            <AddToCartButton
-              slug={product.slug}
-              mode="add"
-              variant="primary"
-              label="Agregar al carrito"
-              className="w-full !py-2 !text-[12px]"
-            />
-            <Link
-              href={`/productos/${product.slug}`}
-              className="text-center text-[12px] font-semibold text-brand underline-offset-2 hover:underline"
-            >
-              Ver detalles
-            </Link>
-          </div>
-        </div>
-      </article>
-    </Reveal>
+  return (
+    <section id={section.id} className="pt-12 lg:pt-16">
+      <SectionHeader title={section.title} subtitle={section.subtitle} />
+      <ProductsGrid products={section.products} />
+    </section>
   );
 }
 
 export default function ProductsListingPage() {
-  // Productos cargados desde el repo (Supabase en prod, mock en dev).
   const [products, setProducts] = useState<Product[] | null>(null);
   const [query, setQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<
@@ -183,7 +279,6 @@ export default function ProductsListingPage() {
   const [sort, setSort] = useState<SortKey>("relevance");
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
-  // `null` mientras carga, `[]` cuando no hay productos, lleno cuando llegó.
   const initialLoading = products == null;
 
   useEffect(() => {
@@ -205,10 +300,17 @@ export default function ProductsListingPage() {
     if (!products) return [];
     const q = query.trim().toLowerCase();
     let list = products.filter((p) => {
-      if (q && !p.title.toLowerCase().includes(q) && !p.tagline.toLowerCase().includes(q)) {
+      if (
+        q &&
+        !p.title.toLowerCase().includes(q) &&
+        !p.tagline.toLowerCase().includes(q)
+      ) {
         return false;
       }
-      if (selectedCategories.length > 0 && !selectedCategories.includes(p.category)) {
+      if (
+        selectedCategories.length > 0 &&
+        !selectedCategories.includes(p.category)
+      ) {
         return false;
       }
       if (selectedSizes.length > 0 && !selectedSizes.includes(p.size)) {
@@ -230,16 +332,62 @@ export default function ProductsListingPage() {
     return list;
   }, [products, query, selectedCategories, selectedSizes, onlyPromo, sort]);
 
+  const featuredProducts = useMemo(() => {
+    if (!products) return [];
+    return FEATURED_SLUGS.map((slug) => products.find((p) => p.slug === slug))
+      .filter((product): product is Product => Boolean(product))
+      .slice(0, 4);
+  }, [products]);
+
+  const defaultSections = useMemo<ProductSection[]>(() => {
+    if (!products) return [];
+    const featuredSlugs = new Set(FEATURED_SLUGS);
+    const remaining = products.filter((product) => !featuredSlugs.has(product.slug));
+
+    return [
+      {
+        id: "pet",
+        title: "Presentaciones en PET",
+        subtitle: "Llévalas donde vayas, prácticas, seguras y libre de BPA",
+        products: remaining.filter(
+          (product) =>
+            product.category === "garrafa" ||
+            product.category === "botellon" ||
+            product.category === "recarga",
+        ),
+      },
+      {
+        id: "vidrio",
+        title: "Presentaciones en vidrio",
+        subtitle: "Eleva tu estilo a nivel premium",
+        products: remaining.filter((product) =>
+          product.title.toLowerCase().includes("vidrio"),
+        ),
+      },
+      {
+        id: "saborizadas",
+        title: "Presentaciones saborizadas en PET",
+        subtitle: "Disfruta el agua que sabe diferente",
+        products: remaining.filter((product) => {
+          const title = product.title.toLowerCase();
+          return title.includes("sabor") || title.includes("limonaria");
+        }),
+      },
+    ];
+  }, [products]);
+
   function toggleCategory(c: ProductCategory) {
     setSelectedCategories((prev) =>
       prev.includes(c) ? prev.filter((x) => x !== c) : [...prev, c],
     );
   }
+
   function toggleSize(s: ProductSize) {
     setSelectedSizes((prev) =>
       prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s],
     );
   }
+
   function resetFilters() {
     setQuery("");
     setSelectedCategories([]);
@@ -253,23 +401,35 @@ export default function ProductsListingPage() {
     selectedSizes.length +
     (onlyPromo ? 1 : 0) +
     (query.trim() ? 1 : 0);
+  const hasActiveFilters = activeFiltersCount > 0;
 
   const FiltersBody = (
-    <div className="rounded-2xl border border-card-border bg-white p-5">
+    <div className="rounded-[8px] border border-[#d7d7d7] bg-white p-4 shadow-[3px_4px_0_rgba(0,0,0,0.16)]">
       <div className="flex items-center justify-between">
-        <h2 className="text-[14px] font-extrabold uppercase tracking-wide text-brand">
+        <h2 className="ph-display text-[24px] uppercase leading-none text-[#1e3a8a]">
           Filtros
         </h2>
         {activeFiltersCount > 0 && (
           <button
             type="button"
             onClick={resetFilters}
-            className="text-[12px] font-semibold text-ink-muted hover:text-brand"
+            className="ph-condensed text-[12px] font-bold text-[#6b7280] hover:text-[#1e3a8a]"
           >
             Limpiar
           </button>
         )}
       </div>
+
+      <label className="mt-4 flex items-center gap-2 rounded-full border border-[#d7d7d7] bg-white px-3 py-2 focus-within:border-[#1e3a8a]">
+        <SearchIcon />
+        <input
+          type="search"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Buscar producto"
+          className="min-w-0 flex-1 bg-transparent text-[13px] text-[#303030] outline-none placeholder:text-[#6b7280]"
+        />
+      </label>
 
       <FilterSection title="Categoría">
         {CATEGORIES.map((c) => (
@@ -296,12 +456,12 @@ export default function ProductsListingPage() {
       </FilterSection>
 
       <FilterSection title="Otros">
-        <label className="flex cursor-pointer items-center gap-2 text-[13px] text-ink">
+        <label className="ph-condensed flex cursor-pointer items-center gap-2 text-[13px] font-bold text-[#303030]">
           <input
             type="checkbox"
             checked={onlyPromo}
             onChange={(e) => setOnlyPromo(e.target.checked)}
-            className="h-4 w-4 accent-[#1b22a6]"
+            className="h-4 w-4 accent-[#1e3a8a]"
           />
           Solo productos en promoción
         </label>
@@ -314,114 +474,140 @@ export default function ProductsListingPage() {
       <Header />
 
       <main className="flex-1 bg-white">
-        <nav className="mx-auto max-w-page px-5 pt-6 text-[12px] text-ink-muted sm:px-8 sm:text-[13px] lg:px-12">
-          <Link href="/" className="hover:underline">
-            Inicio
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-ink">Productos</span>
-        </nav>
+        <TrustStrip />
 
-        <section className="mx-auto max-w-page px-5 py-8 sm:px-8 sm:py-10 lg:px-12">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h1 className="text-[26px] font-extrabold text-brand sm:text-[32px]">
-                Productos PH PLUS
-              </h1>
-              <p className="mt-1 text-[14px] text-ink-muted">
-                Hidratación alcalina PH 9 para cada momento del día.
-              </p>
-            </div>
-            <p className="text-[13px] text-ink-muted">
-              {filtered.length} {filtered.length === 1 ? "producto" : "productos"}
-              {activeFiltersCount > 0 && ` · ${activeFiltersCount} filtro${activeFiltersCount === 1 ? "" : "s"} activo${activeFiltersCount === 1 ? "" : "s"}`}
-            </p>
+        <section className="mx-auto max-w-[1180px] px-5 pb-12 pt-7 sm:px-8 lg:px-6">
+          <div className="flex justify-center lg:justify-end">
+            <button
+              type="button"
+              onClick={() => setMobileFiltersOpen((v) => !v)}
+              className="ph-condensed inline-flex items-center gap-2 rounded-full border-2 border-[#1e3a8a] bg-white px-4 py-1.5 text-[12px] font-bold text-[#1e3a8a] shadow-[2px_3px_0_rgba(0,0,0,0.25)] lg:hidden"
+              aria-expanded={mobileFiltersOpen}
+            >
+              <FilterIcon />
+              Filtros
+              {activeFiltersCount > 0 && (
+                <span className="grid h-5 min-w-5 place-items-center rounded-full bg-[#1e3a8a] px-1 text-[10px] text-white">
+                  {activeFiltersCount}
+                </span>
+              )}
+            </button>
           </div>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <label className="flex flex-1 items-center gap-2 rounded-full border border-card-border bg-white px-4 py-2.5 focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/15">
-              <SearchIcon />
-              <input
-                type="search"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Buscar agua, garrafas, dispensadores..."
-                className="w-full bg-transparent text-[14px] text-ink outline-none placeholder:text-ink-muted"
-              />
-            </label>
+          {mobileFiltersOpen && (
+            <div className="mt-4 lg:hidden">{FiltersBody}</div>
+          )}
 
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setMobileFiltersOpen((v) => !v)}
-                className="inline-flex items-center gap-2 rounded-full border border-card-border bg-white px-4 py-2.5 text-[13px] font-semibold text-brand lg:hidden"
-                aria-expanded={mobileFiltersOpen}
-              >
-                <FilterIcon />
-                Filtros
-                {activeFiltersCount > 0 && (
-                  <span className="grid h-5 min-w-[20px] place-items-center rounded-full bg-brand px-1 text-[11px] font-bold text-white">
-                    {activeFiltersCount}
-                  </span>
-                )}
-              </button>
-
-              <label className="flex items-center gap-2 rounded-full border border-card-border bg-white px-4 py-2.5 text-[13px] text-ink">
-                <span className="hidden sm:inline text-ink-muted">Ordenar:</span>
+          <div className="mt-5 grid gap-8 lg:grid-cols-[220px_1fr] lg:items-start">
+            <aside className="hidden lg:sticky lg:top-28 lg:block">
+              {FiltersBody}
+              <label className="mt-4 flex items-center gap-2 rounded-full border border-[#d7d7d7] bg-white px-3 py-2 text-[13px] text-[#303030]">
+                <span className="ph-condensed font-bold text-[#6b7280]">
+                  Ordenar
+                </span>
                 <select
                   value={sort}
                   onChange={(e) => setSort(e.target.value as SortKey)}
-                  className="bg-transparent text-[13px] font-semibold text-brand outline-none"
+                  className="min-w-0 flex-1 bg-transparent text-[12px] font-bold text-[#1e3a8a] outline-none"
                 >
                   <option value="relevance">Más populares</option>
-                  <option value="price-asc">Precio: menor a mayor</option>
-                  <option value="price-desc">Precio: mayor a menor</option>
+                  <option value="price-asc">Menor precio</option>
+                  <option value="price-desc">Mayor precio</option>
                 </select>
               </label>
-            </div>
-          </div>
-
-          <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-[260px_1fr] lg:items-start">
-            <aside className="hidden lg:block lg:sticky lg:top-24">
-              {FiltersBody}
             </aside>
-
-            {mobileFiltersOpen && (
-              <div className="lg:hidden">{FiltersBody}</div>
-            )}
 
             <div>
               {initialLoading ? (
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {Array.from({ length: 6 }).map((_, i) => (
                     <ProductCardSkeleton key={i} />
                   ))}
                 </div>
               ) : filtered.length === 0 ? (
-                <div className="rounded-2xl border border-card-border bg-[#fafbfd] p-10 text-center">
-                  <p className="text-[16px] font-extrabold text-brand">
+                <div className="rounded-[18px] border border-[#d7d7d7] bg-[#fafbfd] p-10 text-center">
+                  <p className="ph-display text-[28px] uppercase leading-none text-[#1e3a8a]">
                     Sin resultados
                   </p>
-                  <p className="mt-2 text-[14px] text-ink-muted">
+                  <p className="ph-condensed mt-2 text-[16px] font-bold text-[#6b7280]">
                     Intenta con otra búsqueda o ajusta los filtros.
                   </p>
                   <button
                     type="button"
                     onClick={resetFilters}
-                    className="mt-5 inline-flex items-center rounded-full bg-brand px-5 py-2.5 text-[13px] font-semibold text-white transition-transform hover:scale-[1.02] hover:bg-brand-dark"
+                    className="ph-condensed mt-5 rounded-full bg-[#1e3a8a] px-5 py-2 text-[13px] font-bold text-white"
                   >
                     Limpiar filtros
                   </button>
                 </div>
+              ) : hasActiveFilters ? (
+                <section>
+                  <SectionHeader
+                    title="Resultados"
+                    subtitle={`${filtered.length} producto${filtered.length === 1 ? "" : "s"} encontrado${filtered.length === 1 ? "" : "s"}`}
+                  />
+                  <ProductsGrid products={filtered} />
+                </section>
               ) : (
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
-                  {filtered.map((p, i) => (
-                    <ProductCard key={p.slug} product={p} index={i} />
+                <>
+                  <section>
+                    <SectionHeader
+                      title="Productos destacados"
+                      subtitle="Ahorra más, disfruta más cada día"
+                    />
+                    <div className="mx-auto max-w-[760px] lg:max-w-[840px]">
+                      <ProductsGrid products={featuredProducts} featured />
+                    </div>
+                  </section>
+
+                  {defaultSections.map((section) => (
+                    <ProductGroup key={section.id} section={section} />
                   ))}
-                </div>
+
+                  <section className="mx-auto mt-14 max-w-[660px] rounded-[18px] bg-[#1e3a8a] px-6 py-5 text-center text-white shadow-[3px_5px_0_rgba(0,0,0,0.24)] lg:px-10">
+                    <h2 className="ph-condensed text-[22px] font-bold leading-tight lg:text-[28px]">
+                      ¡Descubre la presentación perfecta para ti!
+                    </h2>
+                    <p className="ph-condensed mt-4 text-[15px] leading-relaxed opacity-90 lg:text-[18px]">
+                      Cada estilo de vida es diferente, cada rutina es única.
+                      Te ayudamos a encontrar tu presentación ideal.
+                    </p>
+                  </section>
+                </>
               )}
             </div>
           </div>
+        </section>
+
+        <section className="px-5 pb-10 text-center">
+          <h2 className="ph-condensed mx-auto max-w-[640px] text-[27px] font-bold leading-tight text-[#1e3a8a] lg:text-[34px]">
+            Miles de familias ya nos eligieron.
+            <br />
+            ¿Cuándo te toca a ti?
+          </h2>
+          <p className="ph-condensed mt-7 text-[14px] font-bold text-[#6b7280] lg:text-[20px]">
+            Compra fácil por WhatsApp y recíbelo en casa.
+          </p>
+          <div className="mt-4 flex justify-center">
+            <a
+              href="https://wa.me/573234392470"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ph-condensed inline-flex h-[31px] items-center gap-2 rounded-full bg-[#2f6b4f] px-3 text-[10px] font-bold text-white shadow-[3px_4px_0_rgba(18,140,126,0.45)] transition-transform hover:scale-[1.03] hover:bg-[#1fb055] lg:h-[46px] lg:px-7 lg:text-[18px]"
+            >
+              <Image
+                src="/icons/whatsapp.svg"
+                alt=""
+                width={26}
+                height={26}
+                className="h-6 w-6 lg:h-8 lg:w-8"
+              />
+              Comprar por whatsapp
+            </a>
+          </div>
+          <p className="ph-condensed mt-5 text-[14px] font-bold text-[#6b7280] lg:text-[18px]">
+            Respuesta rápida • Entrega a domicilio
+          </p>
         </section>
       </main>
 
