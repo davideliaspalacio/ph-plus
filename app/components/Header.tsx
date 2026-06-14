@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { useCart } from "./CartProvider";
 import { MiniCart } from "@/src/features/cart/ui/MiniCart";
 
@@ -50,11 +51,15 @@ function SearchIcon() {
 }
 
 export default function Header() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [miniCartOpen, setMiniCartOpen] = useState(false);
   const { totalItems, hydrated } = useCart();
   const showBadge = hydrated && totalItems > 0;
   const prevTotal = useRef(totalItems);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [bouncing, setBouncing] = useState(false);
 
   useEffect(() => {
@@ -70,6 +75,18 @@ export default function Header() {
   useEffect(() => {
     prevTotal.current = totalItems;
   }, [totalItems]);
+
+  useEffect(() => {
+    if (searchOpen) searchInputRef.current?.focus();
+  }, [searchOpen]);
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const q = searchQuery.trim();
+    setOpen(false);
+    setSearchOpen(false);
+    router.push(q ? `/buscar?q=${encodeURIComponent(q)}` : "/buscar");
+  }
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#1e2aab] text-white shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
@@ -94,13 +111,39 @@ export default function Header() {
           className="absolute left-[96px] top-[3px] h-[56px] w-[35px] object-contain sm:left-[130px]"
         />
 
-        <Link
-          href="/buscar"
-          aria-label="Buscar productos"
-          className="ml-auto grid h-6 w-6 place-items-center transition-opacity hover:opacity-80"
-        >
-          <SearchIcon />
-        </Link>
+        {searchOpen ? (
+          <form
+            onSubmit={submitSearch}
+            className="absolute left-[132px] right-[116px] top-[9px] z-10 flex h-8 items-center rounded-full bg-white px-2 text-[#1e3a8a] shadow-[0_4px_14px_rgba(0,0,0,0.18)]"
+          >
+            <input
+              ref={searchInputRef}
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") setSearchOpen(false);
+              }}
+              placeholder="Buscar"
+              className="min-w-0 flex-1 bg-transparent text-[12px] font-semibold outline-none placeholder:text-[#7180b8]"
+            />
+            <button
+              type="submit"
+              aria-label="Buscar"
+              className="grid h-5 w-5 shrink-0 place-items-center"
+            >
+              <SearchIcon />
+            </button>
+          </form>
+        ) : (
+          <button
+            type="button"
+            aria-label="Abrir búsqueda"
+            onClick={() => setSearchOpen(true)}
+            className="ml-auto grid h-[22px] w-[22px] place-items-center transition-opacity hover:opacity-80"
+          >
+            <SearchIcon />
+          </button>
+        )}
 
         <div className="ml-3 flex items-center gap-3">
           <button
@@ -208,13 +251,41 @@ export default function Header() {
           ))}
         </nav>
 
-        <Link
-          href="/buscar"
-          aria-label="Buscar productos"
-          className="ml-8 grid h-10 w-10 shrink-0 place-items-center transition-opacity hover:opacity-80"
-        >
-          <SearchIcon />
-        </Link>
+        <div className="ml-6 flex h-9 shrink-0 items-center">
+          {searchOpen ? (
+            <form
+              onSubmit={submitSearch}
+              className="flex h-8 w-[172px] items-center rounded-full bg-white px-3 text-[#1e3a8a] shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
+            >
+              <input
+                ref={searchInputRef}
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") setSearchOpen(false);
+                }}
+                placeholder="Buscar"
+                className="min-w-0 flex-1 bg-transparent text-[13px] font-semibold outline-none placeholder:text-[#7180b8]"
+              />
+              <button
+                type="submit"
+                aria-label="Buscar"
+                className="grid h-5 w-5 shrink-0 place-items-center"
+              >
+                <SearchIcon />
+              </button>
+            </form>
+          ) : (
+            <button
+              type="button"
+              aria-label="Abrir búsqueda"
+              onClick={() => setSearchOpen(true)}
+              className="grid h-8 w-8 shrink-0 place-items-center transition-opacity hover:opacity-80"
+            >
+              <SearchIcon />
+            </button>
+          )}
+        </div>
 
         <button
           type="button"
@@ -224,9 +295,9 @@ export default function Header() {
               ? ` con ${totalItems} producto${totalItems === 1 ? "" : "s"}`
               : ""
           }`}
-          className="ml-7 grid h-10 w-10 shrink-0 place-items-center transition-opacity hover:opacity-80"
+          className="ml-5 grid h-8 w-8 shrink-0 place-items-center transition-opacity hover:opacity-80"
         >
-          <CartIcon />
+          <CartIcon className="h-8 w-8" />
           {showBadge && (
             <span
               className={
@@ -244,14 +315,14 @@ export default function Header() {
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Contáctanos por WhatsApp"
-          className="ml-8 grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full bg-[#25d366] transition-colors hover:bg-[#1fb055]"
+          className="ml-6 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#25d366] transition-colors hover:bg-[#1fb055]"
         >
           <Image
             src="/icons/whatsapp.svg"
             alt=""
             width={42}
             height={42}
-            className="h-8 w-8"
+            className="h-7 w-7"
           />
         </a>
       </div>
