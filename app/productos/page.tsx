@@ -70,14 +70,14 @@ function FilterIcon() {
 
 function TrustStrip() {
   return (
-    <div className="mx-auto mt-4 flex max-w-[700px] flex-wrap items-center justify-center gap-3 px-5 lg:mt-5">
-      <div className="ph-condensed flex h-[54px] min-w-[145px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.18)]">
+    <div className="mx-auto mt-4 flex max-w-[680px] flex-wrap items-center justify-center gap-3 px-5 lg:mt-4">
+      <div className="ph-condensed flex h-[54px] min-w-[146px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.18)] lg:h-[42px] lg:min-w-[126px] lg:gap-2 lg:px-2 lg:text-[8px]">
         <Image
           src="/home/icon-truck.png"
           alt=""
           width={36}
           height={36}
-          className="h-9 w-9 object-contain"
+          className="h-9 w-9 object-contain lg:h-6 lg:w-6"
         />
         <span>
           servicio a domicilio
@@ -85,13 +85,13 @@ function TrustStrip() {
           a nivel nacional
         </span>
       </div>
-      <div className="ph-condensed flex h-[54px] min-w-[145px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.18)]">
+      <div className="ph-condensed flex h-[54px] min-w-[146px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.18)] lg:h-[42px] lg:min-w-[126px] lg:gap-2 lg:px-2 lg:text-[8px]">
         <Image
           src="/home/icon-lock.png"
           alt=""
           width={34}
           height={34}
-          className="h-8 w-8 object-contain"
+          className="h-8 w-8 object-contain lg:h-6 lg:w-6"
         />
         <span>
           pago seguro con SSL.
@@ -101,7 +101,7 @@ function TrustStrip() {
       </div>
       <Link
         href="/envios"
-        className="ph-condensed inline-flex h-[24px] min-w-[196px] items-center justify-center rounded-full border-2 border-[#1e3a8a] bg-white px-4 text-[10px] font-bold text-[#6b7280] shadow-[2px_3px_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 lg:min-w-[250px] lg:text-[12px]"
+        className="ph-condensed inline-flex h-[24px] min-w-[196px] items-center justify-center rounded-full border-2 border-[#1e3a8a] bg-white px-4 text-[10px] font-bold text-[#6b7280] shadow-[2px_3px_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 lg:h-[22px] lg:min-w-[230px] lg:text-[9px]"
       >
         Ver costos de envío y tiempos de entrega
       </Link>
@@ -154,63 +154,85 @@ function FilterSection({
 function ProductTile({
   product,
   featured = false,
+  className = "",
 }: {
   product: Product;
   featured?: boolean;
+  className?: string;
 }) {
+  const title = product.shortTitle || product.title;
+
   return (
-    <article className="ph-condensed flex min-w-0 flex-col items-center text-center">
+    <article
+      className={`ph-condensed flex min-w-0 flex-col items-center text-center ${className}`}
+    >
       <Link
         href={`/productos/${product.slug}`}
         className={
-          "relative grid w-full place-items-center rounded-[8px] bg-[#fbf9fb] " +
-          (featured ? "h-[132px] lg:h-[210px]" : "h-[150px] lg:h-[190px]")
+          product.highlight
+            ? "relative flex h-[132px] w-full flex-col items-center justify-end overflow-hidden rounded-[8px] bg-[#1e3a8a] px-2 pb-2 text-white lg:h-[180px]"
+            : "relative grid w-full place-items-center rounded-[8px] bg-[#fbf9fb] " +
+              (featured ? "h-[118px] lg:h-[132px]" : "h-[132px] lg:h-[150px]")
         }
         aria-label={`Ver detalles de ${product.title}`}
       >
         {product.highlight && (
-          <div className="absolute left-1 top-1 z-10 rounded-[4px] bg-[#1e3a8a] px-2 py-1 text-left text-[9px] font-bold uppercase leading-tight text-white lg:text-[12px]">
-            Promoción garrafas
-            <div className="mt-1 rounded-full bg-[#42c7d2] px-2 py-0.5 text-center">
+          <div className="absolute inset-x-0 top-0 z-10">
+            <div className="ph-display rounded-t-[8px] bg-[#243a95] px-2 py-1 text-center text-[12px] uppercase leading-none lg:text-[16px]">
+              Promoción garrafas
+            </div>
+            <div className="ph-condensed -mx-1 rounded-full bg-[#4fc8d2] px-2 py-0.5 text-center text-[11px] font-bold leading-none lg:text-[14px]">
               ¡Pague 3, lleve 5!
             </div>
+            <div className="ph-condensed mt-1 text-center text-[20px] font-bold leading-none lg:text-[28px]">
+              por {product.price}
+            </div>
+            {product.prevPrice && (
+              <div className="ph-condensed text-center text-[8px] font-bold leading-none lg:text-[11px]">
+                (antes {product.prevPrice})
+              </div>
+            )}
           </div>
         )}
         <ProductVisual
           visualKey={product.visualKey}
           className={
-            product.visualKey === "garrafas"
-              ? "h-[104px] w-auto lg:h-[160px]"
-              : "h-[118px] w-auto lg:h-[165px]"
+            product.highlight
+              ? "h-[82px] w-auto lg:h-[92px]"
+              : product.visualKey === "garrafas"
+                ? "h-[96px] w-auto lg:h-[116px]"
+                : "h-[102px] w-auto lg:h-[118px]"
           }
         />
       </Link>
 
-      <div className="mt-2 min-h-[70px] lg:min-h-[86px]">
-        <div className="flex items-baseline justify-center gap-1">
-          {product.prevPrice && (
-            <span className="text-[13px] font-bold leading-none text-[#ef4444] line-through lg:text-[15px]">
-              {product.prevPrice}
-            </span>
-          )}
-          <p className="text-[18px] font-bold leading-none text-[#1e3a8a] lg:text-[21px]">
-            {product.price}
-          </p>
+      {!product.highlight && (
+        <div className="mt-2 min-h-[64px] lg:min-h-[70px]">
+          <div className="flex items-baseline justify-center gap-1">
+            {product.prevPrice && (
+              <span className="text-[11px] font-bold leading-none text-[#ef4444] line-through lg:text-[12px]">
+                {product.prevPrice}
+              </span>
+            )}
+            <p className="text-[18px] font-bold leading-none text-[#1e3a8a] lg:text-[16px]">
+              {product.price}
+            </p>
+          </div>
+          <Link
+            href={`/productos/${product.slug}`}
+            className="mt-2 block max-w-[92px] whitespace-pre-line text-[11px] font-bold leading-[1.15] text-[#6b7280] hover:text-[#1e3a8a] lg:max-w-[118px] lg:text-[10px]"
+          >
+            {title}
+          </Link>
         </div>
-        <Link
-          href={`/productos/${product.slug}`}
-          className="mt-2 block max-w-[120px] whitespace-pre-line text-[12px] font-bold leading-[1.15] text-[#6b7280] hover:text-[#1e3a8a] lg:max-w-[150px] lg:text-[15px]"
-        >
-          {product.shortTitle || product.title}
-        </Link>
-      </div>
+      )}
 
       <AddToCartButton
         slug={product.slug}
         mode="buy"
         variant="primary"
         label="comprar ahora"
-        className="mt-1 h-[20px] w-[86px] !gap-1 !px-0 !py-0 !text-[7px] font-bold lg:h-[28px] lg:w-[118px] lg:!text-[10px] [&_svg]:h-3 [&_svg]:w-3"
+        className="mt-1 h-[20px] w-full max-w-[86px] !gap-1 !px-0 !py-0 !text-[7px] font-bold lg:h-[18px] lg:max-w-[88px] lg:!text-[7px] [&_svg]:h-3 [&_svg]:w-3"
       />
     </article>
   );
@@ -219,16 +241,28 @@ function ProductTile({
 function SectionHeader({
   title,
   subtitle,
+  compact = false,
 }: {
   title: string;
   subtitle: string;
+  compact?: boolean;
 }) {
   return (
     <div className="text-center">
-      <h2 className="ph-display text-[30px] uppercase leading-none text-[#1e3a8a] lg:text-[36px]">
+      <h2
+        className={
+          "ph-display uppercase leading-none text-[#1e3a8a] " +
+          (compact ? "text-[26px] lg:text-[30px]" : "text-[30px] lg:text-[34px]")
+        }
+      >
         {title}
       </h2>
-      <p className="ph-condensed mt-2 text-[22px] font-bold leading-tight text-[#6b7280] lg:text-[28px]">
+      <p
+        className={
+          "ph-condensed mt-2 font-bold leading-tight text-[#6b7280] " +
+          (compact ? "text-[18px] lg:text-[17px]" : "text-[22px] lg:text-[24px]")
+        }
+      >
         {subtitle}
       </p>
     </div>
@@ -246,25 +280,106 @@ function ProductsGrid({
     <div
       className={
         featured
-          ? "mt-5 grid grid-cols-3 items-end gap-3 lg:grid-cols-4 lg:gap-7"
-          : "mt-7 grid grid-cols-2 gap-x-8 gap-y-9 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-12"
+          ? "mt-5 grid grid-cols-3 items-end gap-5 lg:mt-0 lg:grid-cols-4 lg:gap-5"
+          : "mt-7 grid grid-cols-3 gap-x-5 gap-y-9 lg:gap-x-7 lg:gap-y-10"
       }
     >
-      {products.map((product) => (
-        <ProductTile key={product.slug} product={product} featured={featured} />
+      {products.map((product, index) => (
+        <ProductTile
+          key={product.slug}
+          product={product}
+          featured={featured}
+          className={featured && index === 3 ? "hidden lg:flex" : ""}
+        />
       ))}
     </div>
   );
 }
 
-function ProductGroup({ section }: { section: ProductSection }) {
-  if (section.products.length === 0) return null;
+function FeaturedProductsSection({ products }: { products: Product[] }) {
+  if (products.length === 0) return null;
 
   return (
-    <section id={section.id} className="pt-12 lg:pt-16">
-      <SectionHeader title={section.title} subtitle={section.subtitle} />
-      <ProductsGrid products={section.products} />
+    <section>
+      <div className="lg:hidden">
+        <SectionHeader
+          title="Productos destacados"
+          subtitle="Ahorra más, disfruta más cada día"
+        />
+        <ProductsGrid products={products} featured />
+      </div>
+
+      <div className="relative hidden rounded-[28px] border border-[#d7d7d7] bg-white px-5 pb-5 pt-4 shadow-[3px_4px_16px_rgba(0,0,0,0.18)] lg:block">
+        <div className="absolute left-[170px] top-3 z-20 text-left">
+          <h2 className="ph-display text-[24px] uppercase leading-none text-[#1e3a8a]">
+            Presentaciones destacadas:
+          </h2>
+          <p className="ph-condensed text-[16px] font-bold leading-none text-[#6b7280]">
+            Ahorra más, disfruta más cada día
+          </p>
+        </div>
+        <div className="pt-10">
+          <ProductsGrid products={products} featured />
+        </div>
+      </div>
     </section>
+  );
+}
+
+function PetProductsSection({ section }: { section: ProductSection }) {
+  if (section.products.length === 0) return null;
+
+  const [first, second, third, ...rest] = section.products;
+
+  return (
+    <section id={section.id} className="pt-12 lg:pt-14">
+      <div className="lg:hidden">
+        <SectionHeader title={section.title} subtitle={section.subtitle} />
+        <ProductsGrid products={section.products} />
+      </div>
+
+      <div className="hidden lg:block">
+        <div className="grid grid-cols-4 items-start gap-x-7 gap-y-10">
+          {[first, second, third].filter(Boolean).map((product) => (
+            <ProductTile key={product.slug} product={product} />
+          ))}
+          <div className="pt-6">
+            <SectionHeader
+              title={section.title}
+              subtitle={section.subtitle}
+              compact
+            />
+          </div>
+          {rest.map((product) => (
+            <ProductTile key={product.slug} product={product} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SplitProductSections({ sections }: { sections: ProductSection[] }) {
+  const visible = sections.filter((section) => section.products.length > 0);
+  if (visible.length === 0) return null;
+
+  return (
+    <div className="grid gap-12 pt-12 lg:grid-cols-2 lg:gap-10 lg:pt-14">
+      {visible.map((section) => (
+        <section key={section.id} id={section.id}>
+          <SectionHeader
+            title={section.title}
+            subtitle={section.subtitle}
+            compact
+          />
+          <div className="mt-7 grid grid-cols-2 gap-x-7 gap-y-9">
+            {section.products.slice(0, 2).map((product) => (
+              <ProductTile key={product.slug} product={product} />
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
   );
 }
 
@@ -394,6 +509,7 @@ export default function ProductsListingPage() {
     setSelectedSizes([]);
     setOnlyPromo(false);
     setSort("relevance");
+    setMobileFiltersOpen(false);
   }
 
   const activeFiltersCount =
@@ -476,12 +592,12 @@ export default function ProductsListingPage() {
       <main className="flex-1 bg-white">
         <TrustStrip />
 
-        <section className="mx-auto max-w-[1180px] px-5 pb-12 pt-7 sm:px-8 lg:px-6">
-          <div className="flex justify-center lg:justify-end">
+        <section className="mx-auto max-w-[430px] px-8 pb-12 pt-7 sm:px-10 lg:max-w-[760px] lg:px-10 lg:pt-5">
+          <div className="hidden justify-end lg:flex">
             <button
               type="button"
               onClick={() => setMobileFiltersOpen((v) => !v)}
-              className="ph-condensed inline-flex items-center gap-2 rounded-full border-2 border-[#1e3a8a] bg-white px-4 py-1.5 text-[12px] font-bold text-[#1e3a8a] shadow-[2px_3px_0_rgba(0,0,0,0.25)] lg:hidden"
+              className="ph-condensed inline-flex items-center gap-2 rounded-full border-2 border-[#1e3a8a] bg-white px-4 py-1.5 text-[12px] font-bold text-[#1e3a8a] shadow-[2px_3px_0_rgba(0,0,0,0.25)] lg:px-5 lg:py-1 lg:text-[10px]"
               aria-expanded={mobileFiltersOpen}
             >
               <FilterIcon />
@@ -495,29 +611,27 @@ export default function ProductsListingPage() {
           </div>
 
           {mobileFiltersOpen && (
-            <div className="mt-4 lg:hidden">{FiltersBody}</div>
+            <div className="mt-4">{FiltersBody}</div>
           )}
 
-          <div className="mt-5 grid gap-8 lg:grid-cols-[220px_1fr] lg:items-start">
-            <aside className="hidden lg:sticky lg:top-28 lg:block">
-              {FiltersBody}
-              <label className="mt-4 flex items-center gap-2 rounded-full border border-[#d7d7d7] bg-white px-3 py-2 text-[13px] text-[#303030]">
-                <span className="ph-condensed font-bold text-[#6b7280]">
-                  Ordenar
-                </span>
-                <select
-                  value={sort}
-                  onChange={(e) => setSort(e.target.value as SortKey)}
-                  className="min-w-0 flex-1 bg-transparent text-[12px] font-bold text-[#1e3a8a] outline-none"
-                >
-                  <option value="relevance">Más populares</option>
-                  <option value="price-asc">Menor precio</option>
-                  <option value="price-desc">Mayor precio</option>
-                </select>
-              </label>
-            </aside>
+          {mobileFiltersOpen && (
+            <label className="mt-4 flex items-center gap-2 rounded-full border border-[#d7d7d7] bg-white px-3 py-2 text-[13px] text-[#303030]">
+              <span className="ph-condensed font-bold text-[#6b7280]">
+                Ordenar
+              </span>
+              <select
+                value={sort}
+                onChange={(e) => setSort(e.target.value as SortKey)}
+                className="min-w-0 flex-1 bg-transparent text-[12px] font-bold text-[#1e3a8a] outline-none"
+              >
+                <option value="relevance">Más populares</option>
+                <option value="price-asc">Menor precio</option>
+                <option value="price-desc">Mayor precio</option>
+              </select>
+            </label>
+          )}
 
-            <div>
+          <div className="mt-5">
               {initialLoading ? (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {Array.from({ length: 6 }).map((_, i) => (
@@ -550,21 +664,14 @@ export default function ProductsListingPage() {
                 </section>
               ) : (
                 <>
-                  <section>
-                    <SectionHeader
-                      title="Productos destacados"
-                      subtitle="Ahorra más, disfruta más cada día"
-                    />
-                    <div className="mx-auto max-w-[760px] lg:max-w-[840px]">
-                      <ProductsGrid products={featuredProducts} featured />
-                    </div>
-                  </section>
+                  <FeaturedProductsSection products={featuredProducts} />
 
-                  {defaultSections.map((section) => (
-                    <ProductGroup key={section.id} section={section} />
-                  ))}
+                  <PetProductsSection section={defaultSections[0]} />
+                  <SplitProductSections
+                    sections={defaultSections.slice(1)}
+                  />
 
-                  <section className="mx-auto mt-14 max-w-[660px] rounded-[18px] bg-[#1e3a8a] px-6 py-5 text-center text-white shadow-[3px_5px_0_rgba(0,0,0,0.24)] lg:px-10">
+                  <section className="mx-auto mt-14 max-w-[560px] rounded-[18px] bg-[#1e3a8a] px-6 py-5 text-center text-white shadow-[3px_5px_0_rgba(0,0,0,0.24)] lg:px-10">
                     <h2 className="ph-condensed text-[22px] font-bold leading-tight lg:text-[28px]">
                       ¡Descubre la presentación perfecta para ti!
                     </h2>
@@ -575,7 +682,6 @@ export default function ProductsListingPage() {
                   </section>
                 </>
               )}
-            </div>
           </div>
         </section>
 
