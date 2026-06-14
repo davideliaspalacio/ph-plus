@@ -2,34 +2,19 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import { useCart } from "./CartProvider";
 import { MiniCart } from "@/src/features/cart/ui/MiniCart";
-import { useSession } from "@/src/features/auth";
-import { SearchBar } from "@/src/features/search";
 
 const NAV = [
   { label: "INICIO", href: "/" },
-  { label: "POR QUÉ PH PLUS", href: "/#por-que" },
+  { label: "POR QUÉ PH PLUS", href: "/por-que-ph-plus" },
   { label: "PRODUCTOS", href: "/productos" },
-  { label: "PUNTOS DE VENTA", href: "/#puntos-venta" },
+  { label: "PUNTOS DE VENTA", href: "/puntos-de-venta" },
 ];
 
-function UserIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2" />
-      <path
-        d="M4 21c0-4 4-6 8-6s8 2 8 6"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
-function CartIcon() {
+function CartIcon({ className = "" }: { className?: string }) {
   return (
     <svg
       width="28"
@@ -38,6 +23,7 @@ function CartIcon() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden
+      className={className}
     >
       <path
         d="M2 2H10L15.36 28.78C15.5429 29.7008 16.0438 30.5279 16.7751 31.1166C17.5064 31.7053 18.4214 32.018 19.36 32H38.8C39.7386 32.018 40.6536 31.7053 41.3849 31.1166C42.1162 30.5279 42.6171 29.7008 42.8 28.78L46 12H12M20 42C20 43.1046 19.1046 44 18 44C16.8954 44 16 43.1046 16 42C16 40.8954 16.8954 40 18 40C19.1046 40 20 40.8954 20 42ZM42 42C42 43.1046 41.1046 44 40 44C38.8954 44 38 43.1046 38 42C38 40.8954 38.8954 40 40 40C41.1046 40 42 40.8954 42 42Z"
@@ -50,14 +36,30 @@ function CartIcon() {
   );
 }
 
+function SearchIcon() {
+  return (
+    <svg viewBox="0 0 64 64" fill="none" aria-hidden className="h-full w-full">
+      <circle cx="27" cy="27" r="18" stroke="currentColor" strokeWidth="5" />
+      <path
+        d="M41 41l15 15"
+        stroke="currentColor"
+        strokeWidth="5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 export default function Header() {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [miniCartOpen, setMiniCartOpen] = useState(false);
   const { totalItems, hydrated } = useCart();
-  const session = useSession((s) => s.session);
-  const isAuth = session != null && session.expiresAt > Date.now();
   const showBadge = hydrated && totalItems > 0;
   const prevTotal = useRef(totalItems);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [bouncing, setBouncing] = useState(false);
 
   useEffect(() => {
@@ -74,45 +76,76 @@ export default function Header() {
     prevTotal.current = totalItems;
   }, [totalItems]);
 
+  useEffect(() => {
+    if (searchOpen) searchInputRef.current?.focus();
+  }, [searchOpen]);
+
+  function submitSearch(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const q = searchQuery.trim();
+    setOpen(false);
+    setSearchOpen(false);
+    router.push(q ? `/buscar?q=${encodeURIComponent(q)}` : "/buscar");
+  }
+
   return (
-    <header className="sticky top-0 z-40 w-full bg-brand text-white shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
-      <div className="mx-auto flex h-[64px] max-w-page items-center gap-4 px-4 sm:h-[70px] sm:px-6 lg:gap-10 lg:px-10">
-        <Link href="/" className="flex shrink-0 items-center gap-4">
+    <header className="sticky top-0 z-40 w-full bg-[#1e2aab] text-white shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
+      <div className="relative mx-auto flex h-[50px] max-w-[390px] items-center px-0 sm:h-[64px] sm:max-w-[1440px] sm:px-6 lg:hidden">
+        <Link href="/" className="flex h-full shrink-0 items-center">
           <Image
-            src="/brand/logo-ph-plus.png"
+            src="/brand/logo-ph-plus-figma.png"
             alt="PH PLUS"
             width={160}
             height={48}
             priority
-            className="h-8 w-auto sm:h-10"
+            className="h-[42px] w-[100px] object-contain sm:h-10 sm:w-auto"
           />
         </Link>
 
-        <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-[12px] font-semibold tracking-[0.06em]">
-          {NAV.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="transition-opacity hover:opacity-80"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <Image
+          src="/home/ph9-drop.png"
+          alt=""
+          width={98}
+          height={155}
+          priority
+          className="absolute left-[96px] top-[3px] h-[56px] w-[35px] object-contain sm:left-[130px]"
+        />
 
-        <div className="hidden flex-1 max-w-md md:block">
-          <SearchBar />
-        </div>
-
-        <div className="ml-auto flex items-center gap-3 sm:gap-5">
-          <Link
-            href={isAuth ? "/cuenta" : "/login"}
-            aria-label={isAuth ? "Mi cuenta" : "Iniciar sesión"}
-            className="hidden transition-opacity hover:opacity-80 md:inline-flex"
+        {searchOpen ? (
+          <form
+            onSubmit={submitSearch}
+            className="absolute left-[132px] right-[116px] top-[9px] z-10 flex h-8 items-center rounded-full bg-white px-2 text-[#1e3a8a] shadow-[0_4px_14px_rgba(0,0,0,0.18)]"
           >
-            <UserIcon />
-          </Link>
+            <input
+              ref={searchInputRef}
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") setSearchOpen(false);
+              }}
+              placeholder="Buscar"
+              className="min-w-0 flex-1 bg-transparent text-[12px] font-semibold outline-none placeholder:text-[#7180b8]"
+            />
+            <button
+              type="submit"
+              aria-label="Buscar"
+              className="grid h-5 w-5 shrink-0 place-items-center"
+            >
+              <SearchIcon />
+            </button>
+          </form>
+        ) : (
+          <button
+            type="button"
+            aria-label="Abrir búsqueda"
+            onClick={() => setSearchOpen(true)}
+            className="ml-auto grid h-[22px] w-[22px] place-items-center transition-opacity hover:opacity-80"
+          >
+            <SearchIcon />
+          </button>
+        )}
 
+        <div className="ml-3 flex items-center gap-3">
           <button
             type="button"
             onClick={() => setMiniCartOpen(true)}
@@ -121,13 +154,13 @@ export default function Header() {
                 ? ` con ${totalItems} producto${totalItems === 1 ? "" : "s"}`
                 : ""
             }`}
-            className="relative transition-opacity hover:opacity-80"
+            className="relative grid h-[35px] w-[35px] place-items-center transition-opacity hover:opacity-80"
           >
-            <CartIcon />
+            <CartIcon className="h-[35px] w-[35px]" />
             {showBadge && (
               <span
                 className={
-                  "absolute -right-2 -top-2 grid h-5 min-w-[20px] place-items-center rounded-full bg-white px-1 text-[11px] font-extrabold text-brand shadow-[0_2px_6px_rgba(0,0,0,0.18)] " +
+                  "absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-white px-1 text-[9px] font-extrabold text-[#1e3a8a] shadow-[0_2px_6px_rgba(0,0,0,0.18)] " +
                   (bouncing ? "cart-badge-bounce" : "")
                 }
               >
@@ -141,14 +174,14 @@ export default function Header() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Contáctanos por WhatsApp"
-            className="grid h-10 w-10 place-items-center rounded-full bg-whatsapp transition-colors hover:bg-whatsapp-dark sm:h-11 sm:w-11"
+            className="grid h-[23px] w-[23px] place-items-center rounded-full bg-[#25d366] transition-colors hover:bg-[#1fb055]"
           >
             <Image
               src="/icons/whatsapp.svg"
               alt=""
-              width={26}
-              height={26}
-              className="h-5 w-5 sm:h-6 sm:w-6"
+              width={23}
+              height={23}
+              className="h-[19px] w-[19px]"
             />
           </a>
 
@@ -157,9 +190,9 @@ export default function Header() {
             aria-label="Menú"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="grid h-10 w-10 place-items-center lg:hidden"
+            className="grid h-[42px] w-[41px] place-items-center"
           >
-            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
+            <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" aria-hidden>
               {open ? (
                 <path
                   d="M6 6l12 12M18 6L6 18"
@@ -178,11 +211,125 @@ export default function Header() {
             </svg>
           </button>
         </div>
+
+      </div>
+
+      <div className="mx-auto hidden h-[96px] max-w-[1200px] items-center px-6 lg:flex">
+        <Link
+          href="/"
+          aria-label="Ir al inicio"
+          className="relative h-[92px] w-[250px] shrink-0"
+        >
+          <Image
+            src="/brand/logo-ph-plus-figma.png"
+            alt="PH PLUS"
+            width={295}
+            height={123}
+            priority
+            className="h-full w-full object-contain"
+          />
+        </Link>
+
+        <Image
+          src="/home/ph9-drop.png"
+          alt=""
+          width={98}
+          height={155}
+          priority
+          className="ml-4 h-[92px] w-[52px] shrink-0 object-contain"
+        />
+
+        <nav className="ph-display ml-9 flex flex-1 items-center justify-center gap-7 whitespace-nowrap text-[21px] uppercase leading-none">
+          {NAV.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="transition-opacity hover:opacity-80"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="ml-6 flex h-9 shrink-0 items-center">
+          {searchOpen ? (
+            <form
+              onSubmit={submitSearch}
+              className="flex h-8 w-[172px] items-center rounded-full bg-white px-3 text-[#1e3a8a] shadow-[0_4px_14px_rgba(0,0,0,0.15)]"
+            >
+              <input
+                ref={searchInputRef}
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") setSearchOpen(false);
+                }}
+                placeholder="Buscar"
+                className="min-w-0 flex-1 bg-transparent text-[13px] font-semibold outline-none placeholder:text-[#7180b8]"
+              />
+              <button
+                type="submit"
+                aria-label="Buscar"
+                className="grid h-5 w-5 shrink-0 place-items-center"
+              >
+                <SearchIcon />
+              </button>
+            </form>
+          ) : (
+            <button
+              type="button"
+              aria-label="Abrir búsqueda"
+              onClick={() => setSearchOpen(true)}
+              className="grid h-8 w-8 shrink-0 place-items-center transition-opacity hover:opacity-80"
+            >
+              <SearchIcon />
+            </button>
+          )}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setMiniCartOpen(true)}
+          aria-label={`Abrir carrito${
+            showBadge
+              ? ` con ${totalItems} producto${totalItems === 1 ? "" : "s"}`
+              : ""
+          }`}
+          className="ml-5 grid h-8 w-8 shrink-0 place-items-center transition-opacity hover:opacity-80"
+        >
+          <CartIcon className="h-8 w-8" />
+          {showBadge && (
+            <span
+              className={
+                "absolute -right-2 -top-2 grid h-6 min-w-[24px] place-items-center rounded-full bg-white px-1 text-[12px] font-extrabold text-[#1e3a8a] shadow-[0_2px_6px_rgba(0,0,0,0.18)] " +
+                (bouncing ? "cart-badge-bounce" : "")
+              }
+            >
+              {totalItems > 99 ? "99+" : totalItems}
+            </span>
+          )}
+        </button>
+
+        <a
+          href="https://wa.me/573234392470"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Contáctanos por WhatsApp"
+          className="ml-6 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#25d366] transition-colors hover:bg-[#1fb055]"
+        >
+          <Image
+            src="/icons/whatsapp.svg"
+            alt=""
+            width={42}
+            height={42}
+            className="h-7 w-7"
+          />
+        </a>
       </div>
 
       {open && (
-        <nav className="border-t border-white/15 bg-brand lg:hidden">
-          <ul className="mx-auto flex max-w-page flex-col px-4 py-2 text-[13px] font-semibold tracking-[0.06em] sm:px-6">
+        <nav className="border-t border-white/15 bg-[#1e2aab] lg:hidden">
+          <ul className="mx-auto flex max-w-[1440px] flex-col px-4 py-2 text-[13px] font-semibold tracking-[0.06em] sm:px-6">
             {NAV.map((item) => (
               <li key={item.href}>
                 <Link

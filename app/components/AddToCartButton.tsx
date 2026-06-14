@@ -31,9 +31,9 @@ type Variant = "primary" | "outline";
 
 const VARIANT_STYLES: Record<Variant, string> = {
   primary:
-    "bg-brand text-white hover:bg-brand-dark hover:scale-[1.03]",
+    "bg-[#1e3a8a] text-white hover:bg-[#1e2aab] hover:scale-[1.03]",
   outline:
-    "border border-brand bg-transparent text-brand hover:bg-brand hover:text-white",
+    "border border-[#1e3a8a] bg-transparent text-[#1e3a8a] hover:bg-[#1e3a8a] hover:text-white",
 };
 
 export default function AddToCartButton({
@@ -86,7 +86,7 @@ export default function AddToCartButton({
         {finalLabel}
       </button>
       {added && (
-        <div className="flex items-center justify-between gap-3 rounded-lg bg-[#eef0ff] px-3 py-2 text-[12px] text-brand">
+        <div className="flex items-center justify-between gap-3 rounded-lg bg-[#eef0ff] px-3 py-2 text-[12px] text-[#1e3a8a]">
           <span>Agregado al carrito</span>
           <Link
             href="/carrito"

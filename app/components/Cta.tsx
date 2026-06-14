@@ -1,43 +1,42 @@
 import Image from "next/image";
-import Reveal from "./Reveal";
 
 export default function Cta() {
   return (
-    <section className="w-full bg-white pb-14 pt-6 sm:pb-16 lg:pb-20">
-      <div className="mx-auto max-w-page px-5 text-center sm:px-8 lg:px-12">
-        <Reveal>
-          <h2 className="text-[22px] font-extrabold leading-tight text-brand sm:text-[26px] lg:text-[28px]">
-            Elige una hidratación{" "}
-            <span className="text-brand-tint">más consciente</span> hoy
+    <section className="w-full bg-white py-7 sm:py-12 lg:py-12">
+      <div className="mx-auto max-w-[1100px] px-5 text-center sm:px-8 lg:px-6">
+        <div>
+          <h2 className="ph-condensed text-[20px] font-light leading-tight text-[#1e3a8a] sm:text-[36px] lg:text-[48px]">
+            <span className="font-bold">Elige una hidratación</span>{" "}
+            <span className="font-light sm:inline">más consciente hoy</span>
           </h2>
-          <p className="mt-4 text-[14px] text-ink-muted sm:text-[16px]">
-            Compra fácil por WhatsApp y recibelo en casa.
+          <p className="ph-condensed mt-1 text-[13px] font-bold text-[#6b7280] sm:mt-2 sm:text-[26px] lg:text-[34px]">
+            Compra fácil por WhatsApp y recíbelo en casa.
           </p>
-        </Reveal>
+        </div>
 
-        <Reveal delay={150}>
-          <div className="mt-7 flex justify-center">
+        <div>
+          <div className="mt-4 flex justify-center sm:mt-6">
             <a
               href="https://wa.me/573234392470"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 rounded-full bg-whatsapp px-6 py-3 text-[13px] font-semibold text-white shadow-[0_6px_18px_rgba(37,211,102,0.35)] transition-transform hover:scale-[1.03] hover:bg-whatsapp-dark sm:px-7 sm:text-[14px]"
+              className="ph-condensed inline-flex h-[23px] w-[121px] items-center gap-1.5 rounded-[16px] bg-[#2f6b4f] px-2 text-[9px] font-bold text-white shadow-[3px_4px_0_rgba(18,140,126,0.45)] transition-transform hover:scale-[1.03] hover:bg-[#1fb055] sm:h-[48px] sm:w-auto sm:gap-3 sm:px-6 sm:text-[20px] lg:h-[64px] lg:w-[380px] lg:text-[26px]"
             >
               <Image
                 src="/icons/whatsapp.svg"
                 alt=""
-                width={22}
-                height={22}
-                className="h-5 w-5"
+                width={65}
+                height={65}
+                className="h-[18px] w-[18px] sm:h-10 sm:w-10 lg:h-11 lg:w-11"
               />
-              comprar por whatsapp
+              <span className="whitespace-nowrap">Comprar por whatsapp</span>
             </a>
           </div>
 
-          <p className="mt-5 text-[12px] text-ink-muted sm:text-[13px]">
+          <p className="ph-condensed mt-4 text-[13px] font-bold text-[#6b7280] sm:mt-5 sm:text-[26px] lg:text-[27px]">
             Respuesta rápida • Entrega a domicilio
           </p>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

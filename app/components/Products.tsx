@@ -1,123 +1,120 @@
+import Image from "next/image";
 import Link from "next/link";
 import { PRODUCTS } from "../lib/products";
 import AddToCartButton from "./AddToCartButton";
-import ProductVisual from "./ProductVisual";
-import Reveal from "./Reveal";
+
+const FEATURED = [
+  {
+    slug: "kit-inicial-botellon-19lts",
+    image: "/products/botellon-kit.png",
+    alt: "Kit inicial de botellón PH PLUS de 19 litros",
+    articleClassName: "order-2 md:order-1",
+    imageClassName: "h-[138px] max-w-[102px] lg:h-[360px] lg:max-w-[300px]",
+    copyClassName: "",
+  },
+  {
+    slug: "promocion-garrafas",
+    image: "/products/oferta-garrafas.png",
+    alt: "Promoción de garrafas PH PLUS pague 3 lleve 5",
+    articleClassName: "order-1 md:order-2",
+    imageClassName: "h-[176px] max-w-[127px] lg:h-[470px] lg:max-w-[380px]",
+    copyClassName: "hidden",
+  },
+  {
+    slug: "recargas-19lts",
+    image: "/products/recargas-19.png",
+    alt: "Dos recargas de botellón PH PLUS de 19 litros",
+    articleClassName: "order-3 md:order-3",
+    imageClassName: "h-[138px] max-w-[102px] lg:h-[370px] lg:max-w-[315px]",
+    copyClassName: "",
+  },
+];
+
+function productBySlug(slug: string) {
+  const product = PRODUCTS.find((p) => p.slug === slug);
+  if (!product) {
+    throw new Error(`Featured product ${slug} was not found`);
+  }
+  return product;
+}
 
 export default function Products() {
   return (
-    <section id="productos" className="w-full bg-white py-14 sm:py-16 lg:py-20">
-      <div className="mx-auto max-w-page px-5 sm:px-8 lg:px-12">
-        <Reveal>
-          <h2 className="text-center text-[22px] font-extrabold uppercase tracking-[0.04em] text-brand sm:text-[26px] lg:text-[28px]">
-            Elige cómo quieres hidratarte
+    <section id="productos" className="w-full bg-white">
+      <div className="mx-auto max-w-[1180px] px-4 pb-4 pt-4 sm:px-8 sm:py-10 lg:px-6 lg:py-11">
+        <div>
+          <h2 className="ph-display text-center text-[24px] uppercase leading-none text-[#1e3a8a] sm:text-[40px] lg:text-[48px]">
+            PRODUCTOS DESTACADOS
           </h2>
-          <p className="mt-3 text-center text-[14px] font-semibold text-brand sm:text-[16px]">
+          <p className="ph-condensed mt-2 text-center text-[20px] font-bold leading-none text-[#6b7280] sm:text-[26px] lg:text-[32px]">
             Ahorra más, disfruta más cada día
           </p>
-        </Reveal>
+        </div>
 
-        <div className="mx-auto mt-10 grid max-w-[1080px] grid-cols-1 items-end gap-8 sm:grid-cols-2 sm:gap-6 lg:mt-12 lg:grid-cols-3">
-          {PRODUCTS.map((p, i) => (
-            <Reveal key={p.slug} delay={100 + i * 120}>
+        <div className="mt-5 grid grid-cols-3 items-end gap-1.5 md:gap-6 lg:mt-8 lg:gap-8">
+          {FEATURED.map((item) => {
+            const product = productBySlug(item.slug);
+            return (
               <article
+                key={item.slug}
                 className={
-                  "relative flex h-full flex-col items-center text-center " +
-                  (p.highlight
-                    ? "rounded-2xl bg-[#eef3fb] pb-6 pt-4 sm:col-span-2 lg:col-span-1"
-                    : "")
+                  "flex min-w-0 flex-col items-center text-center " +
+                  item.articleClassName
                 }
               >
-                {p.badge && (
-                  <div className="w-full px-4">
-                    <div className="rounded-xl bg-brand px-4 py-2 text-white">
-                      <p className="text-center text-[13px] font-extrabold tracking-wide sm:text-[14px]">
-                        {p.badge.title}
-                      </p>
-                    </div>
-                    <div className="mt-3 rounded-full bg-accent-cyan px-4 py-1.5">
-                      <p className="text-center text-[13px] font-bold text-brand sm:text-[14px]">
-                        {p.badge.sub}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
                 <Link
-                  href={`/productos/${p.slug}`}
-                  className="mt-3 flex h-48 w-full items-end justify-center sm:h-52"
-                  aria-label={`Ver detalles de ${p.title}`}
+                  href={`/productos/${product.slug}`}
+                  aria-label={`Ver detalles de ${product.title}`}
+                  className={
+                    "relative block w-full " +
+                    item.imageClassName
+                  }
                 >
-                  <ProductVisual
-                    visualKey={p.visualKey}
-                    className="h-40 w-auto transition-transform duration-300 hover:scale-105 sm:h-44"
+                  <Image
+                    src={item.image}
+                    alt={item.alt}
+                    fill
+                    sizes="(min-width: 1024px) 480px, 34vw"
+                    className="object-contain lg:scale-[1.2]"
                   />
                 </Link>
 
-                <div className="mt-2 flex flex-col items-center">
-                  <p
-                    className={
-                      "font-extrabold " +
-                      (p.highlight
-                        ? "text-[24px] text-brand sm:text-[28px]"
-                        : "text-[18px] text-ink sm:text-[20px]")
-                    }
-                  >
-                    {p.highlight ? `por ${p.price}` : p.price}
+                <div
+                  className={
+                    "ph-condensed mt-1 flex min-h-[54px] flex-col items-center lg:mt-4 lg:min-h-[100px] " +
+                    item.copyClassName
+                  }
+                >
+                  <p className="text-[18px] font-bold leading-none text-[#1e3a8a] lg:text-[24px]">
+                    {product.price}
                   </p>
-                  {p.prevPrice && (
-                    <p className="text-[12px] text-ink-muted">
-                      (antes {p.prevPrice})
-                    </p>
-                  )}
-                  {p.shortTitle && (
-                    <p className="mt-2 whitespace-pre-line text-[13px] font-medium text-ink sm:text-[14px]">
-                      {p.shortTitle}
+                  {product.shortTitle && (
+                    <p className="mt-2 whitespace-pre-line text-[12px] font-bold leading-[1.15] text-[#6b7280] lg:text-[27px] lg:leading-[1.22]">
+                      {product.shortTitle}
                     </p>
                   )}
                 </div>
 
-                <div className="mt-5 flex w-full flex-col items-stretch gap-2 px-4">
+                <div className="mt-1 flex justify-center lg:mt-3">
                   <AddToCartButton
-                    slug={p.slug}
-                    mode="add"
-                    variant="primary"
-                    label="Agregar al carrito"
-                    className="w-full"
-                  />
-                  <AddToCartButton
-                    slug={p.slug}
+                    slug={product.slug}
                     mode="buy"
-                    variant="outline"
-                    label="Comprar ahora"
-                    showIcon={false}
-                    className="w-full"
+                    variant="primary"
+                    label="comprar ahora"
+                    className="ph-condensed h-[18px] w-[76px] !gap-0.5 border border-black !px-0 !py-0 !text-[7px] font-bold sm:h-[40px] sm:w-[180px] sm:!gap-1.5 sm:!text-[16px] lg:h-[58px] lg:w-[250px] lg:!gap-2 lg:!text-[24px] [&_svg]:h-3 [&_svg]:w-3 sm:[&_svg]:h-6 sm:[&_svg]:w-6 lg:[&_svg]:h-9 lg:[&_svg]:w-9"
                   />
-                  <Link
-                    href={`/productos/${p.slug}`}
-                    className="text-center text-[12px] font-semibold text-brand underline-offset-2 hover:underline"
-                  >
-                    Ver detalles
-                  </Link>
                 </div>
               </article>
-            </Reveal>
-          ))}
+            );
+          })}
         </div>
 
-        <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6">
-          <Link
-            href="/productos"
-            className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 text-[13px] font-semibold text-white transition-transform hover:scale-[1.03] hover:bg-brand-dark sm:text-[14px]"
-          >
-            Ver todos los productos
-            <span aria-hidden>→</span>
-          </Link>
+        <div className="mt-3 flex justify-center lg:mt-9">
           <Link
             href="/envios"
-            className="text-[12px] font-semibold text-brand underline-offset-2 hover:underline sm:text-[13px]"
+            className="ph-condensed inline-flex h-[23px] min-w-[205px] items-center justify-center rounded-[16px] border-2 border-[#1e3a8a] bg-white/10 px-3 text-center text-[9px] font-bold leading-none text-[#6b7280] shadow-[3px_4px_0_rgba(0,0,0,0.45)] transition-transform hover:-translate-y-0.5 sm:h-[42px] sm:min-w-[360px] sm:text-[16px] lg:h-[52px] lg:min-w-[560px] lg:rounded-[32px] lg:border-[4px] lg:px-7 lg:text-[22px] lg:shadow-[6px_8px_0_rgba(0,0,0,0.4)]"
           >
-            Ver costos de envío y tiempos de entrega →
+            Ver destinos, costos de envío y tiempos de entrega
           </Link>
         </div>
       </div>
