@@ -13,64 +13,77 @@ type Logo = {
   src: string;
   alt: string;
   className?: string;
+  cellClassName?: string;
 };
 
 type Category = {
   title: string;
   logos: Logo[];
+  gridClassName: string;
+  panelClassName?: string;
 };
 
 const CATEGORIES: Category[] = [
   {
     title: "Farmacias",
+    gridClassName: "grid-cols-3 gap-x-3 gap-y-3 lg:grid-cols-3 lg:gap-x-12 lg:gap-y-5",
+    panelClassName: "min-h-[116px] lg:min-h-[156px]",
     logos: [
-      { src: "/HOME PHPLUS/cruzverde ok.png", alt: "Cruz Verde", className: "w-[112px] lg:w-[164px]" },
-      { src: "/HOME PHPLUS/farmatodo.png", alt: "Farmatodo", className: "w-[112px] lg:w-[158px]" },
-      { src: "/HOME PHPLUS/pasteur 1.png", alt: "Pasteur", className: "w-[92px] lg:w-[142px]" },
-      { src: "/HOME PHPLUS/locatel ok 1.png", alt: "Locatel", className: "w-[68px] lg:w-[108px]" },
-      { src: "/HOME PHPLUS/habib ok.png", alt: "Droguerías Habib", className: "w-[92px] lg:w-[134px]" },
-      { src: "/HOME PHPLUS/farmavida.png", alt: "Droguería Farmavida", className: "w-[110px] lg:w-[170px]" },
+      { src: "/HOME PHPLUS/cruzverde ok.png", alt: "Cruz Verde", className: "max-w-[112px] lg:max-w-[164px]" },
+      { src: "/HOME PHPLUS/farmatodo.png", alt: "Farmatodo", className: "max-w-[112px] lg:max-w-[158px]" },
+      { src: "/HOME PHPLUS/pasteur 1.png", alt: "Pasteur", className: "max-w-[92px] lg:max-w-[142px]" },
+      { src: "/HOME PHPLUS/locatel ok 1.png", alt: "Locatel", className: "max-w-[68px] lg:max-w-[108px]" },
+      { src: "/HOME PHPLUS/habib ok.png", alt: "Droguerías Habib", className: "max-w-[92px] lg:max-w-[134px]" },
+      { src: "/HOME PHPLUS/farmavida.png", alt: "Droguería Farmavida", className: "max-w-[110px] lg:max-w-[170px]" },
     ],
   },
   {
     title: "Hoteles",
+    gridClassName: "grid-cols-3 gap-x-4 gap-y-3 lg:grid-cols-5 lg:gap-x-9",
+    panelClassName: "min-h-[120px] lg:min-h-[150px]",
     logos: [
-      { src: "/HOME PHPLUS/marriot.png", alt: "Marriott", className: "w-[72px] lg:w-[116px]" },
-      { src: "/HOME PHPLUS/intercontinental.png", alt: "InterContinental", className: "w-[126px] lg:w-[202px]" },
-      { src: "/HOME PHPLUS/binn.png", alt: "Binn Hotel", className: "w-[68px] lg:w-[108px]" },
-      { src: "/HOME PHPLUS/haven.png", alt: "Haven Hotel", className: "w-[64px] lg:w-[96px]" },
-      { src: "/HOME PHPLUS/wam.png", alt: "Wam", className: "w-[48px] lg:w-[72px]" },
+      { src: "/HOME PHPLUS/marriot.png", alt: "Marriott", className: "max-w-[74px] lg:max-w-[120px]" },
+      { src: "/HOME PHPLUS/intercontinental.png", alt: "InterContinental", className: "max-w-[128px] lg:max-w-[208px]" },
+      { src: "/HOME PHPLUS/binn.png", alt: "Binn Hotel", className: "max-w-[70px] lg:max-w-[112px]" },
+      { src: "/HOME PHPLUS/haven.png", alt: "Haven Hotel", className: "max-w-[70px] lg:max-w-[112px]", cellClassName: "col-start-1 lg:col-start-auto" },
+      { src: "/HOME PHPLUS/wam.png", alt: "Wam", className: "max-w-[48px] lg:max-w-[74px]" },
     ],
   },
   {
     title: "Supermercados",
+    gridClassName: "grid-cols-3 gap-x-4 gap-y-3 lg:grid-cols-5 lg:gap-x-9 lg:gap-y-2",
+    panelClassName: "min-h-[128px] lg:min-h-[175px]",
     logos: [
-      { src: "/HOME PHPLUS/log de carulla recortado 1.png", alt: "Carulla", className: "w-[82px] lg:w-[124px]" },
-      { src: "/HOME PHPLUS/exito ok.png", alt: "Éxito", className: "w-[78px] lg:w-[118px]" },
-      { src: "/HOME PHPLUS/jumbo sin fondo.png", alt: "Jumbo", className: "w-[58px] lg:w-[88px]" },
-      { src: "/HOME PHPLUS/mercaldas.png", alt: "Mercaldas", className: "w-[72px] lg:w-[112px]" },
-      { src: "/HOME PHPLUS/olimpica.png", alt: "Olímpica", className: "w-[82px] lg:w-[124px]" },
-      { src: "/HOME PHPLUS/fithub ok.png", alt: "Fithub", className: "w-[74px] lg:w-[116px]" },
+      { src: "/HOME PHPLUS/log de carulla recortado 1.png", alt: "Carulla", className: "max-w-[82px] lg:max-w-[124px]" },
+      { src: "/HOME PHPLUS/exito ok.png", alt: "Éxito", className: "max-w-[78px] lg:max-w-[118px]" },
+      { src: "/HOME PHPLUS/jumbo sin fondo.png", alt: "Jumbo", className: "max-w-[58px] lg:max-w-[88px]" },
+      { src: "/HOME PHPLUS/mercaldas.png", alt: "Mercaldas", className: "max-w-[72px] lg:max-w-[112px]" },
+      { src: "/HOME PHPLUS/olimpica.png", alt: "Olímpica", className: "max-w-[82px] lg:max-w-[124px]" },
+      { src: "/HOME PHPLUS/fithub ok.png", alt: "Fithub", className: "max-w-[74px] lg:max-w-[116px]", cellClassName: "col-start-2 lg:col-start-3" },
     ],
   },
   {
     title: "Restaurantes",
+    gridClassName: "grid-cols-4 gap-x-3 gap-y-3 lg:grid-cols-6 lg:gap-x-9 lg:gap-y-3",
+    panelClassName: "min-h-[126px] lg:min-h-[170px]",
     logos: [
-      { src: "/HOME PHPLUS/ROKO.png", alt: "Rokko", className: "w-[70px] lg:w-[112px]" },
-      { src: "/HOME PHPLUS/HARRYS.png", alt: "Harrys", className: "w-[44px] lg:w-[72px]" },
-      { src: "/HOME PHPLUS/SALVAJE.png", alt: "Salvaje", className: "w-[38px] lg:w-[58px]" },
-      { src: "/HOME PHPLUS/LA ÚNICA.png", alt: "La Única", className: "w-[42px] lg:w-[68px]" },
-      { src: "/HOME PHPLUS/CUMBIA HOUSE.png", alt: "Cumbia House", className: "w-[46px] lg:w-[72px]" },
-      { src: "/HOME PHPLUS/OSAKA.png", alt: "Osaka", className: "w-[86px] lg:w-[132px]" },
-      { src: "/HOME PHPLUS/NOA.png", alt: "Noa", className: "w-[38px] lg:w-[60px]" },
-      { src: "/HOME PHPLUS/CALLE DRAGONES.png", alt: "Calle Dragones", className: "w-[46px] lg:w-[72px]" },
+      { src: "/HOME PHPLUS/ROKO.png", alt: "Rokko", className: "max-w-[70px] lg:max-w-[112px]" },
+      { src: "/HOME PHPLUS/HARRYS.png", alt: "Harrys", className: "max-w-[44px] lg:max-w-[72px]" },
+      { src: "/HOME PHPLUS/SALVAJE.png", alt: "Salvaje", className: "max-w-[38px] lg:max-w-[58px]" },
+      { src: "/HOME PHPLUS/LA ÚNICA.png", alt: "La Única", className: "max-w-[42px] lg:max-w-[68px]" },
+      { src: "/HOME PHPLUS/CUMBIA HOUSE.png", alt: "Cumbia House", className: "max-w-[46px] lg:max-w-[72px]" },
+      { src: "/HOME PHPLUS/OSAKA.png", alt: "Osaka", className: "max-w-[86px] lg:max-w-[132px]" },
+      { src: "/HOME PHPLUS/NOA.png", alt: "Noa", className: "max-w-[38px] lg:max-w-[60px]", cellClassName: "col-start-2 lg:col-start-3" },
+      { src: "/HOME PHPLUS/CALLE DRAGONES.png", alt: "Calle Dragones", className: "max-w-[46px] lg:max-w-[72px]" },
     ],
   },
   {
     title: "Clubes deportivos",
+    gridClassName: "grid-cols-2 gap-x-5 lg:grid-cols-2 lg:gap-x-12",
+    panelClassName: "min-h-[96px] lg:min-h-[135px]",
     logos: [
-      { src: "/HOME PHPLUS/CLUB EL NOGAL.png", alt: "Club El Nogal", className: "w-[74px] lg:w-[112px]" },
-      { src: "/HOME PHPLUS/CLUB HATOGRANDE.png", alt: "Hatogrande Golf & Tennis Country Club", className: "w-[72px] lg:w-[108px]" },
+      { src: "/HOME PHPLUS/CLUB EL NOGAL.png", alt: "Club El Nogal", className: "max-w-[76px] lg:max-w-[116px]" },
+      { src: "/HOME PHPLUS/CLUB HATOGRANDE.png", alt: "Hatogrande Golf & Tennis Country Club", className: "max-w-[72px] lg:max-w-[110px]" },
     ],
   },
 ];
@@ -81,15 +94,20 @@ function CategoryPanel({ category }: { category: Category }) {
       <h2 className="ph-display text-center text-[28px] uppercase leading-none text-[#1e3a8a] lg:text-[32px]">
         {category.title}
       </h2>
-      <div className="mx-auto mt-5 flex min-h-[95px] max-w-[336px] flex-wrap items-center justify-center gap-x-4 gap-y-3 rounded-[10px] border border-[#d7d7d7] bg-[#f8f8f8] px-4 py-4 shadow-[4px_5px_0_rgba(0,0,0,0.28)] lg:min-h-[106px] lg:max-w-[820px] lg:gap-x-8 lg:gap-y-4 lg:px-8">
+      <div
+        className={`mx-auto mt-5 grid max-w-[336px] place-content-center rounded-[10px] border border-[#d7d7d7] bg-[#f8f8f8] px-4 py-4 shadow-[4px_5px_0_rgba(0,0,0,0.28)] lg:max-w-[820px] lg:px-8 lg:py-5 ${category.panelClassName ?? ""} ${category.gridClassName}`}
+      >
         {category.logos.map((logo) => (
-          <div key={logo.src} className="grid h-[36px] place-items-center lg:h-[48px]">
+          <div
+            key={logo.src}
+            className={`grid h-[38px] min-w-0 place-items-center lg:h-[64px] ${logo.cellClassName ?? ""}`}
+          >
             <Image
               src={logo.src}
               alt={logo.alt}
-              width={180}
-              height={80}
-              className={`h-auto object-contain ${logo.className ?? "w-[90px]"}`}
+              width={420}
+              height={220}
+              className={`max-h-full w-auto max-w-full object-contain ${logo.className ?? ""}`}
             />
           </div>
         ))}
