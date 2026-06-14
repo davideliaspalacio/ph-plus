@@ -8,12 +8,12 @@ import { MiniCart } from "@/src/features/cart/ui/MiniCart";
 
 const NAV = [
   { label: "INICIO", href: "/" },
-  { label: "POR QUÉ PH PLUS", href: "/#por-que" },
+  { label: "POR QUÉ PH PLUS", href: "/por-que-ph-plus" },
   { label: "PRODUCTOS", href: "/productos" },
-  { label: "PUNTOS DE VENTA", href: "/#puntos-venta" },
+  { label: "PUNTOS DE VENTA", href: "/puntos-de-venta" },
 ];
 
-function CartIcon() {
+function CartIcon({ className = "" }: { className?: string }) {
   return (
     <svg
       width="28"
@@ -22,6 +22,7 @@ function CartIcon() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden
+      className={className}
     >
       <path
         d="M2 2H10L15.36 28.78C15.5429 29.7008 16.0438 30.5279 16.7751 31.1166C17.5064 31.7053 18.4214 32.018 19.36 32H38.8C39.7386 32.018 40.6536 31.7053 41.3849 31.1166C42.1162 30.5279 42.6171 29.7008 42.8 28.78L46 12H12M20 42C20 43.1046 19.1046 44 18 44C16.8954 44 16 43.1046 16 42C16 40.8954 16.8954 40 18 40C19.1046 40 20 40.8954 20 42ZM42 42C42 43.1046 41.1046 44 40 44C38.8954 44 38 43.1046 38 42C38 40.8954 38.8954 40 40 40C41.1046 40 42 40.8954 42 42Z"
@@ -72,19 +73,36 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#1e2aab] text-white shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
-      <div className="mx-auto flex h-[64px] max-w-[1440px] items-center gap-4 px-4 sm:h-[70px] sm:px-6 lg:hidden">
-        <Link href="/" className="flex shrink-0 items-center gap-4">
+      <div className="relative mx-auto flex h-[50px] max-w-[390px] items-center px-0 sm:h-[64px] sm:max-w-[1440px] sm:px-6 lg:hidden">
+        <Link href="/" className="flex h-full shrink-0 items-center">
           <Image
             src="/brand/logo-ph-plus-figma.png"
             alt="PH PLUS"
             width={160}
             height={48}
             priority
-            className="h-8 w-auto sm:h-10"
+            className="h-[42px] w-[100px] object-contain sm:h-10 sm:w-auto"
           />
         </Link>
 
-        <div className="ml-auto flex items-center gap-3 sm:gap-5">
+        <Image
+          src="/home/ph9-drop.png"
+          alt=""
+          width={98}
+          height={155}
+          priority
+          className="absolute left-[96px] top-[3px] h-[56px] w-[35px] object-contain sm:left-[130px]"
+        />
+
+        <Link
+          href="/buscar"
+          aria-label="Buscar productos"
+          className="ml-auto grid h-6 w-6 place-items-center transition-opacity hover:opacity-80"
+        >
+          <SearchIcon />
+        </Link>
+
+        <div className="ml-3 flex items-center gap-3">
           <button
             type="button"
             onClick={() => setMiniCartOpen(true)}
@@ -93,13 +111,13 @@ export default function Header() {
                 ? ` con ${totalItems} producto${totalItems === 1 ? "" : "s"}`
                 : ""
             }`}
-            className="relative transition-opacity hover:opacity-80"
+            className="relative grid h-[35px] w-[35px] place-items-center transition-opacity hover:opacity-80"
           >
-            <CartIcon />
+            <CartIcon className="h-[35px] w-[35px]" />
             {showBadge && (
               <span
                 className={
-                  "absolute -right-2 -top-2 grid h-5 min-w-[20px] place-items-center rounded-full bg-white px-1 text-[11px] font-extrabold text-[#1e3a8a] shadow-[0_2px_6px_rgba(0,0,0,0.18)] " +
+                  "absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-white px-1 text-[9px] font-extrabold text-[#1e3a8a] shadow-[0_2px_6px_rgba(0,0,0,0.18)] " +
                   (bouncing ? "cart-badge-bounce" : "")
                 }
               >
@@ -113,14 +131,14 @@ export default function Header() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Contáctanos por WhatsApp"
-            className="grid h-10 w-10 place-items-center rounded-full bg-[#25d366] transition-colors hover:bg-[#1fb055] sm:h-11 sm:w-11"
+            className="grid h-[23px] w-[23px] place-items-center rounded-full bg-[#25d366] transition-colors hover:bg-[#1fb055]"
           >
             <Image
               src="/icons/whatsapp.svg"
               alt=""
-              width={26}
-              height={26}
-              className="h-5 w-5 sm:h-6 sm:w-6"
+              width={23}
+              height={23}
+              className="h-[19px] w-[19px]"
             />
           </a>
 
@@ -129,9 +147,9 @@ export default function Header() {
             aria-label="Menú"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="grid h-10 w-10 place-items-center lg:hidden"
+            className="grid h-[42px] w-[41px] place-items-center"
           >
-            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
+            <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" aria-hidden>
               {open ? (
                 <path
                   d="M6 6l12 12M18 6L6 18"
@@ -150,6 +168,7 @@ export default function Header() {
             </svg>
           </button>
         </div>
+
       </div>
 
       <div className="mx-auto hidden h-[96px] max-w-[1200px] items-center px-6 lg:flex">

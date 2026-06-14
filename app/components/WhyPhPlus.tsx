@@ -1,6 +1,5 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
-import Reveal from "./Reveal";
 
 type TrustCard = {
   body: string;
@@ -28,6 +27,69 @@ function TruckIcon() {
       <circle cx="25" cy="45" r="3.5" fill="currentColor" />
       <circle cx="48" cy="45" r="3.5" fill="currentColor" />
     </svg>
+  );
+}
+
+function ShieldIcon() {
+  return (
+    <span className="grid h-9 w-9 place-items-center rounded-full bg-[#1e3a8a]">
+      <span className="grid h-7 w-7 place-items-center rounded-full bg-[#00a8d8] text-white">
+        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden>
+          <path
+            d="M12 3l7 3v5c0 4.6-2.8 8.1-7 10-4.2-1.9-7-5.4-7-10V6l7-3z"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinejoin="round"
+          />
+          <path
+            d="M8.5 12l2.2 2.2 4.8-5"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </span>
+    </span>
+  );
+}
+
+function BpaIcon() {
+  return (
+    <span className="grid h-9 w-9 place-items-center rounded-full border-2 border-black bg-white text-[8px] font-black leading-[0.85] text-black">
+      <span className="text-center">
+        BPA
+        <br />
+        FREE
+      </span>
+    </span>
+  );
+}
+
+function WaterDropIcon() {
+  return (
+    <span className="grid h-9 w-9 place-items-center rounded-full bg-[#38bed0] text-white">
+      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
+        <path d="M12 2S5 9.7 5 14.2A7 7 0 0012 21a7 7 0 007-6.8C19 9.7 12 2 12 2z" />
+      </svg>
+    </span>
+  );
+}
+
+function MobileBenefit({
+  icon,
+  children,
+}: {
+  icon: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex min-h-9 items-center gap-4">
+      <span className="grid h-9 w-9 shrink-0 place-items-center">{icon}</span>
+      <p className="ph-condensed text-[16px] font-light leading-tight text-black">
+        {children}
+      </p>
+    </div>
   );
 }
 
@@ -77,11 +139,33 @@ const CARDS: TrustCard[] = [
 
 export default function WhyPhPlus() {
   return (
-    <section id="por-que" className="w-full bg-white py-8 lg:py-9">
+    <section id="por-que" className="w-full bg-white py-1 lg:py-9">
       <div className="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-6">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-x-5 lg:gap-y-5">
-          {CARDS.map((card, i) => (
-            <Reveal key={card.body} delay={60 + i * 45}>
+        <div className="mx-auto flex max-w-[350px] flex-col gap-1.5 lg:hidden">
+          <MobileBenefit icon={<ShieldIcon />}>
+            Con{" "}
+            <span className="font-bold text-[#1e3a8a]">
+              Calcio y MAgensio
+            </span>{" "}
+            para tu bienestar
+          </MobileBenefit>
+          <MobileBenefit icon={<BpaIcon />}>
+            <span className="font-bold text-[#1e3a8a]">Libre de BPA,</span>{" "}
+            envase 100% seguro
+          </MobileBenefit>
+          <MobileBenefit icon={<WaterDropIcon />}>
+            + 14 procesos de filtración
+          </MobileBenefit>
+          <MobileBenefit icon={<TruckIcon />}>
+            <span className="font-bold text-[#1e3a8a]">
+              servicio a domicilio
+            </span>
+          </MobileBenefit>
+        </div>
+
+        <div className="hidden grid-cols-1 gap-4 sm:grid-cols-2 lg:grid lg:grid-cols-4 lg:gap-x-5 lg:gap-y-5">
+          {CARDS.map((card) => (
+            <div key={card.body}>
               <article className="flex h-[88px] items-center overflow-hidden rounded-[10px] border border-[#dadada] bg-[#f7f7f7] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                 <div className="relative grid h-[88px] w-[88px] shrink-0 place-items-center overflow-hidden">
                   {card.customIcon ??
@@ -102,7 +186,7 @@ export default function WhyPhPlus() {
                   {card.body}
                 </p>
               </article>
-            </Reveal>
+            </div>
           ))}
         </div>
       </div>
