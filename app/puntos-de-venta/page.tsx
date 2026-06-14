@@ -79,11 +79,11 @@ const CATEGORIES: Category[] = [
   },
   {
     title: "Clubes deportivos",
-    gridClassName: "grid-cols-2 gap-x-5 lg:grid-cols-2 lg:gap-x-12",
-    panelClassName: "min-h-[96px] lg:min-h-[135px]",
+    gridClassName: "grid-cols-[auto_auto] gap-x-4 lg:grid-cols-[auto_auto] lg:gap-x-7",
+    panelClassName: "min-h-[96px] lg:min-h-[126px]",
     logos: [
-      { src: "/HOME PHPLUS/CLUB EL NOGAL.png", alt: "Club El Nogal", className: "max-w-[76px] lg:max-w-[116px]" },
-      { src: "/HOME PHPLUS/CLUB HATOGRANDE.png", alt: "Hatogrande Golf & Tennis Country Club", className: "max-w-[72px] lg:max-w-[110px]" },
+      { src: "/HOME PHPLUS/CLUB EL NOGAL.png", alt: "Club El Nogal", className: "max-h-[62px] max-w-[78px] lg:max-h-[88px] lg:max-w-[118px]" },
+      { src: "/HOME PHPLUS/CLUB HATOGRANDE.png", alt: "Hatogrande Golf & Tennis Country Club", className: "max-h-[62px] max-w-[74px] lg:max-h-[88px] lg:max-w-[110px]" },
     ],
   },
 ];
