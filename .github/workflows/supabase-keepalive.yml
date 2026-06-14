@@ -6,7 +6,7 @@ name: Supabase Keep-Alive
 #
 # Configurar dos secrets en el repo (Settings → Secrets → Actions):
 #   SUPABASE_URL          → https://<project-ref>.supabase.co
-#   SUPABASE_ANON_KEY     → la anon key (publishable, no service role)
+#   SUPABASE_ANON_KEY     → la anon key (formato sb_publishable_* o legacy JWT)
 
 on:
   schedule:
