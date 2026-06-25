@@ -97,11 +97,11 @@ export default function Products() {
                 <div className="mt-1 flex justify-center lg:mt-3">
                   <Link
                     href={`/productos/${product.slug}`}
-                    className="ph-condensed inline-flex h-[18px] w-[76px] items-center justify-center gap-0.5 rounded-full border border-black bg-[#1e3a8a] px-0 py-0 text-[7px] font-bold text-white transition-transform hover:scale-[1.03] hover:bg-[#1e2aab] sm:h-[40px] sm:w-[180px] sm:gap-1.5 sm:text-[16px] lg:h-[58px] lg:w-[250px] lg:gap-2 lg:text-[24px]"
+                    className="ph-condensed inline-flex h-[26px] w-[94px] items-center justify-center gap-1 rounded-full border border-black bg-[#1e3a8a] px-2 text-[9px] font-bold text-white transition-transform hover:scale-[1.03] hover:bg-[#1e2aab] sm:h-[36px] sm:w-[150px] sm:gap-1.5 sm:text-[14px] lg:h-[42px] lg:w-[190px] lg:gap-2 lg:text-[18px]"
                   >
                     <svg
                       viewBox="0 0 48 46"
-                      className="h-3 w-3 sm:h-6 sm:w-6 lg:h-9 lg:w-9"
+                      className="h-4 w-4 sm:h-5 sm:w-5 lg:h-7 lg:w-7"
                       fill="none"
                       aria-hidden
                     >
@@ -124,7 +124,7 @@ export default function Products() {
         <div className="mt-3 flex justify-center lg:mt-9">
           <Link
             href="/envios"
-            className="ph-condensed inline-flex h-[23px] min-w-[205px] items-center justify-center rounded-[16px] border-2 border-[#1e3a8a] bg-white/10 px-3 text-center text-[9px] font-bold leading-none text-[#6b7280] shadow-[3px_4px_0_rgba(0,0,0,0.45)] transition-transform hover:-translate-y-0.5 sm:h-[42px] sm:min-w-[360px] sm:text-[16px] lg:h-[52px] lg:min-w-[560px] lg:rounded-[32px] lg:border-[4px] lg:px-7 lg:text-[22px] lg:shadow-[6px_8px_0_rgba(0,0,0,0.4)]"
+            className="ph-condensed inline-flex min-h-[30px] min-w-[230px] items-center justify-center rounded-[18px] border-2 border-[#1e3a8a] bg-white/10 px-4 text-center text-[10px] font-bold leading-none text-[#6b7280] shadow-[3px_4px_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 sm:min-h-[38px] sm:min-w-[340px] sm:text-[15px] lg:min-h-[44px] lg:min-w-[460px] lg:rounded-[28px] lg:px-7 lg:text-[18px]"
           >
             Ver destinos, costos de envío y tiempos de entrega
           </Link>

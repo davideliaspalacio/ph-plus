@@ -135,7 +135,7 @@ function PartnerCard() {
           href="https://wa.me/573234392470"
           target="_blank"
           rel="noopener noreferrer"
-          className="ph-condensed inline-flex h-[29px] items-center gap-1.5 rounded-full border-2 border-[#1e3a8a] bg-white px-3 text-[10px] font-bold text-[#6b7280] shadow-[3px_4px_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 lg:h-[38px] lg:px-5 lg:text-[15px]"
+          className="ph-condensed inline-flex h-[32px] items-center gap-1.5 rounded-full border-2 border-[#1e3a8a] bg-white px-4 text-[11px] font-bold text-[#6b7280] shadow-[3px_4px_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 lg:h-[40px] lg:px-5 lg:text-[15px]"
         >
           <Image
             src="/icons/whatsapp.svg"
@@ -167,7 +167,7 @@ function Cta() {
           href="https://wa.me/573234392470"
           target="_blank"
           rel="noopener noreferrer"
-          className="ph-condensed inline-flex h-[31px] items-center gap-2 rounded-full bg-[#2f6b4f] px-3 text-[10px] font-bold text-white shadow-[3px_4px_0_rgba(18,140,126,0.45)] transition-transform hover:scale-[1.03] hover:bg-[#1fb055] lg:h-[46px] lg:px-7 lg:text-[18px]"
+          className="ph-condensed inline-flex h-[34px] items-center gap-2 rounded-full bg-[#2f6b4f] px-4 text-[12px] font-bold text-white shadow-[3px_4px_0_rgba(18,140,126,0.45)] transition-transform hover:scale-[1.03] hover:bg-[#1fb055] lg:h-[46px] lg:px-7 lg:text-[18px]"
         >
           <Image
             src="/icons/whatsapp.svg"
