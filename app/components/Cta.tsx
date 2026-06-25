@@ -21,14 +21,14 @@ export default function Cta() {
               href="https://wa.me/573234392470"
               target="_blank"
               rel="noopener noreferrer"
-              className="ph-condensed inline-flex h-[23px] w-[121px] items-center gap-1.5 rounded-[16px] bg-[#2f6b4f] px-2 text-[9px] font-bold text-white shadow-[3px_4px_0_rgba(18,140,126,0.45)] transition-transform hover:scale-[1.03] hover:bg-[#1fb055] sm:h-[48px] sm:w-auto sm:gap-3 sm:px-6 sm:text-[20px] lg:h-[64px] lg:w-[380px] lg:text-[26px]"
+              className="ph-condensed inline-flex h-[34px] min-w-[168px] items-center justify-center gap-2 rounded-[18px] bg-[#2f6b4f] px-4 text-[12px] font-bold text-white shadow-[3px_4px_0_rgba(18,140,126,0.45)] transition-transform hover:scale-[1.03] hover:bg-[#1fb055] sm:h-[44px] sm:min-w-[260px] sm:gap-3 sm:px-6 sm:text-[18px] lg:h-[48px] lg:min-w-[300px] lg:text-[20px]"
             >
               <Image
                 src="/icons/whatsapp.svg"
                 alt=""
                 width={65}
                 height={65}
-                className="h-[18px] w-[18px] sm:h-10 sm:w-10 lg:h-11 lg:w-11"
+                className="h-6 w-6 sm:h-8 sm:w-8 lg:h-8 lg:w-8"
               />
               <span className="whitespace-nowrap">Comprar por whatsapp</span>
             </a>

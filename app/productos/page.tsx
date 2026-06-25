@@ -247,7 +247,7 @@ function BuyButton({ item }: { item: CatalogItem }) {
   return (
     <Link
       href={productHref(item)}
-      className="ph-condensed mt-2 inline-flex h-[19px] w-[88px] items-center justify-center gap-1 rounded-full bg-[#1e3a8a] px-2 text-[7px] font-bold text-white transition-transform hover:-translate-y-0.5 lg:h-[19px] lg:w-[92px] lg:text-[7px]"
+      className="ph-condensed mt-2 inline-flex h-[26px] w-[88px] items-center justify-center gap-1 rounded-full bg-[#1e3a8a] px-2 text-[9px] font-bold text-white transition-transform hover:-translate-y-0.5 lg:h-[28px] lg:w-[104px] lg:text-[10px]"
       aria-label={`Ver detalle de ${item.name.replace(/\n/g, " ")}`}
     >
       <Image
@@ -255,7 +255,7 @@ function BuyButton({ item }: { item: CatalogItem }) {
         alt=""
         width={12}
         height={12}
-        className="h-3 w-3"
+        className="h-4 w-4"
       />
       comprar ahora
     </Link>
@@ -449,7 +449,7 @@ function FinalCta() {
           href={whatsappHref()}
           target="_blank"
           rel="noopener noreferrer"
-          className="ph-condensed inline-flex h-[31px] items-center gap-2 rounded-full bg-[#2f8a5a] px-3 text-[10px] font-bold text-white shadow-[3px_4px_0_rgba(18,140,126,0.35)] transition-transform hover:scale-[1.03] hover:bg-[#1fb055] lg:h-[34px] lg:px-5 lg:text-[12px]"
+          className="ph-condensed inline-flex h-[34px] items-center gap-2 rounded-full bg-[#2f8a5a] px-4 text-[12px] font-bold text-white shadow-[3px_4px_0_rgba(18,140,126,0.35)] transition-transform hover:scale-[1.03] hover:bg-[#1fb055] lg:h-[42px] lg:px-6 lg:text-[16px]"
         >
           <Image
             src="/icons/whatsapp.svg"

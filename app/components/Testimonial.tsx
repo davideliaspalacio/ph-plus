@@ -40,7 +40,7 @@ export default function Testimonial() {
         <div className="mt-3 flex justify-center sm:mt-9">
           <button
             type="button"
-            className="ph-condensed h-[23px] rounded-[16px] border-2 border-[#1e3a8a] bg-white/10 px-3 text-[9px] font-bold leading-none text-[#6b7280] shadow-[3px_4px_0_rgba(0,0,0,0.45)] transition-transform hover:-translate-y-0.5 sm:h-[44px] sm:px-6 sm:text-[18px] lg:h-[52px] lg:w-[340px] lg:rounded-[32px] lg:border-[4px] lg:px-7 lg:text-[23px] lg:shadow-[6px_8px_0_rgba(0,0,0,0.4)]"
+            className="ph-condensed min-h-[30px] rounded-[18px] border-2 border-[#1e3a8a] bg-white/10 px-4 text-[10px] font-bold leading-none text-[#6b7280] shadow-[3px_4px_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 sm:min-h-[40px] sm:px-6 sm:text-[16px] lg:min-h-[44px] lg:w-[300px] lg:rounded-[28px] lg:px-7 lg:text-[18px]"
           >
             Conoce más historias reales
           </button>
