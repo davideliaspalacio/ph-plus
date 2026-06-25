@@ -174,7 +174,7 @@ function productHref(item: CatalogItem) {
 
 function TrustStrip() {
   return (
-    <div className="mx-auto mt-8 flex max-w-[330px] flex-wrap items-center justify-center gap-3 px-4 lg:mt-3 lg:max-w-[740px] lg:flex-nowrap lg:gap-2">
+    <div className="mx-auto mt-8 grid max-w-[330px] grid-cols-2 items-center justify-center gap-3 px-4 lg:mt-3 lg:flex lg:max-w-[740px] lg:flex-nowrap lg:gap-2">
       <div className="ph-condensed flex h-[58px] w-[146px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.22)] lg:h-[40px] lg:w-[118px] lg:gap-2 lg:px-2 lg:text-[7px]">
         <Image
           src="/home/icon-truck.png"
@@ -199,12 +199,12 @@ function TrustStrip() {
         <span>
           pago seguro con SSL.
           <br />
-          Bancolombia, Nequi, PU
+          Bancolombia, Nequi, PSE
         </span>
       </div>
       <Link
         href="/envios"
-        className="ph-condensed inline-flex h-[24px] min-w-[206px] items-center justify-center rounded-full border-2 border-[#1e3a8a] bg-white px-4 text-[9px] font-bold text-[#6b7280] shadow-[2px_3px_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 lg:h-[28px] lg:min-w-[285px] lg:text-[10px]"
+        className="ph-condensed col-span-2 mx-auto inline-flex h-[24px] min-w-[206px] items-center justify-center rounded-full border-2 border-[#1e3a8a] bg-white px-4 text-[9px] font-bold text-[#6b7280] shadow-[2px_3px_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 lg:h-[28px] lg:min-w-[285px] lg:text-[10px]"
       >
         Ver costos de envío y tiempos de entrega
       </Link>
@@ -291,25 +291,21 @@ function ProductCard({
       </Link>
       <div className="mt-2 flex min-h-[54px] flex-col items-center lg:min-h-[48px]">
         <div className="flex items-baseline justify-center gap-1">
-          {item.previousPrice && !featured && (
+          {item.previousPrice && (
             <span className="text-[10px] font-bold leading-none text-[#ef4444] line-through lg:text-[9px]">
               {item.previousPrice}
             </span>
           )}
-          {!featured || item.slug !== "promocion-garrafas" ? (
-            <p className="text-[17px] font-bold leading-none text-[#1e3a8a] lg:text-[12px]">
-              {item.price}
-            </p>
-          ) : null}
+          <p className="text-[17px] font-bold leading-none text-[#1e3a8a] lg:text-[12px]">
+            {item.price}
+          </p>
         </div>
-        {item.name !== "Promoción garrafas" && (
-          <Link
-            href={productHref(item)}
-            className="mt-2 max-w-[92px] whitespace-pre-line text-[11px] font-bold leading-[1.05] text-[#6b7280] hover:text-[#1e3a8a] lg:max-w-[104px] lg:text-[9px]"
-          >
-            {item.name}
-          </Link>
-        )}
+        <Link
+          href={productHref(item)}
+          className="mt-2 max-w-[92px] whitespace-pre-line text-[11px] font-bold leading-[1.05] text-[#6b7280] hover:text-[#1e3a8a] lg:max-w-[104px] lg:text-[9px]"
+        >
+          {item.name}
+        </Link>
       </div>
       <BuyButton item={item} />
     </article>
@@ -441,9 +437,9 @@ function FinalCta() {
   return (
     <section className="px-5 pb-10 pt-1 text-center lg:pt-10">
       <h2 className="ph-condensed mx-auto max-w-[640px] text-[24px] font-bold leading-tight text-[#1e3a8a] lg:text-[30px]">
-        Miles de familias ya nos eligieron.
+        Elige lo mejor para tu cuerpo.
         <br />
-        ¿Cuándo te toca a ti?
+        Empieza a hidratarte con PH PLUS
       </h2>
       <p className="ph-condensed mt-7 text-[14px] font-bold text-[#6b7280] lg:text-[17px]">
         Compra fácil por WhatsApp y recíbelo en casa.

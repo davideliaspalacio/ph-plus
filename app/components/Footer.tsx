@@ -37,7 +37,7 @@ export default function Footer() {
           alt="PH PLUS"
           width={160}
           height={48}
-          className="absolute left-2 top-2 h-[35px] w-[120px] object-contain"
+          className="absolute left-[18px] top-[13px] h-[30px] w-[112px] object-contain"
         />
 
         <Image
@@ -109,14 +109,14 @@ export default function Footer() {
         />
       </div>
 
-      <div className="ph-condensed mx-auto hidden max-w-[1180px] grid-cols-[360px_1fr_300px] gap-10 px-6 py-10 lg:grid">
+      <div className="ph-condensed mx-auto hidden max-w-[1120px] grid-cols-[310px_1fr_280px] gap-10 px-6 py-9 lg:grid">
         <div className="flex flex-col">
           <Image
             src="/brand/logo-ph-plus-figma.png"
             alt="PH PLUS"
             width={441}
             height={130}
-            className="h-auto w-[260px] lg:w-[300px]"
+            className="h-auto w-[250px]"
           />
           <p className="mt-4 max-w-[260px] text-[22px] font-bold leading-[1.22]">
             Cuidarte empieza por lo que eliges cada día
