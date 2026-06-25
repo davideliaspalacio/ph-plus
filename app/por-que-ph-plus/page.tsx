@@ -128,12 +128,12 @@ function PageCta() {
         Compra fácil por WhatsApp y recíbelo en casa.
       </p>
       <div className="mt-6 flex justify-center">
-        <a
-          href="https://wa.me/573234392470"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ph-condensed inline-flex h-[30px] items-center gap-2 rounded-full bg-[#2f6b4f] px-3 text-[10px] font-bold text-white shadow-[3px_4px_0_rgba(18,140,126,0.45)] transition-transform hover:scale-[1.03] hover:bg-[#1fb055] lg:h-[48px] lg:px-7 lg:text-[18px]"
-        >
+          <a
+            href="https://wa.me/573234392470"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ph-condensed inline-flex h-[34px] items-center gap-2 rounded-full bg-[#2f6b4f] px-4 text-[12px] font-bold text-white shadow-[3px_4px_0_rgba(18,140,126,0.45)] transition-transform hover:scale-[1.03] hover:bg-[#1fb055] lg:h-[46px] lg:px-7 lg:text-[18px]"
+          >
           <Image
             src="/icons/whatsapp.svg"
             alt=""
