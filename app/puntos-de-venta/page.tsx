@@ -38,18 +38,6 @@ const CATEGORIES: Category[] = [
     ],
   },
   {
-    title: "Hoteles",
-    gridClassName: "grid-cols-3 gap-x-4 gap-y-3 lg:grid-cols-5 lg:gap-x-9",
-    panelClassName: "min-h-[120px] lg:min-h-[150px]",
-    logos: [
-      { src: "/HOME PHPLUS/marriot.png", alt: "Marriott", className: "max-w-[74px] lg:max-w-[120px]" },
-      { src: "/HOME PHPLUS/intercontinental.png", alt: "InterContinental", className: "max-w-[128px] lg:max-w-[208px]" },
-      { src: "/HOME PHPLUS/binn.png", alt: "Binn Hotel", className: "max-w-[70px] lg:max-w-[112px]" },
-      { src: "/HOME PHPLUS/haven.png", alt: "Haven Hotel", className: "max-w-[70px] lg:max-w-[112px]", cellClassName: "col-start-1 lg:col-start-auto" },
-      { src: "/HOME PHPLUS/wam.png", alt: "Wam", className: "max-w-[48px] lg:max-w-[74px]" },
-    ],
-  },
-  {
     title: "Supermercados",
     gridClassName: "grid-cols-3 gap-x-4 gap-y-3 lg:grid-cols-5 lg:gap-x-9 lg:gap-y-2",
     panelClassName: "min-h-[128px] lg:min-h-[175px]",
@@ -60,6 +48,18 @@ const CATEGORIES: Category[] = [
       { src: "/HOME PHPLUS/mercaldas.png", alt: "Mercaldas", className: "max-w-[72px] lg:max-w-[112px]" },
       { src: "/HOME PHPLUS/olimpica.png", alt: "Olímpica", className: "max-w-[82px] lg:max-w-[124px]" },
       { src: "/HOME PHPLUS/fithub ok.png", alt: "Fithub", className: "max-w-[74px] lg:max-w-[116px]", cellClassName: "col-start-2 lg:col-start-3" },
+    ],
+  },
+  {
+    title: "Hoteles",
+    gridClassName: "grid-cols-6 gap-x-2 gap-y-3 lg:grid-cols-5 lg:gap-x-9",
+    panelClassName: "min-h-[176px] lg:min-h-[150px]",
+    logos: [
+      { src: "/HOME PHPLUS/marriot.png", alt: "Marriott", className: "max-w-[64px] lg:max-w-[120px]", cellClassName: "col-span-2 !h-[46px] lg:col-span-1 lg:!h-[64px]" },
+      { src: "/HOME PHPLUS/intercontinental.png", alt: "InterContinental", className: "max-w-[112px] lg:max-w-[208px]", cellClassName: "col-span-2 !h-[46px] lg:col-span-1 lg:!h-[64px]" },
+      { src: "/HOME PHPLUS/binn.png", alt: "Binn Hotel", className: "max-w-[66px] lg:max-w-[112px]", cellClassName: "col-span-2 !h-[46px] lg:col-span-1 lg:!h-[64px]" },
+      { src: "/HOME PHPLUS/haven.png", alt: "Haven Hotel", className: "max-w-[58px] lg:max-w-[112px]", cellClassName: "col-start-2 col-span-2 !h-[46px] lg:col-start-auto lg:col-span-1 lg:!h-[64px]" },
+      { src: "/HOME PHPLUS/wam.png", alt: "Wam", className: "max-w-[44px] lg:max-w-[74px]", cellClassName: "col-span-2 !h-[46px] lg:col-span-1 lg:!h-[64px]" },
     ],
   },
   {
@@ -154,10 +154,10 @@ function PartnerCard() {
 function Cta() {
   return (
     <section className="px-5 pb-9 pt-4 text-center lg:pb-12 lg:pt-6">
-      <h2 className="ph-condensed mx-auto max-w-[720px] text-[27px] font-bold leading-tight text-[#1e3a8a] lg:text-[38px]">
-        No es solo agua. Es lo que eliges para tu cuerpo.
+      <h2 className="ph-condensed mx-auto max-w-[720px] text-[25px] font-bold leading-tight text-[#1e3a8a] lg:text-[38px]">
+        Elige lo mejor para tu cuerpo.
         <br />
-        Empieza hoy a hidratarte mejor
+        Empieza a hidratarte con PH PLUS
       </h2>
       <p className="ph-condensed mt-7 text-[14px] font-bold text-[#6b7280] lg:text-[22px]">
         Compra fácil por WhatsApp y recíbelo en casa.

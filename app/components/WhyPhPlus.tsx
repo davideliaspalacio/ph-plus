@@ -145,7 +145,7 @@ export default function WhyPhPlus() {
           <MobileBenefit icon={<ShieldIcon />}>
             Con{" "}
             <span className="font-bold text-[#1e3a8a]">
-              Calcio y MAgensio
+              Calcio y Magnesio
             </span>{" "}
             para tu bienestar
           </MobileBenefit>
@@ -166,7 +166,7 @@ export default function WhyPhPlus() {
         <div className="hidden grid-cols-1 gap-4 sm:grid-cols-2 lg:grid lg:grid-cols-4 lg:gap-x-5 lg:gap-y-5">
           {CARDS.map((card) => (
             <div key={card.body}>
-              <article className="flex h-[88px] items-center overflow-hidden rounded-[10px] border border-[#dadada] bg-[#f7f7f7] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+              <article className="flex h-[88px] items-center overflow-hidden rounded-[10px] border border-[#dadada] bg-[#f4f4f4] shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
                 <div className="relative grid h-[88px] w-[88px] shrink-0 place-items-center overflow-hidden">
                   {card.customIcon ??
                     (card.icon ? (

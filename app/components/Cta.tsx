@@ -5,9 +5,10 @@ export default function Cta() {
     <section className="w-full bg-white py-7 sm:py-12 lg:py-12">
       <div className="mx-auto max-w-[1100px] px-5 text-center sm:px-8 lg:px-6">
         <div>
-          <h2 className="ph-condensed text-[20px] font-light leading-tight text-[#1e3a8a] sm:text-[36px] lg:text-[48px]">
-            <span className="font-bold">Elige una hidratación</span>{" "}
-            <span className="font-light sm:inline">más consciente hoy</span>
+          <h2 className="ph-condensed text-[24px] font-bold leading-tight text-[#1e3a8a] sm:text-[36px] lg:text-[44px]">
+            Elige lo mejor para tu cuerpo.
+            <br />
+            Empieza a hidratarte con PH PLUS
           </h2>
           <p className="ph-condensed mt-1 text-[13px] font-bold text-[#6b7280] sm:mt-2 sm:text-[26px] lg:text-[34px]">
             Compra fácil por WhatsApp y recíbelo en casa.

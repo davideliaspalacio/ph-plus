@@ -11,11 +11,12 @@ import { useCart } from "../components/CartProvider";
 import { useMockLoading } from "../components/useMockLoading";
 import { buildCartSummary } from "../lib/cart-summary";
 import { formatCOP } from "../lib/products";
+import { login, useSession } from "../../src/features/auth";
 
 type Step = 0 | 1 | 2 | 3;
 
 const STEPS = [
-  { id: 0, label: "Contacto" },
+  { id: 0, label: "Acceder" },
   { id: 1, label: "Envío" },
   { id: 2, label: "Pago" },
   { id: 3, label: "Revisar" },
@@ -114,10 +115,16 @@ export default function CheckoutPage() {
   const router = useRouter();
   const initialLoading = useMockLoading();
   const { items, hydrated, clear } = useCart();
+  const isAuthenticated = useSession((state) => state.isAuthenticated());
   const summary = useMemo(() => buildCartSummary(items), [items]);
   const ready = hydrated && !initialLoading;
 
   const [step, setStep] = useState<Step>(0);
+  const [guestCheckout, setGuestCheckout] = useState(false);
+  const [authEmail, setAuthEmail] = useState("");
+  const [authPassword, setAuthPassword] = useState("");
+  const [authLoading, setAuthLoading] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   const [contact, setContact] = useState<Contact>({ name: "", email: "", phone: "" });
   const [shipping, setShipping] = useState<Shipping>({
     address: "",
@@ -128,6 +135,28 @@ export default function CheckoutPage() {
   const [payment, setPayment] = useState<PaymentMethod>("tarjeta");
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const canEnterContact = isAuthenticated || guestCheckout;
+
+  async function handleInlineLogin(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setAuthError(null);
+    setAuthLoading(true);
+    try {
+      const user = await login({ email: authEmail, password: authPassword });
+      setContact((current) => ({
+        ...current,
+        name: current.name || user.name,
+        email: user.email,
+      }));
+      setGuestCheckout(false);
+      setErrors({});
+      setStep(1);
+    } catch {
+      setAuthError("No pudimos iniciar sesión. Revisa tu email y contraseña.");
+    } finally {
+      setAuthLoading(false);
+    }
+  }
 
   useEffect(() => {
     if (ready && summary.lines.length === 0 && !submitting) {
@@ -151,6 +180,10 @@ export default function CheckoutPage() {
   }
 
   function goNext() {
+    if (step === 0 && !canEnterContact) {
+      setAuthError("Inicia sesión o continúa como invitado para avanzar.");
+      return;
+    }
     const target = (step + 1) as Step;
     if (!validateStep(target)) return;
     setStep(target);
@@ -168,6 +201,7 @@ export default function CheckoutPage() {
       contact,
       shipping,
       payment,
+      customerType: isAuthenticated ? "authenticated" : "guest",
       lines: summary.lines.map((l) => ({
         slug: l.product.slug,
         title: l.product.title,
@@ -266,46 +300,143 @@ export default function CheckoutPage() {
             <div className="rounded-2xl border border-card-border bg-white p-5 sm:p-6">
               {step === 0 && (
                 <div className="space-y-4">
-                  <h2 className="text-[16px] font-extrabold text-brand">
-                    Datos de contacto
-                  </h2>
-                  <Field label="Nombre completo" error={errors.name}>
-                    <input
-                      className={baseInput}
-                      value={contact.name}
-                      onChange={(e) =>
-                        setContact((c) => ({ ...c, name: e.target.value }))
-                      }
-                      placeholder="Sirley Montoya"
-                      autoComplete="name"
-                    />
-                  </Field>
-                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <Field label="Email" error={errors.email}>
-                      <input
-                        type="email"
-                        className={baseInput}
-                        value={contact.email}
-                        onChange={(e) =>
-                          setContact((c) => ({ ...c, email: e.target.value }))
-                        }
-                        placeholder="tu@correo.com"
-                        autoComplete="email"
-                      />
-                    </Field>
-                    <Field label="Teléfono / WhatsApp" error={errors.phone}>
-                      <input
-                        type="tel"
-                        className={baseInput}
-                        value={contact.phone}
-                        onChange={(e) =>
-                          setContact((c) => ({ ...c, phone: e.target.value }))
-                        }
-                        placeholder="+57 300 000 0000"
-                        autoComplete="tel"
-                      />
-                    </Field>
-                  </div>
+                  {!canEnterContact ? (
+                    <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
+                      <form
+                        onSubmit={handleInlineLogin}
+                        className="rounded-2xl border border-card-border bg-[#fafbfd] p-5"
+                      >
+                        <p className="text-[12px] font-semibold uppercase tracking-wide text-brand">
+                          Acceder
+                        </p>
+                        <h2 className="mt-1 text-[19px] font-extrabold text-brand">
+                          Inicia sesión para continuar
+                        </h2>
+                        <p className="mt-2 text-[13px] leading-[1.5] text-ink-muted">
+                          Si ya tienes cuenta, entra con tu email y contraseña.
+                          Seguimos con el pago sin sacar tu carrito del checkout.
+                        </p>
+                        <div className="mt-5 space-y-4">
+                          <Field label="Email">
+                            <input
+                              type="email"
+                              className={baseInput}
+                              value={authEmail}
+                              onChange={(e) => setAuthEmail(e.target.value)}
+                              placeholder="tu@correo.com"
+                              autoComplete="email"
+                              required
+                            />
+                          </Field>
+                          <Field label="Contraseña">
+                            <input
+                              type="password"
+                              className={baseInput}
+                              value={authPassword}
+                              onChange={(e) => setAuthPassword(e.target.value)}
+                              placeholder="Tu contraseña"
+                              autoComplete="current-password"
+                              required
+                            />
+                          </Field>
+                        </div>
+                        {authError && (
+                          <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-[12px] font-semibold text-red-700">
+                            {authError}
+                          </p>
+                        )}
+                        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+                          <button
+                            type="submit"
+                            disabled={authLoading}
+                            className="inline-flex items-center justify-center rounded-full bg-brand px-5 py-2.5 text-[13px] font-semibold text-white transition-all hover:scale-[1.02] hover:bg-brand-dark disabled:opacity-60"
+                          >
+                            {authLoading ? "Accediendo..." : "Acceder y continuar"}
+                          </button>
+                          <a
+                            href="mailto:info@aguaphplus.com?subject=Recuperar%20contrase%C3%B1a"
+                            className="text-[12px] font-semibold text-brand hover:underline"
+                          >
+                            ¿Olvidaste tu contraseña?
+                          </a>
+                        </div>
+                      </form>
+
+                      <div className="rounded-2xl border border-card-border bg-white p-5 shadow-[0_10px_28px_rgba(27,34,166,0.08)]">
+                        <p className="text-[12px] font-semibold uppercase tracking-wide text-ink-muted">
+                          Compra rápida
+                        </p>
+                        <h2 className="mt-1 text-[19px] font-extrabold text-brand">
+                          Acceder como invitado
+                        </h2>
+                        <p className="mt-2 text-[13px] leading-[1.55] text-ink-muted">
+                          Sin crear cuenta y sin contraseña. Solo necesitamos
+                          tus datos para la entrega y la factura electrónica.
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setGuestCheckout(true);
+                            setAuthError(null);
+                          }}
+                          className="mt-5 inline-flex items-center justify-center rounded-full border-2 border-brand bg-white px-5 py-2.5 text-[13px] font-extrabold text-brand shadow-[2px_3px_0_rgba(0,0,0,0.25)] transition-transform hover:-translate-y-0.5"
+                        >
+                          Continuar como invitado
+                        </button>
+                        <p className="mt-4 text-[12px] font-semibold text-ink-muted">
+                          Después podrás crear cuenta si lo deseas.
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="rounded-xl bg-[#eef0ff] px-4 py-3 text-[13px] text-brand">
+                        {isAuthenticated
+                          ? "Sesión activa. Confirma tus datos para continuar al envío."
+                          : "Compra como invitado. Completa tus datos para continuar."}
+                      </div>
+                      <h2 className="text-[16px] font-extrabold text-brand">
+                        Datos de contacto
+                      </h2>
+                      <Field label="Nombre completo" error={errors.name}>
+                        <input
+                          className={baseInput}
+                          value={contact.name}
+                          onChange={(e) =>
+                            setContact((c) => ({ ...c, name: e.target.value }))
+                          }
+                          placeholder="Sirley Montoya"
+                          autoComplete="name"
+                        />
+                      </Field>
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <Field label="Email" error={errors.email}>
+                          <input
+                            type="email"
+                            className={baseInput}
+                            value={contact.email}
+                            onChange={(e) =>
+                              setContact((c) => ({ ...c, email: e.target.value }))
+                            }
+                            placeholder="tu@correo.com"
+                            autoComplete="email"
+                          />
+                        </Field>
+                        <Field label="Teléfono / WhatsApp" error={errors.phone}>
+                          <input
+                            type="tel"
+                            className={baseInput}
+                            value={contact.phone}
+                            onChange={(e) =>
+                              setContact((c) => ({ ...c, phone: e.target.value }))
+                            }
+                            placeholder="+57 300 000 0000"
+                            autoComplete="tel"
+                          />
+                        </Field>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 
@@ -491,9 +622,10 @@ export default function CheckoutPage() {
                   <button
                     type="button"
                     onClick={goNext}
-                    className="inline-flex items-center justify-center rounded-full bg-brand px-6 py-2.5 text-[13px] font-semibold text-white transition-all hover:scale-[1.02] hover:bg-brand-dark"
+                    disabled={step === 0 && !canEnterContact}
+                    className="inline-flex items-center justify-center rounded-full bg-brand px-6 py-2.5 text-[13px] font-semibold text-white transition-all hover:scale-[1.02] hover:bg-brand-dark disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
                   >
-                    Continuar
+                    {step === 1 ? "Ir al pago" : "Continuar"}
                   </button>
                 ) : (
                   <button

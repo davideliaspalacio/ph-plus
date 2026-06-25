@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { PRODUCTS } from "../lib/products";
-import AddToCartButton from "./AddToCartButton";
 
 const FEATURED = [
   {
@@ -96,13 +95,26 @@ export default function Products() {
                 </div>
 
                 <div className="mt-1 flex justify-center lg:mt-3">
-                  <AddToCartButton
-                    slug={product.slug}
-                    mode="buy"
-                    variant="primary"
-                    label="comprar ahora"
-                    className="ph-condensed h-[18px] w-[76px] !gap-0.5 border border-black !px-0 !py-0 !text-[7px] font-bold sm:h-[40px] sm:w-[180px] sm:!gap-1.5 sm:!text-[16px] lg:h-[58px] lg:w-[250px] lg:!gap-2 lg:!text-[24px] [&_svg]:h-3 [&_svg]:w-3 sm:[&_svg]:h-6 sm:[&_svg]:w-6 lg:[&_svg]:h-9 lg:[&_svg]:w-9"
-                  />
+                  <Link
+                    href={`/productos/${product.slug}`}
+                    className="ph-condensed inline-flex h-[18px] w-[76px] items-center justify-center gap-0.5 rounded-full border border-black bg-[#1e3a8a] px-0 py-0 text-[7px] font-bold text-white transition-transform hover:scale-[1.03] hover:bg-[#1e2aab] sm:h-[40px] sm:w-[180px] sm:gap-1.5 sm:text-[16px] lg:h-[58px] lg:w-[250px] lg:gap-2 lg:text-[24px]"
+                  >
+                    <svg
+                      viewBox="0 0 48 46"
+                      className="h-3 w-3 sm:h-6 sm:w-6 lg:h-9 lg:w-9"
+                      fill="none"
+                      aria-hidden
+                    >
+                      <path
+                        d="M2 2H10L15.36 28.78C15.5429 29.7008 16.0438 30.5279 16.7751 31.1166C17.5064 31.7053 18.4214 32.018 19.36 32H38.8C39.7386 32.018 40.6536 31.7053 41.3849 31.1166C42.1162 30.5279 42.6171 29.7008 42.8 28.78L46 12H12M20 42C20 43.1046 19.1046 44 18 44C16.8954 44 16 43.1046 16 42C16 40.8954 16.8954 40 18 40C19.1046 40 20 40.8954 20 42ZM42 42C42 43.1046 41.1046 44 40 44C38.8954 44 38 43.1046 38 42C38 40.8954 38.8954 40 40 40C41.1046 40 42 40.8954 42 42Z"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    comprar ahora
+                  </Link>
                 </div>
               </article>
             );
