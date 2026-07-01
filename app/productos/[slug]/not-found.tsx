@@ -17,7 +17,7 @@ export default function ProductNotFound() {
           El producto que buscas ya no está disponible o el enlace cambió.
         </p>
         <Link
-          href="/#productos"
+          href="/productos"
           className="mt-8 inline-flex items-center rounded-full bg-brand px-6 py-3 text-[14px] font-semibold text-white transition-transform hover:scale-[1.03] hover:bg-brand-dark"
         >
           Ver todos los productos

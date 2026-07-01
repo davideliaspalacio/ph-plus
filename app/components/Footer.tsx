@@ -1,6 +1,61 @@
 import Image from "next/image";
 import Link from "next/link";
 
+const MAPS_URL =
+  "https://www.google.com/maps/search/?api=1&query=Av%20km%201.5%20via%20Siberia%20Parque%20Agroindustrial%20de%20Occidente%20Bodega%202%20local%2078%20Cota%20Cundinamarca";
+
+const SOCIAL_LINKS = [
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/aguaphplus",
+    short: "IG",
+    className: "bg-linear-to-br from-[#f9ce34] via-[#ee2a7b] to-[#6228d7]",
+  },
+  {
+    label: "Facebook",
+    href: "https://www.facebook.com/aguaphplus",
+    short: "f",
+    className: "bg-[#1877f2]",
+  },
+  {
+    label: "YouTube",
+    href: "https://www.youtube.com/@aguaphplus",
+    short: "YT",
+    className: "bg-[#ff0000]",
+  },
+  {
+    label: "TikTok",
+    href: "https://www.tiktok.com/@aguaphplus",
+    short: "TK",
+    className: "bg-black",
+  },
+];
+
+function SocialLinks({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className={`flex items-center ${compact ? "gap-1" : "gap-2"}`}>
+      {SOCIAL_LINKS.map((social) => (
+        <a
+          key={social.label}
+          href={social.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`Abrir ${social.label} de PH PLUS`}
+          className={
+            "grid shrink-0 place-items-center rounded-[5px] font-black text-white transition-transform hover:-translate-y-0.5 " +
+            social.className +
+            (compact
+              ? " h-[13px] min-w-[13px] px-[2px] text-[5px]"
+              : " h-8 min-w-8 px-1.5 text-[11px]")
+          }
+        >
+          {social.short}
+        </a>
+      ))}
+    </div>
+  );
+}
+
 function PinIcon({ className = "h-10 w-10" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={`${className} shrink-0`} aria-hidden>
@@ -65,7 +120,12 @@ export default function Footer() {
               Av km 1,5 vía Siberia, Parque Agroindustrial de Occidente,
               Bodega 2 local 78, Cota - Cundinamarca
             </p>
-            <a href="#" className="mt-1 inline-block hover:underline">
+            <a
+              href={MAPS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-1 inline-block hover:underline"
+            >
               Ver en Google Maps
             </a>
           </div>
@@ -100,13 +160,9 @@ export default function Footer() {
           <p>Todos los derechos reservados</p>
           <p>NIT: 901.219.610.3</p>
         </div>
-        <Image
-          src="/footer/social-icons.png"
-          alt="Instagram, Facebook, YouTube y TikTok"
-          width={208}
-          height={62}
-          className="absolute right-[16px] top-[95px] h-auto w-[56px] object-contain"
-        />
+        <div className="absolute right-[16px] top-[95px]">
+          <SocialLinks compact />
+        </div>
       </div>
 
       <div className="ph-condensed mx-auto hidden max-w-[1120px] grid-cols-[310px_1fr_280px] gap-10 px-6 py-9 lg:grid">
@@ -136,7 +192,12 @@ export default function Footer() {
                 Av km 1,5 vía Siberia, Parque Agroindustrial de Occidente,
                 Bodega 2 local 78, Cota - Cundinamarca
               </p>
-              <a href="#" className="mt-2 inline-block hover:underline">
+              <a
+                href={MAPS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-2 inline-block hover:underline"
+              >
                 Ver en Google Maps
               </a>
             </div>
@@ -174,13 +235,9 @@ export default function Footer() {
             <p>NIT: 901.219.610.3</p>
           </div>
 
-          <Image
-            src="/footer/social-icons.png"
-            alt="Instagram, Facebook, YouTube y TikTok"
-            width={208}
-            height={62}
-            className="mt-3 h-auto w-[150px] object-contain"
-          />
+          <div className="mt-3">
+            <SocialLinks />
+          </div>
         </div>
       </div>
     </footer>

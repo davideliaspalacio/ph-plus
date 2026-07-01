@@ -140,7 +140,7 @@ function SuccessContent() {
           Confirmar por WhatsApp
         </a>
         <Link
-          href="/#productos"
+          href="/productos"
           className="inline-flex items-center justify-center rounded-full border border-brand px-6 py-3 text-[14px] font-semibold text-brand transition-colors hover:bg-brand hover:text-white"
         >
           Seguir comprando

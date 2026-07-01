@@ -13,6 +13,8 @@ import { useMockLoading } from "../components/useMockLoading";
 import { buildCartSummary, FREE_SHIPPING_THRESHOLD } from "../lib/cart-summary";
 import { formatCOP } from "../lib/products";
 
+const MIN_ORDER_VALUE = 50_000;
+
 function QtyInput({
   value,
   onChange,
@@ -122,7 +124,7 @@ export default function CartPage() {
                 Explora nuestros productos y empieza a hidratarte con PH PLUS.
               </p>
               <Link
-                href="/#productos"
+                href="/productos"
                 className="mt-6 inline-flex items-center rounded-full bg-brand px-6 py-3 text-[14px] font-semibold text-white transition-transform hover:scale-[1.03] hover:bg-brand-dark"
               >
                 Ver productos
@@ -183,7 +185,7 @@ export default function CartPage() {
 
                 <div className="flex items-center justify-between pt-2">
                   <Link
-                    href="/#productos"
+                    href="/productos"
                     className="text-[13px] font-semibold text-brand hover:underline"
                   >
                     ← Seguir comprando
@@ -203,8 +205,12 @@ export default function CartPage() {
                   Resumen
                 </h2>
 
+                <div className="mt-4 rounded-lg bg-white px-3 py-2 text-center text-[12px] font-bold uppercase tracking-wide text-brand shadow-sm">
+                  Pedido mínimo {formatCOP(MIN_ORDER_VALUE)}
+                </div>
+
                 {toFreeShipping > 0 && (
-                  <div className="mt-4 rounded-lg bg-[#eef0ff] px-3 py-2 text-[12px] text-brand">
+                  <div className="mt-3 rounded-lg bg-[#eef0ff] px-3 py-2 text-[12px] text-brand">
                     Te faltan <strong>{formatCOP(toFreeShipping)}</strong> para
                     envío gratis.
                   </div>
@@ -264,6 +270,9 @@ export default function CartPage() {
                 <p className="mt-4 text-center text-[11px] leading-[1.5] text-ink-muted">
                   Pagos seguros • Entrega a domicilio en Cundinamarca y
                   principales ciudades.
+                </p>
+                <p className="mt-2 text-center text-[11px] font-semibold leading-[1.5] text-brand">
+                  Producto disponible solo en Bogotá, Medellín y Cartagena.
                 </p>
                 <Link
                   href="/envios"

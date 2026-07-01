@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -158,12 +158,6 @@ export default function CheckoutPage() {
     }
   }
 
-  useEffect(() => {
-    if (ready && summary.lines.length === 0 && !submitting) {
-      router.replace("/carrito");
-    }
-  }, [ready, summary.lines.length, router, submitting]);
-
   function validateStep(target: Step): boolean {
     const err: Record<string, string> = {};
     if (target >= 1) {
@@ -260,7 +254,43 @@ export default function CheckoutPage() {
     );
   }
 
-  if (summary.lines.length === 0) return null;
+  if (summary.lines.length === 0) {
+    return (
+      <>
+        <Header />
+        <main className="flex-1 bg-white">
+          <section className="mx-auto max-w-page px-5 py-12 sm:px-8 lg:px-12">
+            <div className="mx-auto flex max-w-xl flex-col items-center rounded-3xl border border-card-border bg-[#fafbfd] px-6 py-14 text-center">
+              <div className="grid h-16 w-16 place-items-center rounded-full bg-brand text-white">
+                <svg viewBox="0 0 48 46" className="h-7 w-7" fill="none" aria-hidden>
+                  <path
+                    d="M2 2H10L15.36 28.78C15.5429 29.7008 16.0438 30.5279 16.7751 31.1166C17.5064 31.7053 18.4214 32.018 19.36 32H38.8C39.7386 32.018 40.6536 31.7053 41.3849 31.1166C42.1162 30.5279 42.6171 29.7008 42.8 28.78L46 12H12"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+              <h1 className="mt-5 text-[22px] font-extrabold text-brand">
+                Aún no tienes productos para pagar
+              </h1>
+              <p className="mt-2 max-w-md text-[14px] leading-relaxed text-ink-muted">
+                Para continuar al checkout, primero agrega una presentación de
+                PH PLUS a tu carrito.
+              </p>
+              <Link
+                href="/productos"
+                className="mt-6 inline-flex items-center rounded-full bg-brand px-6 py-3 text-[14px] font-semibold text-white transition-transform hover:scale-[1.03] hover:bg-brand-dark"
+              >
+                Ver productos
+              </Link>
+            </div>
+          </section>
+        </main>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>

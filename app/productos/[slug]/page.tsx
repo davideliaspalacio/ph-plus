@@ -212,6 +212,9 @@ export default async function ProductDetailPage({
                   </Link>
                   <span>· Pago seguro · Respuesta rápida</span>
                 </div>
+                <p className="rounded-xl bg-[#eef0ff] px-4 py-3 text-[12px] font-bold uppercase tracking-wide text-brand">
+                  Producto disponible solo en Bogotá, Medellín y Cartagena.
+                </p>
               </div>
             </Reveal>
           </div>

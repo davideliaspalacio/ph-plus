@@ -10,13 +10,24 @@ export const metadata: Metadata = {
     "Conoce por qué PH PLUS ofrece hidratación consciente, procesos de filtración y testimonios reales.",
 };
 
-function PlayButton() {
+function VideoFrame({
+  src,
+  label,
+  videoClassName = "",
+}: {
+  src: string;
+  label: string;
+  videoClassName?: string;
+}) {
   return (
-    <span className="absolute left-1/2 top-1/2 grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white text-[#f01b16] shadow-[0_4px_14px_rgba(0,0,0,0.18)]">
-      <svg viewBox="0 0 24 24" className="ml-0.5 h-6 w-6" fill="currentColor" aria-hidden>
-        <path d="M8 5v14l11-7z" />
-      </svg>
-    </span>
+    <video
+      className={`block h-full w-full bg-black object-cover ${videoClassName}`}
+      src={src}
+      controls
+      playsInline
+      preload="metadata"
+      aria-label={label}
+    />
   );
 }
 
@@ -45,34 +56,25 @@ function EducationSection() {
     <section className="bg-white px-6 py-8 lg:py-16">
       <div className="mx-auto grid max-w-[920px] gap-10 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-14">
         <div className="hidden lg:block">
-          <button
-            type="button"
-            className="relative block overflow-hidden border-[4px] border-[#8a5cf6] bg-white"
-            aria-label="Reproducir demostración sobre pH"
-          >
-            <Image
-              src="/about/ph-demo-video.png"
-              alt="Demostración práctica del pH del agua"
-              width={324}
-              height={192}
-              className="h-auto w-full"
+          <div className="relative aspect-video overflow-hidden border-[4px] border-[#8a5cf6] bg-white">
+            <VideoFrame
+              src="/videos/ph-doctor-desktop.mp4"
+              label="Video del Dr. Hugo Mario Galindo explicando el pH del agua"
             />
-            <PlayButton />
-          </button>
+          </div>
         </div>
 
         <div className="grid gap-5 lg:block">
           <h2 className="ph-condensed text-center text-[26px] font-bold leading-tight text-[#1e3a8a] lg:text-left lg:text-[24px]">
             ¿Por qué el pH del agua es tan importante?
           </h2>
-          <div className="mx-auto grid max-w-[305px] grid-cols-[112px_1fr] items-center gap-4 lg:hidden">
-            <Image
-              src="/about/ph-test-mobile.png"
-              alt="Prueba de pH del agua"
-              width={112}
-              height={188}
-              className="h-[188px] w-[112px] rounded-[6px] object-cover"
-            />
+          <div className="mx-auto grid max-w-[330px] grid-cols-[128px_1fr] items-center gap-4 lg:hidden">
+            <div className="h-[226px] w-[128px] overflow-hidden rounded-[6px] bg-black">
+              <VideoFrame
+                src="/videos/ph-aguas-mobile.mp4"
+                label="Video móvil sobre comparación de aguas y pH"
+              />
+            </div>
             <p className="ph-condensed text-[15px] font-bold leading-tight text-[#1e3a8a]">
               A través de una demostración práctica, el Dr. Hugo Mario Galindo
               muestra cómo se mide la alcalinidad del agua y qué significa para
@@ -102,13 +104,10 @@ function EducationSection() {
           </p>
         </div>
 
-        <div className="mx-auto h-[220px] w-[150px] overflow-hidden rounded-[6px] lg:mx-0 lg:h-auto lg:w-[340px] lg:overflow-visible lg:rounded-none">
-          <Image
-            src="/about/filtration-process.png"
-            alt="Proceso de filtración de PH PLUS"
-            width={340}
-            height={202}
-            className="h-full w-full border-4 border-white object-cover shadow-[0_0_0_1px_rgba(0,0,0,0.08)] lg:h-auto"
+        <div className="mx-auto aspect-[9/16] h-[220px] w-[150px] overflow-hidden rounded-[6px] border-4 border-white bg-black shadow-[0_0_0_1px_rgba(0,0,0,0.08)] lg:mx-0 lg:aspect-video lg:h-auto lg:w-[340px]">
+          <VideoFrame
+            src="/videos/planta-produccion.mp4"
+            label="Video del proceso de producción de PH PLUS"
           />
         </div>
       </div>
@@ -128,12 +127,12 @@ function PageCta() {
         Compra fácil por WhatsApp y recíbelo en casa.
       </p>
       <div className="mt-6 flex justify-center">
-          <a
-            href="https://wa.me/573234392470"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ph-condensed inline-flex h-[34px] items-center gap-2 rounded-full bg-[#2f6b4f] px-4 text-[12px] font-bold text-white shadow-[3px_4px_0_rgba(18,140,126,0.45)] transition-transform hover:scale-[1.03] hover:bg-[#1fb055] lg:h-[46px] lg:px-7 lg:text-[18px]"
-          >
+        <a
+          href="https://wa.me/573234392470"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ph-condensed inline-flex h-[34px] items-center gap-2 rounded-full bg-[#2f6b4f] px-4 text-[12px] font-bold text-white shadow-[3px_4px_0_rgba(18,140,126,0.45)] transition-transform hover:scale-[1.03] hover:bg-[#1fb055] lg:h-[46px] lg:px-7 lg:text-[18px]"
+        >
           <Image
             src="/icons/whatsapp.svg"
             alt=""
