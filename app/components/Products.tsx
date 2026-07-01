@@ -2,7 +2,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { PRODUCTS } from "../lib/products";
 
-const FEATURED = [
+type FeaturedItem = {
+  slug: string;
+  image: string;
+  alt: string;
+  articleClassName: string;
+  imageClassName: string;
+  copyClassName: string;
+  titleOverride?: string;
+};
+
+const FEATURED: FeaturedItem[] = [
   {
     slug: "kit-inicial-botellon-19lts",
     image: "/products/botellon-kit.png",
@@ -17,7 +27,8 @@ const FEATURED = [
     alt: "Promoción de garrafas PH PLUS pague 3 lleve 5",
     articleClassName: "order-1 md:order-2",
     imageClassName: "h-[176px] max-w-[127px] lg:h-[470px] lg:max-w-[380px]",
-    copyClassName: "hidden",
+    copyClassName: "hidden lg:flex",
+    titleOverride: "Promoción de Garrafas",
   },
   {
     slug: "recargas-19lts",
@@ -84,12 +95,23 @@ export default function Products() {
                     item.copyClassName
                   }
                 >
-                  <p className="text-[18px] font-bold leading-none text-[#1e3a8a] lg:text-[24px]">
-                    {product.price}
-                  </p>
-                  {product.shortTitle && (
+                  {product.prevPrice ? (
+                    <div className="flex items-baseline justify-center gap-2 lg:gap-4">
+                      <span className="text-[14px] font-bold leading-none text-[#ef4444] line-through lg:text-[20px]">
+                        {product.prevPrice}
+                      </span>
+                      <p className="text-[18px] font-bold leading-none text-[#1e3a8a] lg:text-[24px]">
+                        {product.price}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-[18px] font-bold leading-none text-[#1e3a8a] lg:text-[24px]">
+                      {product.price}
+                    </p>
+                  )}
+                  {(item.titleOverride || product.shortTitle) && (
                     <p className="mt-2 whitespace-pre-line text-[12px] font-bold leading-[1.15] text-[#6b7280] lg:text-[27px] lg:leading-[1.22]">
-                      {product.shortTitle}
+                      {item.titleOverride || product.shortTitle}
                     </p>
                   )}
                 </div>
@@ -124,6 +146,7 @@ export default function Products() {
         <div className="mt-3 flex justify-center lg:mt-9">
           <Link
             href="/envios"
+            scroll
             className="ph-condensed inline-flex min-h-[30px] min-w-[230px] items-center justify-center rounded-[18px] border-2 border-[#1e3a8a] bg-white/10 px-4 text-center text-[10px] font-bold leading-none text-[#6b7280] shadow-[3px_4px_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 sm:min-h-[38px] sm:min-w-[340px] sm:text-[15px] lg:min-h-[44px] lg:min-w-[460px] lg:rounded-[28px] lg:px-7 lg:text-[18px]"
           >
             Ver destinos, costos de envío y tiempos de entrega

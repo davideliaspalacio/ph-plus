@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import Header from "../components/Header";
 import Reveal from "../components/Reveal";
+import ScrollToTop from "../components/ScrollToTop";
 import { mockServerDelay } from "../lib/mock-loading";
 
 export const dynamic = "force-dynamic";
@@ -96,6 +97,7 @@ export default async function EnviosPage() {
 
   return (
     <>
+      <ScrollToTop />
       <Header />
 
       <main className="flex-1 bg-white">
