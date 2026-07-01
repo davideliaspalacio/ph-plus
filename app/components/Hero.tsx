@@ -30,7 +30,7 @@ export default function Hero() {
   return (
     <section id="inicio" className="w-full bg-white">
       <div className="lg:hidden">
-        <div className="relative h-[225px] w-full overflow-hidden bg-[#1e3a8a]">
+        <div className="relative h-[198px] w-full overflow-hidden bg-[#1e3a8a]">
           <Image
             src="/home/hero-desktop.png"
             alt="Mujer hidratándose con agua PH PLUS al aire libre"
@@ -51,7 +51,7 @@ export default function Hero() {
             </h1>
           </div>
 
-          <ul className="ph-condensed absolute bottom-[34px] left-[24px] flex w-[250px] flex-col gap-1 text-[16px] font-bold leading-tight text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+          <ul className="ph-condensed absolute bottom-[18px] left-[24px] flex w-[250px] flex-col gap-1 text-[16px] font-bold leading-tight text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
             {BULLETS.slice(0, 2).map((b) => (
               <li key={b}>
                 <span className="flex items-start gap-2">
