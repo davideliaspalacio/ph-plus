@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Testimonial() {
@@ -15,14 +16,13 @@ export default function Testimonial() {
         </p>
 
         <div className="mx-auto mt-3 grid max-w-[330px] grid-cols-[119px_1fr] items-center gap-3 sm:mt-9 sm:max-w-none sm:grid-cols-1 sm:gap-8 lg:grid-cols-[340px_1fr] lg:gap-12">
-          <div className="relative mx-auto h-[145px] w-[119px] overflow-hidden rounded-[48%] bg-[#eef0ff] shadow-[0_8px_18px_rgba(30,58,138,0.16)] sm:h-[340px] sm:w-[276px] lg:h-[360px] lg:w-[294px]">
-            <video
-              className="h-full w-full object-cover"
-              src="/videos/testimonio-sirley.mp4"
-              controls
-              playsInline
-              preload="metadata"
-              aria-label="Testimonio de Sirley Montoya"
+          <div className="relative mx-auto h-[145px] w-[119px] bg-white sm:h-[340px] sm:w-[276px] lg:h-[360px] lg:w-[294px]">
+            <Image
+              src="/testimonial/sirley-drop-real.jpeg"
+              alt="Sirley Montoya con agua PH PLUS"
+              fill
+              sizes="(min-width: 1024px) 294px, (min-width: 640px) 276px, 119px"
+              className="object-contain"
             />
           </div>
 

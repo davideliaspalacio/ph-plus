@@ -6,8 +6,7 @@ import { useState } from "react";
 const STORIES = [
   {
     name: "Sirley Montoya",
-    image: "/testimonial/sirley-drop.png",
-    video: "/videos/testimonio-sirley.mp4",
+    image: "/testimonial/sirley-drop-real.jpeg",
     alt: "Sirley Montoya con agua PH PLUS",
     quote:
       "Durante mi proceso oncológico no toleraba el agua tradicional. Con PH PLUS todo cambió: puedo hidratarme con gusto y eso ha sido clave en mi recuperación.",
@@ -107,37 +106,26 @@ export default function StoriesCarousel() {
           <div
             className={
               active.imageMode === "drop"
-                ? "relative h-[145px] w-[119px] overflow-hidden rounded-[48%] bg-[#eef0ff] lg:h-[210px] lg:w-[170px]"
+                ? "relative h-[145px] w-[119px] bg-white lg:h-[210px] lg:w-[170px]"
                 : "relative h-[120px] w-[96px] justify-self-center lg:h-[170px] lg:w-[135px]"
             }
           >
-            {"video" in active && active.video ? (
-              <video
-                className="h-full w-full object-cover"
-                src={active.video}
-                controls
-                playsInline
-                preload="metadata"
-                aria-label={`Video testimonial de ${active.name}`}
-              />
-            ) : (
-              <Image
-                src={active.image}
-                alt={active.alt}
-                fill
-                sizes="(min-width: 1024px) 170px, 119px"
-                className={
-                  active.imageMode === "drop"
-                    ? "object-contain"
-                    : "object-cover object-top"
-                }
-                style={
-                  active.imageMode === "drop"
-                    ? undefined
-                    : { clipPath: DROP_CLIP_PATH }
-                }
-              />
-            )}
+            <Image
+              src={active.image}
+              alt={active.alt}
+              fill
+              sizes="(min-width: 1024px) 170px, 119px"
+              className={
+                active.imageMode === "drop"
+                  ? "object-contain"
+                  : "object-cover object-top"
+              }
+              style={
+                active.imageMode === "drop"
+                  ? undefined
+                  : { clipPath: DROP_CLIP_PATH }
+              }
+            />
           </div>
           <article
             className="ph-condensed rounded-[20px] bg-[#1e3a8a] px-3 py-4 text-white lg:px-5 lg:py-5"
