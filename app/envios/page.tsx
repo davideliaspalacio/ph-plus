@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Reveal from "../components/Reveal";
 import ScrollToTop from "../components/ScrollToTop";
@@ -189,6 +190,7 @@ export default async function EnviosPage() {
           </div>
         </section>
       </main>
+      <Footer />
     </>
   );
 }

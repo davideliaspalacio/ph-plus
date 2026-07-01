@@ -32,9 +32,9 @@ function TruckIcon() {
 
 function ShieldIcon() {
   return (
-    <span className="grid h-9 w-9 place-items-center rounded-full bg-[#1e3a8a]">
-      <span className="grid h-7 w-7 place-items-center rounded-full bg-[#00a8d8] text-white">
-        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" aria-hidden>
+    <span className="grid h-11 w-11 place-items-center rounded-full bg-[#1e3a8a]">
+      <span className="grid h-8 w-8 place-items-center rounded-full bg-[#00a8d8] text-white">
+        <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" aria-hidden>
           <path
             d="M12 3l7 3v5c0 4.6-2.8 8.1-7 10-4.2-1.9-7-5.4-7-10V6l7-3z"
             stroke="currentColor"
@@ -56,22 +56,28 @@ function ShieldIcon() {
 
 function BpaIcon() {
   return (
-    <span className="grid h-9 w-9 place-items-center rounded-full border-2 border-black bg-white text-[8px] font-black leading-[0.85] text-black">
-      <span className="text-center">
-        BPA
-        <br />
-        FREE
-      </span>
+    <span className="relative block h-11 w-11 overflow-hidden rounded-full bg-white">
+      <Image
+        src="/home/icon-bpa-free.jpg"
+        alt=""
+        fill
+        sizes="44px"
+        className="object-contain"
+      />
     </span>
   );
 }
 
-function WaterDropIcon() {
+function GearIcon() {
   return (
-    <span className="grid h-9 w-9 place-items-center rounded-full bg-[#38bed0] text-white">
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>
-        <path d="M12 2S5 9.7 5 14.2A7 7 0 0012 21a7 7 0 007-6.8C19 9.7 12 2 12 2z" />
-      </svg>
+    <span className="relative block h-11 w-11">
+      <Image
+        src="/home/icon-filtration.png"
+        alt=""
+        fill
+        sizes="44px"
+        className="object-contain"
+      />
     </span>
   );
 }
@@ -84,9 +90,9 @@ function MobileBenefit({
   children: ReactNode;
 }) {
   return (
-    <div className="flex min-h-9 items-center gap-4">
-      <span className="grid h-9 w-9 shrink-0 place-items-center">{icon}</span>
-      <p className="ph-condensed text-[16px] font-light leading-tight text-black">
+    <div className="flex min-h-11 items-center gap-3">
+      <span className="grid h-11 w-11 shrink-0 place-items-center">{icon}</span>
+      <p className="ph-condensed text-[18px] font-light leading-tight text-black">
         {children}
       </p>
     </div>
@@ -141,25 +147,18 @@ export default function WhyPhPlus() {
   return (
     <section id="por-que" className="w-full bg-white py-1 lg:py-9">
       <div className="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-6">
-        <div className="mx-auto flex max-w-[350px] flex-col gap-1.5 lg:hidden">
+        <div className="mx-auto grid max-w-[560px] grid-cols-2 gap-x-6 gap-y-3 py-5 lg:hidden">
           <MobileBenefit icon={<ShieldIcon />}>
-            Con{" "}
-            <span className="font-bold text-[#1e3a8a]">
-              Calcio y Magnesio
-            </span>{" "}
-            para tu bienestar
+            Con Calcio y Magnesio
           </MobileBenefit>
-          <MobileBenefit icon={<BpaIcon />}>
-            <span className="font-bold text-[#1e3a8a]">Libre de BPA,</span>{" "}
-            envase 100% seguro
-          </MobileBenefit>
-          <MobileBenefit icon={<WaterDropIcon />}>
+          <MobileBenefit icon={<GearIcon />}>
             + 14 procesos de filtración
           </MobileBenefit>
+          <MobileBenefit icon={<BpaIcon />}>
+            Libre de BPA
+          </MobileBenefit>
           <MobileBenefit icon={<TruckIcon />}>
-            <span className="font-bold text-[#1e3a8a]">
-              servicio a domicilio
-            </span>
+            servicio a domicilio
           </MobileBenefit>
         </div>
 
