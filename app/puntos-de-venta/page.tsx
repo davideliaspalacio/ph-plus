@@ -79,11 +79,11 @@ const CATEGORIES: Category[] = [
   },
   {
     title: "Clubes deportivos",
-    gridClassName: "grid-cols-[auto_auto] gap-x-4 lg:grid-cols-[auto_auto] lg:gap-x-7",
-    panelClassName: "min-h-[96px] lg:min-h-[126px]",
+    gridClassName: "grid-cols-[auto_auto] gap-x-5 lg:grid-cols-[auto_auto] lg:gap-x-8",
+    panelClassName: "min-h-[128px] lg:min-h-[158px]",
     logos: [
-      { src: "/HOME PHPLUS/CLUB EL NOGAL.png", alt: "Club El Nogal", className: "max-h-[62px] max-w-[78px] lg:max-h-[88px] lg:max-w-[118px]" },
-      { src: "/HOME PHPLUS/CLUB HATOGRANDE.png", alt: "Hatogrande Golf & Tennis Country Club", className: "max-h-[62px] max-w-[74px] lg:max-h-[88px] lg:max-w-[110px]" },
+      { src: "/HOME PHPLUS/CLUB EL NOGAL.png", alt: "Club El Nogal", className: "!h-[78px] w-auto lg:!h-[104px]", cellClassName: "!h-[88px] lg:!h-[112px]" },
+      { src: "/HOME PHPLUS/CLUB HATOGRANDE.png", alt: "Hatogrande Golf & Tennis Country Club", className: "!h-[78px] w-auto lg:!h-[104px]", cellClassName: "!h-[88px] lg:!h-[112px]" },
     ],
   },
 ];
@@ -95,7 +95,7 @@ function CategoryPanel({ category }: { category: Category }) {
         {category.title}
       </h2>
       <div
-        className={`mx-auto mt-5 grid max-w-[336px] place-content-center rounded-[10px] border border-[#d7d7d7] bg-[#f8f8f8] px-4 py-4 shadow-[4px_5px_0_rgba(0,0,0,0.28)] lg:max-w-[820px] lg:px-8 lg:py-5 ${category.panelClassName ?? ""} ${category.gridClassName}`}
+        className={`mx-auto mt-5 grid max-w-[336px] place-content-center overflow-hidden rounded-[10px] border border-[#d7d7d7] bg-[#f8f8f8] px-4 py-4 shadow-[4px_5px_0_rgba(0,0,0,0.28)] lg:max-w-[820px] lg:px-8 lg:py-5 ${category.panelClassName ?? ""} ${category.gridClassName}`}
       >
         {category.logos.map((logo) => (
           <div
