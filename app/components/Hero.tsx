@@ -36,7 +36,7 @@ export default function Hero() {
             alt="Mujer hidratándose con agua PH PLUS al aire libre"
             fill
             priority
-            sizes="100vw"
+            sizes="(min-width: 1024px) 0px, 100vw"
             className="object-cover object-[56%_top]"
           />
           <div className="absolute inset-y-0 left-0 w-[58%] bg-linear-to-r from-black/35 to-transparent" />
@@ -88,7 +88,7 @@ export default function Hero() {
             alt="Mujer hidratándose con agua PH PLUS al aire libre"
             fill
             priority
-            sizes="100vw"
+            sizes="(min-width: 1024px) 100vw, 0px"
             className="object-cover object-[58%_center]"
           />
 

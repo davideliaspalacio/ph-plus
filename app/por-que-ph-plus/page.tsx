@@ -13,16 +13,19 @@ export const metadata: Metadata = {
 function VideoFrame({
   src,
   label,
+  poster,
   videoClassName = "",
 }: {
   src: string;
   label: string;
+  poster: string;
   videoClassName?: string;
 }) {
   return (
     <video
-      className={`block h-full w-full bg-black object-cover ${videoClassName}`}
+      className={`block h-full w-full bg-[#e8f6fb] object-cover ${videoClassName}`}
       src={src}
+      poster={poster}
       controls
       playsInline
       preload="metadata"
@@ -59,6 +62,7 @@ function EducationSection() {
           <div className="relative aspect-video overflow-hidden border-[4px] border-[#8a5cf6] bg-white">
             <VideoFrame
               src="/videos/ph-doctor-desktop.mp4"
+              poster="/videos/posters/ph-doctor-desktop.jpg"
               label="Video del Dr. Hugo Mario Galindo explicando el pH del agua"
             />
           </div>
@@ -69,9 +73,10 @@ function EducationSection() {
             ¿Por qué el pH del agua es tan importante?
           </h2>
           <div className="mx-auto grid max-w-[330px] grid-cols-[128px_1fr] items-center gap-4 lg:hidden">
-            <div className="h-[226px] w-[128px] overflow-hidden rounded-[6px] bg-black">
+            <div className="h-[226px] w-[128px] overflow-hidden rounded-[6px] bg-[#e8f6fb]">
               <VideoFrame
                 src="/videos/ph-aguas-mobile.mp4"
+                poster="/videos/posters/ph-aguas-mobile.jpg"
                 label="Video móvil sobre comparación de aguas y pH"
               />
             </div>
@@ -104,9 +109,10 @@ function EducationSection() {
           </p>
         </div>
 
-        <div className="mx-auto aspect-[9/16] h-[220px] w-[150px] overflow-hidden rounded-[6px] border-4 border-white bg-black shadow-[0_0_0_1px_rgba(0,0,0,0.08)] lg:mx-0 lg:aspect-video lg:h-auto lg:w-[340px]">
+        <div className="mx-auto aspect-[9/16] h-[220px] w-[150px] overflow-hidden rounded-[6px] border-4 border-white bg-[#e8f6fb] shadow-[0_0_0_1px_rgba(0,0,0,0.08)] lg:mx-0 lg:aspect-video lg:h-auto lg:w-[340px]">
           <VideoFrame
             src="/videos/planta-produccion.mp4"
+            poster="/videos/posters/planta-produccion.jpg"
             label="Video del proceso de producción de PH PLUS"
           />
         </div>
@@ -118,10 +124,8 @@ function EducationSection() {
 function PageCta() {
   return (
     <section className="bg-white px-5 pb-10 pt-2 text-center lg:pb-12">
-      <h2 className="ph-condensed mx-auto max-w-[720px] text-[25px] font-bold leading-tight text-[#1e3a8a] lg:max-w-none lg:text-[34px]">
-        Elige lo mejor para tu cuerpo.
-        <br />
-        Empieza a hidratarte con PH PLUS
+      <h2 className="ph-condensed mx-auto max-w-[760px] text-[25px] font-bold leading-tight text-[#1e3a8a] lg:max-w-none lg:text-[34px]">
+        Únete a miles de personas que ya eligieron mejor
       </h2>
       <p className="ph-condensed mt-4 text-[14px] font-bold text-[#6b7280] lg:text-[22px]">
         Compra fácil por WhatsApp y recíbelo en casa.

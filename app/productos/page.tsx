@@ -30,28 +30,28 @@ const FEATURED_PRODUCTS: CatalogItem[] = [
     price: "$73,470",
     previousPrice: "$122,450",
     visualKey: "garrafas",
-    imageClassName: "h-[132px] lg:h-[178px]",
+    imageClassName: "h-[150px] lg:h-[178px]",
     slug: "promocion-garrafas",
   },
   {
     name: "Kit inicial de\nbotellón 19 lts",
     price: "$85,000",
     visualKey: "kit",
-    imageClassName: "h-[108px] lg:h-[128px]",
+    imageClassName: "h-[132px] lg:h-[128px]",
     slug: "kit-inicial-botellon-19lts",
   },
   {
     name: "1 recarga\nde 19 lts",
     price: "$50,000",
     visualKey: "recargas",
-    imageClassName: "h-[108px] lg:h-[128px]",
+    imageClassName: "h-[132px] lg:h-[128px]",
     slug: "recarga-19lts-individual",
   },
   {
     name: "2 recargas\ncada una de 19 lts",
     price: "$69,000",
     visualKey: "recargas",
-    imageClassName: "h-[108px] lg:h-[128px]",
+    imageClassName: "h-[132px] lg:h-[128px]",
     slug: "recargas-19lts",
   },
 ];
@@ -174,27 +174,27 @@ function productHref(item: CatalogItem) {
 
 function TrustStrip() {
   return (
-    <div className="mx-auto mt-8 grid max-w-[330px] grid-cols-2 items-center justify-center gap-3 px-4 lg:mt-3 lg:flex lg:max-w-[740px] lg:flex-nowrap lg:gap-2">
-      <div className="ph-condensed flex h-[58px] w-[146px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.22)] lg:h-[40px] lg:w-[118px] lg:gap-2 lg:px-2 lg:text-[7px]">
+    <div className="mx-auto mt-8 grid max-w-[330px] grid-cols-2 items-center justify-center gap-3 px-4 lg:mt-3 lg:flex lg:max-w-[820px] lg:flex-nowrap lg:gap-3">
+      <div className="ph-condensed flex h-[62px] w-[146px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.22)] lg:h-[56px] lg:w-[156px] lg:gap-3 lg:px-3 lg:text-[10px]">
         <Image
           src="/home/icon-truck.png"
           alt=""
-          width={36}
-          height={36}
-          className="h-9 w-9 object-contain lg:h-5 lg:w-5"
+          width={44}
+          height={44}
+          className="h-11 w-11 shrink-0 object-contain lg:h-10 lg:w-10"
         />
         <span>
           servicio a domicilio
           <br />a nivel nacional
         </span>
       </div>
-      <div className="ph-condensed flex h-[58px] w-[146px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.22)] lg:h-[40px] lg:w-[138px] lg:gap-2 lg:px-2 lg:text-[7px]">
+      <div className="ph-condensed flex h-[62px] w-[146px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.22)] lg:h-[56px] lg:w-[190px] lg:gap-3 lg:px-3 lg:text-[10px]">
         <Image
           src="/home/icon-lock.png"
           alt=""
-          width={34}
-          height={34}
-          className="h-8 w-8 object-contain lg:h-5 lg:w-5"
+          width={44}
+          height={44}
+          className="h-11 w-11 shrink-0 object-contain lg:h-10 lg:w-10"
         />
         <span>
           pago seguro con SSL.
@@ -437,9 +437,9 @@ function FinalCta() {
   return (
     <section className="px-5 pb-10 pt-1 text-center lg:pt-10">
       <h2 className="ph-condensed mx-auto max-w-[640px] text-[24px] font-bold leading-tight text-[#1e3a8a] lg:text-[30px]">
-        Elige lo mejor para tu cuerpo.
+        Miles de familias ya nos eligieron.
         <br />
-        Empieza a hidratarte con PH PLUS
+        ¿Cuándo te toca a ti?
       </h2>
       <p className="ph-condensed mt-7 text-[14px] font-bold text-[#6b7280] lg:text-[17px]">
         Compra fácil por WhatsApp y recíbelo en casa.

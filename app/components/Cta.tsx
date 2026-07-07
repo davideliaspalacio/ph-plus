@@ -6,9 +6,7 @@ export default function Cta() {
       <div className="mx-auto max-w-[1100px] px-5 text-center sm:px-8 lg:px-6">
         <div>
           <h2 className="ph-condensed text-[24px] font-bold leading-tight text-[#1e3a8a] sm:text-[36px] lg:text-[44px]">
-            Elige lo mejor para tu cuerpo.
-            <br />
-            Empieza a hidratarte con PH PLUS
+            Elige una hidratación más consciente hoy
           </h2>
           <p className="ph-condensed mt-1 text-[13px] font-bold text-[#6b7280] sm:mt-2 sm:text-[26px] lg:text-[34px]">
             Compra fácil por WhatsApp y recíbelo en casa.

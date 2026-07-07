@@ -108,13 +108,16 @@ export default function Header() {
           width={98}
           height={155}
           priority
-          className="absolute left-[96px] top-[3px] h-[56px] w-[35px] object-contain sm:left-[130px]"
+          className={
+            "absolute left-[96px] top-[3px] h-[56px] w-[35px] object-contain sm:left-[130px] " +
+            (searchOpen ? "hidden" : "")
+          }
         />
 
         {searchOpen ? (
           <form
             onSubmit={submitSearch}
-            className="absolute left-[132px] right-[116px] top-[9px] z-10 flex h-8 items-center rounded-full bg-white px-2 text-[#1e3a8a] shadow-[0_4px_14px_rgba(0,0,0,0.18)]"
+            className="absolute left-[112px] right-3 top-[7px] z-10 flex h-9 items-center rounded-full bg-white px-3 text-[#1e3a8a] shadow-[0_4px_14px_rgba(0,0,0,0.18)] sm:left-[190px] sm:right-6 sm:top-[12px] sm:h-10"
           >
             <input
               ref={searchInputRef}
@@ -124,12 +127,20 @@ export default function Header() {
                 if (event.key === "Escape") setSearchOpen(false);
               }}
               placeholder="Buscar"
-              className="min-w-0 flex-1 bg-transparent text-[12px] font-semibold outline-none placeholder:text-[#7180b8]"
+              className="min-w-0 flex-1 bg-transparent text-[14px] font-semibold outline-none placeholder:text-[#7180b8] sm:text-[15px]"
             />
+            <button
+              type="button"
+              aria-label="Cerrar búsqueda"
+              onClick={() => setSearchOpen(false)}
+              className="mr-2 grid h-6 w-6 shrink-0 place-items-center rounded-full text-[18px] font-bold leading-none text-[#7180b8] transition-colors hover:text-[#1e3a8a]"
+            >
+              ×
+            </button>
             <button
               type="submit"
               aria-label="Buscar"
-              className="grid h-5 w-5 shrink-0 place-items-center"
+              className="grid h-6 w-6 shrink-0 place-items-center"
             >
               <SearchIcon />
             </button>
@@ -138,14 +149,17 @@ export default function Header() {
           <button
             type="button"
             aria-label="Abrir búsqueda"
-            onClick={() => setSearchOpen(true)}
+            onClick={() => {
+              setOpen(false);
+              setSearchOpen(true);
+            }}
             className="ml-auto grid h-[22px] w-[22px] place-items-center transition-opacity hover:opacity-80"
           >
             <SearchIcon />
           </button>
         )}
 
-        <div className="ml-3 flex items-center gap-3">
+        <div className={searchOpen ? "hidden" : "ml-3 flex items-center gap-3"}>
           <button
             type="button"
             onClick={() => setMiniCartOpen(true)}
@@ -295,7 +309,7 @@ export default function Header() {
               ? ` con ${totalItems} producto${totalItems === 1 ? "" : "s"}`
               : ""
           }`}
-          className="ml-5 grid h-8 w-8 shrink-0 place-items-center transition-opacity hover:opacity-80"
+          className="relative ml-5 grid h-8 w-8 shrink-0 place-items-center transition-opacity hover:opacity-80"
         >
           <CartIcon className="h-8 w-8" />
           {showBadge && (

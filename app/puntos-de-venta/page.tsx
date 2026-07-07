@@ -155,9 +155,9 @@ function Cta() {
   return (
     <section className="px-5 pb-9 pt-4 text-center lg:pb-12 lg:pt-6">
       <h2 className="ph-condensed mx-auto max-w-[720px] text-[25px] font-bold leading-tight text-[#1e3a8a] lg:text-[38px]">
-        Elige lo mejor para tu cuerpo.
+        No es solo agua. Es lo que eliges para tu cuerpo.
         <br />
-        Empieza a hidratarte con PH PLUS
+        Empieza hoy a hidratarte mejor
       </h2>
       <p className="ph-condensed mt-7 text-[14px] font-bold text-[#6b7280] lg:text-[22px]">
         Compra fácil por WhatsApp y recíbelo en casa.

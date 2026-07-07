@@ -21,7 +21,7 @@ const FEATURED: FeaturedItem[] = [
     image: "/products/botellon-kit.png",
     alt: "Kit inicial de botellón PH PLUS de 19 litros",
     articleClassName: "order-2 md:order-1",
-    imageClassName: "h-[148px] max-w-[112px] lg:h-[354px] lg:max-w-[300px]",
+    imageClassName: "h-[172px] max-w-[132px] lg:h-[354px] lg:max-w-[300px]",
     imageFrameClassName:
       "overflow-hidden rounded-[8px] border border-[#e0e0e0] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.12)] lg:rounded-[18px] lg:border-[#d9d9d9] lg:shadow-[0_1px_5px_rgba(0,0,0,0.16)]",
     imageInnerClassName: "p-2 lg:p-6",
@@ -32,7 +32,7 @@ const FEATURED: FeaturedItem[] = [
     image: "/products/oferta-garrafas.png",
     alt: "Promoción de garrafas PH PLUS pague 3 lleve 5",
     articleClassName: "order-1 md:order-2",
-    imageClassName: "h-[172px] max-w-[140px] lg:h-[380px] lg:max-w-[355px]",
+    imageClassName: "h-[186px] max-w-[154px] lg:h-[380px] lg:max-w-[355px]",
     copyClassName: "",
     titleOverride: "Promoción de Garrafas",
     titleClassName: "hidden lg:block",
@@ -42,7 +42,7 @@ const FEATURED: FeaturedItem[] = [
     image: "/products/recargas-19.png",
     alt: "Dos recargas de botellón PH PLUS de 19 litros",
     articleClassName: "order-3 md:order-3",
-    imageClassName: "h-[148px] max-w-[112px] lg:h-[354px] lg:max-w-[300px]",
+    imageClassName: "h-[172px] max-w-[132px] lg:h-[354px] lg:max-w-[300px]",
     imageFrameClassName:
       "overflow-hidden rounded-[8px] border border-[#e0e0e0] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.12)] lg:rounded-[18px] lg:border-[#d9d9d9] lg:shadow-[0_1px_5px_rgba(0,0,0,0.16)]",
     imageInnerClassName: "p-2 lg:p-5",
