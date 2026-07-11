@@ -42,15 +42,9 @@ describe("ProductCard", () => {
     expect(screen.getByText(/4\.7/)).toBeInTheDocument();
   });
 
-  it("link al PDP correcto", () => {
+  it("no expone enlaces al detalle del producto", () => {
     render(<ProductCard product={product} />);
-    const links = screen.getAllByRole("link", {
-      name: /botellón 19l premium/i,
-    });
-    expect(links.length).toBeGreaterThan(0);
-    links.forEach((l) =>
-      expect(l).toHaveAttribute("href", "/productos/agua-19l"),
-    );
+    expect(screen.queryByRole("link")).not.toBeInTheDocument();
   });
 
   it("muestra badge 'AGOTADO' cuando inStock=false", () => {
@@ -58,18 +52,18 @@ describe("ProductCard", () => {
     expect(screen.getByText(/agotado/i)).toBeInTheDocument();
   });
 
-  it("dispara onAdd cuando se hace click en el botón Añadir", async () => {
+  it("dispara onAdd cuando se hace click en Comprar ahora", async () => {
     const onAdd = vi.fn();
     const user = userEvent.setup();
     render(<ProductCard product={product} onAdd={onAdd} />);
-    await user.click(screen.getByRole("button", { name: /añadir/i }));
+    await user.click(screen.getByRole("button", { name: /comprar ahora/i }));
     expect(onAdd).toHaveBeenCalledWith(product);
   });
 
-  it("no muestra Añadir cuando inStock=false", () => {
+  it("no muestra Comprar ahora cuando inStock=false", () => {
     render(<ProductCard product={{ ...product, inStock: false }} onAdd={() => {}} />);
     expect(
-      screen.queryByRole("button", { name: /añadir/i }),
+      screen.queryByRole("button", { name: /comprar ahora/i }),
     ).not.toBeInTheDocument();
   });
 });

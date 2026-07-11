@@ -111,6 +111,50 @@ function makeGallery(visualKey: ProductVisualKey): GalleryImage[] {
   ];
 }
 
+type ListingProductInput = {
+  slug: string;
+  title: string;
+  priceValue: number;
+  visualKey: ProductVisualKey;
+  size: ProductSize;
+  prevPriceValue?: number;
+};
+
+function makeListingProduct(input: ListingProductInput): Product {
+  return {
+    slug: input.slug,
+    visualKey: input.visualKey,
+    title: input.title,
+    shortTitle: input.title,
+    price: formatCOP(input.priceValue),
+    priceValue: input.priceValue,
+    prevPrice: input.prevPriceValue
+      ? formatCOP(input.prevPriceValue)
+      : undefined,
+    prevPriceValue: input.prevPriceValue,
+    tagline: "Hidratación PH PLUS para todos los días",
+    description: `${input.title}, disponible para compra directa y entrega a domicilio.`,
+    longDescription: [
+      `${input.title} con agua PH PLUS alcalina y filtrada, lista para disfrutar.`,
+    ],
+    features: [
+      "Agua alcalina PH 9",
+      "14 procesos de filtración",
+      "Envase libre de BPA",
+    ],
+    includes: [input.title],
+    category: "garrafa",
+    size: input.size,
+    popularity: 50,
+    inStock: true,
+    gallery: makeGallery(input.visualKey),
+    specs: COMMON_SPECS,
+    usage: COMMON_USAGE,
+    reviews: COMMON_REVIEWS,
+    rating: { average: 4.8, count: 24 },
+  };
+}
+
 export const PRODUCTS: Product[] = [
   {
     slug: "kit-inicial-botellon-19lts",
@@ -242,10 +286,10 @@ export const PRODUCTS: Product[] = [
   {
     slug: "recarga-19lts-individual",
     visualKey: "recargas",
-    title: "Recarga individual 19 lts",
-    shortTitle: "Recarga 19 lts",
-    price: "$36.000",
-    priceValue: 36000,
+    title: "1 recarga de 19 lts",
+    shortTitle: "1 recarga de 19 lts",
+    price: "$50.000",
+    priceValue: 50000,
     tagline: "Una recarga cuando la necesites",
     description:
       "Recarga individual de 19 litros para reponer tu botellón. Ideal para hogares pequeños o pedidos puntuales.",
@@ -540,6 +584,84 @@ export const PRODUCTS: Product[] = [
     reviews: COMMON_REVIEWS,
     rating: { average: 4.9, count: 51 },
   },
+  makeListingProduct({
+    slug: "agua-ph-plus-kids-300ml-x24",
+    title: "Agua PH PLUS KIDS 300 ml x 24 ud",
+    priceValue: 57_600,
+    visualKey: "garrafas",
+    size: "1L",
+  }),
+  makeListingProduct({
+    slug: "agua-ph-plus-300ml-x24",
+    title: "Agua PH PLUS 300 ml x 24 ud",
+    priceValue: 57_600,
+    visualKey: "garrafas",
+    size: "1L",
+  }),
+  makeListingProduct({
+    slug: "agua-ph-plus-sport-500ml-x12",
+    title: "Agua PH PLUS Sport 500 ml x 12 ud",
+    priceValue: 50_160,
+    visualKey: "kit",
+    size: "1L",
+  }),
+  makeListingProduct({
+    slug: "agua-ph-plus-500ml-x12",
+    title: "Agua PH PLUS 500 ml x 12 ud",
+    priceValue: 48_480,
+    visualKey: "kit",
+    size: "1L",
+  }),
+  makeListingProduct({
+    slug: "agua-ph-plus-fit-1l-x6",
+    title: "Agua PH PLUS FIT 1 L x 6 ud",
+    priceValue: 35_376,
+    prevPriceValue: 44_220,
+    visualKey: "garrafas",
+    size: "1L",
+  }),
+  makeListingProduct({
+    slug: "agua-ph-plus-1l-x6",
+    title: "Agua PH PLUS 1 L x 6 ud",
+    priceValue: 50_160,
+    visualKey: "kit",
+    size: "1L",
+  }),
+  makeListingProduct({
+    slug: "agua-ph-plus-5l-x1",
+    title: "Agua PH PLUS 5 L x 1 ud",
+    priceValue: 24_490,
+    visualKey: "kit",
+    size: "5L",
+  }),
+  makeListingProduct({
+    slug: "agua-ph-plus-vidrio-280ml-x24",
+    title: "Agua PH PLUS vidrio 280 ml x 24 ud",
+    priceValue: 108_000,
+    visualKey: "kit",
+    size: "1L",
+  }),
+  makeListingProduct({
+    slug: "agua-ph-plus-vidrio-477ml-x24",
+    title: "Agua PH PLUS vidrio 477 ml x 24 ud",
+    priceValue: 132_000,
+    visualKey: "kit",
+    size: "1L",
+  }),
+  makeListingProduct({
+    slug: "agua-ph-plus-hierbabuena-500ml-x12",
+    title: "Agua PH PLUS hierbabuena 500 ml x 12 ud",
+    priceValue: 63_600,
+    visualKey: "garrafas",
+    size: "1L",
+  }),
+  makeListingProduct({
+    slug: "agua-ph-plus-limonaria-500ml-x12",
+    title: "Agua PH PLUS limonaria 500 ml x 12 ud",
+    priceValue: 63_600,
+    visualKey: "garrafas",
+    size: "1L",
+  }),
 ];
 
 export function getProduct(slug: string): Product | undefined {

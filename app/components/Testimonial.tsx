@@ -40,7 +40,7 @@ export default function Testimonial() {
 
         <div className="mt-3 flex justify-center sm:mt-9">
           <Link
-            href="/por-que-ph-plus"
+            href="/por-que-ph-plus#testimonios"
             className="ph-condensed inline-flex min-h-[30px] items-center justify-center rounded-[18px] border-2 border-[#1e3a8a] bg-white/10 px-4 text-[10px] font-bold leading-none text-[#6b7280] shadow-[3px_4px_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 sm:min-h-[40px] sm:px-6 sm:text-[16px] lg:min-h-[44px] lg:w-[300px] lg:rounded-[28px] lg:px-7 lg:text-[18px]"
           >
             Conoce más historias reales

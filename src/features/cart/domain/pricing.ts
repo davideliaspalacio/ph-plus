@@ -6,7 +6,7 @@
  * y reusable cuando migremos a Supabase (el repo de catálogo cumple la función de lookup).
  */
 
-export const SHIPPING_FLAT = 8_000;
+export const SHIPPING_FLAT = 11_000;
 export const FREE_SHIPPING_THRESHOLD = 120_000;
 
 export type CartItemInput = {

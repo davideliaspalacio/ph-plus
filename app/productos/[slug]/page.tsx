@@ -6,11 +6,9 @@ import type { Metadata } from "next";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import Reveal from "../../components/Reveal";
-import ProductVisual from "../../components/ProductVisual";
 import ProductGallery from "../../components/ProductGallery";
 import ProductTabs from "../../components/ProductTabs";
 import AddToCartButton from "../../components/AddToCartButton";
-import type { Product } from "../../lib/products";
 import { productRepo } from "@/src/features/catalog";
 
 export const dynamic = "force-dynamic";
@@ -77,12 +75,6 @@ export default async function ProductDetailPage({
   const product = await productRepo.bySlug(slug);
   if (!product) notFound();
 
-  // Cargamos todo el catálogo (o un subset por categoría) para construir
-  // los relacionados.
-  const all = await productRepo.list();
-  const related: Product[] = all.items
-    .filter((p: Product) => p.slug !== product.slug)
-    .slice(0, 4);
   const waMessage = encodeURIComponent(
     `Hola, quiero comprar ${product.title} (${product.price}).`,
   );
@@ -232,46 +224,6 @@ export default async function ProductDetailPage({
           </Reveal>
         </section>
 
-        <section className="border-t border-card-border bg-[#fafbfd] py-12 sm:py-14 lg:py-16">
-          <div className="mx-auto max-w-page px-5 sm:px-8 lg:px-12">
-            <Reveal>
-              <div className="flex items-end justify-between gap-3">
-                <h2 className="text-[18px] font-extrabold uppercase tracking-[0.04em] text-brand sm:text-[22px] lg:text-[24px]">
-                  Otros productos
-                </h2>
-                <Link
-                  href="/productos"
-                  className="text-[12px] font-semibold text-brand underline-offset-2 hover:underline sm:text-[13px]"
-                >
-                  Ver todos →
-                </Link>
-              </div>
-            </Reveal>
-            <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {related.map((rp, i) => (
-                <Reveal key={rp.slug} delay={100 + i * 100}>
-                  <Link
-                    href={`/productos/${rp.slug}`}
-                    className="flex h-full flex-col gap-3 rounded-2xl border border-card-border bg-white p-4 transition-shadow hover:shadow-[0_8px_22px_rgba(27,34,166,0.10)]"
-                  >
-                    <div className="grid h-28 w-full place-items-center rounded-xl bg-[#f4f5fa]">
-                      <ProductVisual
-                        visualKey={rp.visualKey}
-                        className="h-24 w-auto"
-                      />
-                    </div>
-                    <p className="text-[14px] font-bold leading-tight text-brand">
-                      {rp.title}
-                    </p>
-                    <p className="mt-auto text-[16px] font-extrabold text-ink">
-                      {rp.price}
-                    </p>
-                  </Link>
-                </Reveal>
-              ))}
-            </div>
-          </div>
-        </section>
       </main>
 
       <Footer />

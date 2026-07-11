@@ -113,12 +113,13 @@ describe("PaymentSchema", () => {
     expect(r.success).toBe(false);
   });
 
-  it("acepta otros métodos (pse, nequi, cash_on_delivery)", () => {
+  it("acepta otros métodos (pse, nequi, cash_on_delivery, payu)", () => {
     expect(PaymentSchema.safeParse({ method: "pse" }).success).toBe(true);
     expect(PaymentSchema.safeParse({ method: "nequi" }).success).toBe(true);
     expect(
       PaymentSchema.safeParse({ method: "cash_on_delivery" }).success,
     ).toBe(true);
+    expect(PaymentSchema.safeParse({ method: "payu" }).success).toBe(true);
   });
 
   it("rechaza método inválido", () => {

@@ -67,7 +67,10 @@ export default function StoriesCarousel() {
   }
 
   return (
-    <section className="bg-white px-5 pb-9 pt-5 lg:pb-12 lg:pt-4">
+    <section
+      id="testimonios"
+      className="scroll-mt-24 bg-white px-5 pb-9 pt-5 lg:pb-12 lg:pt-4"
+    >
       <div className="mx-auto max-w-[920px]">
         <h2 className="ph-display text-center text-[28px] uppercase leading-none text-[#1e3a8a] lg:text-[36px]">
           Gotas que cuentan historias

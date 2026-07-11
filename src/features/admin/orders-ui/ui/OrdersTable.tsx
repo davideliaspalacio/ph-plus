@@ -40,6 +40,7 @@ const PAYMENT_LABEL: Record<string, string> = {
   pse: "PSE",
   nequi: "Nequi",
   cash_on_delivery: "Contra entrega",
+  payu: "PayU",
   mock: "Mock",
 };
 

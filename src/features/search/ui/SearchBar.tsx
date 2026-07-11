@@ -30,8 +30,8 @@ export interface SearchBarProps {
  * - Debounce 200ms vía `useEffect + setTimeout`.
  * - Dropdown sólo si `query.length >= 2`.
  * - Escape cierra el dropdown.
- * - Click en resultado navega a `/productos/[slug]` y registra la query
- *   en el historial reciente.
+ * - Click en resultado lleva al catálogo general y registra la query en el
+ *   historial reciente. Las fichas de detalle no se exponen en el storefront.
  */
 export function SearchBar({
   products,
@@ -46,18 +46,13 @@ export function SearchBar({
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [open, setOpen] = useState(false);
-  const [fetched, setFetched] = useState<ProductLike[] | null>(
-    products ?? null,
-  );
+  const [fetched, setFetched] = useState<ProductLike[] | null>(null);
 
   const addRecent = useSearchHistory((s) => s.add);
 
   // Si nos pasaron products como prop, los usamos directamente.
   useEffect(() => {
-    if (products) {
-      setFetched(products);
-      return;
-    }
+    if (products) return;
     // Carga lazy del catálogo desde el repo.
     let cancelled = false;
     productRepo
@@ -84,9 +79,12 @@ export function SearchBar({
   // Resultados rankeados.
   const results = useMemo(() => {
     if (debouncedQuery.trim().length < MIN_QUERY_LENGTH) return [];
-    if (!fetched) return [];
-    return rankProducts(fetched, debouncedQuery, TOP_N).map((r) => r.product);
-  }, [debouncedQuery, fetched]);
+    const availableProducts = products ?? fetched;
+    if (!availableProducts) return [];
+    return rankProducts(availableProducts, debouncedQuery, TOP_N).map(
+      (r) => r.product,
+    );
+  }, [debouncedQuery, fetched, products]);
 
   // El dropdown está abierto cuando: el usuario escribió >= 2 chars,
   // hay un valor estable (debounced) >= 2, y la UI no lo cerró con Escape.
@@ -101,7 +99,7 @@ export function SearchBar({
     setQuery("");
     setDebouncedQuery("");
     if (onSelect) onSelect(product);
-    router.push(`/productos/${product.slug}`);
+    router.push("/productos");
   };
 
   // Cierra el dropdown si se hace click fuera.
@@ -118,7 +116,14 @@ export function SearchBar({
   }, [shouldShow]);
 
   return (
-    <div ref={containerRef} className={"relative " + (className ?? "")}>
+    <div
+      ref={containerRef}
+      role="combobox"
+      aria-controls={shouldShow ? listboxId : undefined}
+      aria-expanded={shouldShow}
+      aria-haspopup="listbox"
+      className={"relative " + (className ?? "")}
+    >
       <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-ink-muted">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
           <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
@@ -143,8 +148,6 @@ export function SearchBar({
           }
         }}
         placeholder={placeholder}
-        aria-controls={shouldShow ? listboxId : undefined}
-        aria-expanded={shouldShow}
         aria-autocomplete="list"
         className="w-full rounded-full border border-card-border bg-white pl-10 pr-4 py-2 text-[14px] text-ink placeholder:text-ink-muted caret-brand outline-none focus:border-brand focus:ring-2 focus:ring-brand/20 [&::-webkit-search-cancel-button]:appearance-none"
       />

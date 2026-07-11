@@ -140,23 +140,17 @@ export default function CartPage() {
                     key={product.slug}
                     className="flex flex-col gap-4 rounded-2xl border border-card-border bg-white p-4 sm:flex-row sm:items-center sm:p-5"
                   >
-                    <Link
-                      href={`/productos/${product.slug}`}
-                      className="grid h-24 w-24 shrink-0 place-items-center rounded-xl bg-[#f4f5fa]"
-                    >
+                    <div className="grid h-24 w-24 shrink-0 place-items-center rounded-xl bg-[#f4f5fa]">
                       <ProductVisual
                         visualKey={product.visualKey}
                         className="h-20 w-auto"
                       />
-                    </Link>
+                    </div>
 
                     <div className="flex-1">
-                      <Link
-                        href={`/productos/${product.slug}`}
-                        className="text-[15px] font-bold text-brand hover:underline"
-                      >
+                      <p className="text-[15px] font-bold text-brand">
                         {product.title}
-                      </Link>
+                      </p>
                       <p className="mt-1 text-[13px] text-ink-muted">
                         {formatCOP(product.priceValue)} c/u
                       </p>

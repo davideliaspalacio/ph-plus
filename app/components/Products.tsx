@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { PRODUCTS } from "../lib/products";
+import AddToCartButton from "./AddToCartButton";
 
 type FeaturedItem = {
   slug: string;
@@ -82,9 +83,7 @@ export default function Products() {
                   item.articleClassName
                 }
               >
-                <Link
-                  href={`/productos/${product.slug}`}
-                  aria-label={`Ver detalles de ${product.title}`}
+                <div
                   className={
                     "relative block w-full " +
                     item.imageClassName +
@@ -105,7 +104,7 @@ export default function Products() {
                         : "")
                     }
                   />
-                </Link>
+                </div>
 
                 <div
                   className={
@@ -142,26 +141,13 @@ export default function Products() {
                 </div>
 
                 <div className="mt-1 flex justify-center lg:mt-4">
-                  <Link
-                    href={`/productos/${product.slug}`}
-                    className="ph-condensed inline-flex h-[26px] w-[104px] items-center justify-center gap-1 rounded-full border border-black bg-[#1e3a8a] px-2 text-[9px] font-bold text-white transition-transform hover:scale-[1.03] hover:bg-[#1e2aab] sm:h-[36px] sm:w-[150px] sm:gap-1.5 sm:text-[14px] lg:h-[68px] lg:w-[294px] lg:gap-3 lg:text-[29px]"
-                  >
-                    <svg
-                      viewBox="0 0 48 46"
-                      className="h-4 w-4 sm:h-5 sm:w-5 lg:h-10 lg:w-10"
-                      fill="none"
-                      aria-hidden
-                    >
-                      <path
-                        d="M2 2H10L15.36 28.78C15.5429 29.7008 16.0438 30.5279 16.7751 31.1166C17.5064 31.7053 18.4214 32.018 19.36 32H38.8C39.7386 32.018 40.6536 31.7053 41.3849 31.1166C42.1162 30.5279 42.6171 29.7008 42.8 28.78L46 12H12M20 42C20 43.1046 19.1046 44 18 44C16.8954 44 16 43.1046 16 42C16 40.8954 16.8954 40 18 40C19.1046 40 20 40.8954 20 42ZM42 42C42 43.1046 41.1046 44 40 44C38.8954 44 38 43.1046 38 42C38 40.8954 38.8954 40 40 40C41.1046 40 42 40.8954 42 42Z"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                    comprar ahora
-                  </Link>
+                  <AddToCartButton
+                    slug={product.slug}
+                    mode="cart"
+                    label="comprar ahora"
+                    showFeedback={false}
+                    className="ph-condensed h-[26px] w-[108px] border border-black px-2 py-0 text-[9px] font-bold sm:h-[36px] sm:w-[154px] sm:text-[14px] lg:h-[68px] lg:w-[300px] lg:text-[29px]"
+                  />
                 </div>
               </article>
             );

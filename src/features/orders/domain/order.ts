@@ -67,6 +67,7 @@ export const OrderPaymentMethodSchema = z.enum([
   "pse",
   "nequi",
   "cash_on_delivery",
+  "payu",
   "mock",
 ]);
 export type OrderPaymentMethod = z.infer<typeof OrderPaymentMethodSchema>;
@@ -74,6 +75,10 @@ export type OrderPaymentMethod = z.infer<typeof OrderPaymentMethodSchema>;
 export const OrderPaymentSchema = z.object({
   method: OrderPaymentMethodSchema,
   last4: z.string().length(4).optional(),
+  provider: z.string().optional(),
+  reference: z.string().optional(),
+  transactionId: z.string().optional(),
+  state: z.string().optional(),
 });
 export type OrderPayment = z.infer<typeof OrderPaymentSchema>;
 

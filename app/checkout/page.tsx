@@ -29,14 +29,24 @@ type Shipping = {
   department: string;
   notes: string;
 };
-type PaymentMethod = "tarjeta" | "pse" | "nequi" | "contra-entrega";
+type PaymentMethod = "payu" | "contra-entrega";
 
 const PAYMENT_OPTIONS: { value: PaymentMethod; label: string; hint: string }[] = [
-  { value: "tarjeta", label: "Tarjeta de crédito/débito", hint: "Visa, Mastercard" },
-  { value: "pse", label: "PSE", hint: "Débito desde tu banco" },
-  { value: "nequi", label: "Nequi", hint: "Pago desde la app" },
+  {
+    value: "payu",
+    label: "Pagar en línea con PayU",
+    hint: "Tarjeta, PSE, Nequi y otros métodos habilitados en PayU",
+  },
   { value: "contra-entrega", label: "Pago contra entrega", hint: "Efectivo al recibir" },
 ];
+
+type PayuCheckoutResponse = {
+  action: string;
+  fields: Record<string, string>;
+  orderId: string;
+  referenceCode: string;
+  persisted: boolean;
+};
 
 const DEPARTMENTS = [
   "Cundinamarca",
@@ -132,8 +142,9 @@ export default function CheckoutPage() {
     department: "Cundinamarca",
     notes: "",
   });
-  const [payment, setPayment] = useState<PaymentMethod>("tarjeta");
+  const [payment, setPayment] = useState<PaymentMethod>("payu");
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const canEnterContact = isAuthenticated || guestCheckout;
 
@@ -187,11 +198,31 @@ export default function CheckoutPage() {
     setStep((s) => (Math.max(0, s - 1) as Step));
   }
 
-  function submitOrder() {
+  function redirectToPayu({ action, fields }: PayuCheckoutResponse) {
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = action;
+    form.style.display = "none";
+
+    for (const [name, value] of Object.entries(fields)) {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = value;
+      form.appendChild(input);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+  }
+
+  async function submitOrder() {
+    if (!validateStep(3)) return;
     setSubmitting(true);
-    const orderId = `PH-${Math.floor(100000 + Math.random() * 900000)}`;
+    setSubmitError(null);
+    const fallbackOrderId = `PH-${Math.floor(100000 + Math.random() * 900000)}`;
     const payload = {
-      orderId,
+      orderId: fallbackOrderId,
       contact,
       shipping,
       payment,
@@ -210,13 +241,66 @@ export default function CheckoutPage() {
       },
       createdAt: new Date().toISOString(),
     };
+
+    if (payment === "payu") {
+      try {
+        const response = await fetch("/api/payments/payu", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items,
+            contact,
+            shipping,
+            customerType: isAuthenticated ? "authenticated" : "guest",
+          }),
+        });
+        const data = (await response.json()) as
+          | PayuCheckoutResponse
+          | { error?: string };
+
+        if (!response.ok || !("action" in data)) {
+          throw new Error(
+            "error" in data && data.error
+              ? data.error
+              : "No pudimos preparar el pago con PayU.",
+          );
+        }
+
+        try {
+          sessionStorage.setItem(
+            "phplus.lastOrder",
+            JSON.stringify({
+              ...payload,
+              orderId: data.orderId,
+              payuReferenceCode: data.referenceCode,
+              persisted: data.persisted,
+            }),
+          );
+        } catch {
+          // ignore
+        }
+
+        clear();
+        redirectToPayu(data);
+        return;
+      } catch (error) {
+        setSubmitError(
+          error instanceof Error
+            ? error.message
+            : "No pudimos conectar con PayU. Intenta nuevamente.",
+        );
+        setSubmitting(false);
+        return;
+      }
+    }
+
     try {
       sessionStorage.setItem("phplus.lastOrder", JSON.stringify(payload));
     } catch {
       // ignore
     }
     clear();
-    router.push(`/checkout/exito?order=${orderId}`);
+    router.push(`/checkout/exito?order=${fallbackOrderId}`);
   }
 
   if (!ready) {
@@ -534,9 +618,8 @@ export default function CheckoutPage() {
                     Método de pago
                   </h2>
                   <p className="text-[13px] text-ink-muted">
-                    Selecciona tu método preferido. Este es un mockup —
-                    cuando conectemos el backend se integrará la pasarela
-                    real.
+                    PayU abrirá una pantalla segura para finalizar el pago con
+                    los métodos habilitados en tu cuenta.
                   </p>
                   <div className="space-y-3">
                     {PAYMENT_OPTIONS.map((opt) => (
@@ -630,6 +713,12 @@ export default function CheckoutPage() {
                 </div>
               )}
 
+              {submitError && (
+                <p className="mt-5 rounded-xl bg-red-50 px-4 py-3 text-[13px] font-semibold text-red-700">
+                  {submitError}
+                </p>
+              )}
+
               <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
                 {step > 0 ? (
                   <button
@@ -664,7 +753,11 @@ export default function CheckoutPage() {
                     disabled={submitting}
                     className="inline-flex items-center justify-center rounded-full bg-brand px-6 py-2.5 text-[13px] font-semibold text-white transition-all hover:scale-[1.02] hover:bg-brand-dark disabled:opacity-60"
                   >
-                    {submitting ? "Procesando..." : "Confirmar pedido"}
+                    {submitting
+                      ? "Conectando con PayU..."
+                      : payment === "payu"
+                        ? "Pagar con PayU"
+                        : "Confirmar pedido"}
                   </button>
                 )}
               </div>

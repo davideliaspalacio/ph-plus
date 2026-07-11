@@ -15,14 +15,18 @@ const STATS = [
 
 function Drop({ className = "" }: { className?: string }) {
   return (
-    <Image
-      src="/home/ph9-drop.png"
-      alt=""
-      width={18}
-      height={24}
+    <svg
+      viewBox="0 0 18 24"
       aria-hidden
-      className={`mt-0.5 h-5 w-3.5 shrink-0 object-contain drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)] ${className}`}
-    />
+      className={`mt-0.5 h-5 w-3.5 shrink-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.45)] ${className}`}
+    >
+      <path
+        d="M9 1C7.2 5.1 2 10.3 2 15.2A7 7 0 0016 15.2C16 10.3 10.8 5.1 9 1Z"
+        fill="#11d7e5"
+        stroke="#d9fbff"
+        strokeWidth="1.2"
+      />
+    </svg>
   );
 }
 
@@ -51,7 +55,7 @@ export default function Hero() {
             </h1>
           </div>
 
-          <ul className="ph-condensed absolute bottom-[18px] left-[24px] flex w-[250px] flex-col gap-1 text-[16px] font-bold leading-tight text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+          <ul className="ph-condensed absolute bottom-[18px] left-[-2px] flex w-[270px] flex-col gap-1 text-[16px] font-bold leading-tight text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
             {BULLETS.slice(0, 2).map((b) => (
               <li key={b}>
                 <span className="flex items-start gap-2">
@@ -107,7 +111,7 @@ export default function Hero() {
                   DESDE 2014
                 </h1>
 
-                <ul className="ph-condensed absolute left-0 top-[288px] flex w-[460px] flex-col gap-1 text-[20px] font-bold leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.75)]">
+                <ul className="ph-condensed absolute left-[-22px] top-[288px] flex w-[482px] flex-col gap-1 text-[20px] font-bold leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.75)]">
                   {BULLETS.map((b) => (
                     <li key={b}>
                       <span className="flex items-start gap-2">

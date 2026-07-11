@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -12,6 +12,7 @@ import { useCart } from "@/src/features/cart/store/useCart";
 import type { Product } from "@/app/lib/products";
 
 function SearchContent() {
+  const router = useRouter();
   const params = useSearchParams();
   const q = (params.get("q") ?? "").trim();
   const [products, setProducts] = useState<Product[] | null>(null);
@@ -73,7 +74,14 @@ function SearchContent() {
       </p>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {results.map((p) => (
-          <ProductCard key={p.slug} product={p} onAdd={(prod) => addItem(prod.slug, 1)} />
+          <ProductCard
+            key={p.slug}
+            product={p}
+            onAdd={(prod) => {
+              addItem(prod.slug, 1);
+              router.push("/carrito");
+            }}
+          />
         ))}
       </div>
     </>

@@ -12,7 +12,8 @@ export type SeedPaymentMethod =
   | "credit_card"
   | "pse"
   | "nequi"
-  | "cash_on_delivery";
+  | "cash_on_delivery"
+  | "payu";
 
 export type SeedStoreSettings = {
   businessName: string;
@@ -37,7 +38,7 @@ export const SETTINGS_SEED: SeedStoreSettings = {
   phone: "+57 323 439 2470",
   whatsapp: "+57 323 439 2470",
   taxRate: 0,
-  paymentMethods: ["credit_card", "pse", "nequi", "cash_on_delivery"],
+  paymentMethods: ["payu", "credit_card", "pse", "nequi", "cash_on_delivery"],
   policies: {
     shipping: "/envios",
     returns: "/devoluciones",

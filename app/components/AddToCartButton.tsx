@@ -8,9 +8,8 @@ import { useCart } from "./CartProvider";
 function CartIconSmall() {
   return (
     <svg
-      width="18"
-      height="16"
       viewBox="0 0 48 46"
+      className="h-[1.2em] w-[1.28em] shrink-0"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden
@@ -26,7 +25,7 @@ function CartIconSmall() {
   );
 }
 
-type Mode = "add" | "buy";
+type Mode = "add" | "cart" | "buy";
 type Variant = "primary" | "outline";
 
 const VARIANT_STYLES: Record<Variant, string> = {
@@ -44,6 +43,7 @@ export default function AddToCartButton({
   showIcon = true,
   className = "",
   label,
+  showFeedback = true,
 }: {
   slug: string;
   quantity?: number;
@@ -52,6 +52,7 @@ export default function AddToCartButton({
   showIcon?: boolean;
   className?: string;
   label?: string;
+  showFeedback?: boolean;
 }) {
   const { addItem } = useCart();
   const router = useRouter();
@@ -59,16 +60,25 @@ export default function AddToCartButton({
 
   const handleClick = () => {
     addItem(slug, quantity);
+    if (mode === "cart") {
+      router.push("/carrito");
+      return;
+    }
     if (mode === "buy") {
       router.push("/checkout");
       return;
     }
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1800);
+    if (showFeedback) {
+      setAdded(true);
+      setTimeout(() => setAdded(false), 1800);
+    }
   };
 
   const finalLabel =
-    label ?? (mode === "buy" ? "Comprar ahora" : "Agregar al carrito");
+    label ??
+    (mode === "buy" || mode === "cart"
+      ? "Comprar ahora"
+      : "Agregar al carrito");
 
   return (
     <div className={"flex flex-col gap-2 " + (className.includes("w-full") ? "w-full" : "")}>
@@ -76,16 +86,16 @@ export default function AddToCartButton({
         type="button"
         onClick={handleClick}
         className={
-          "inline-flex items-center justify-center gap-2 rounded-full px-6 py-2.5 text-[13px] font-semibold transition-all " +
+          "inline-flex items-center justify-center gap-[0.42em] whitespace-nowrap rounded-full px-6 py-2.5 text-center text-[13px] font-semibold leading-none transition-all " +
           VARIANT_STYLES[variant] +
           " " +
           className
         }
       >
         {showIcon && <CartIconSmall />}
-        {finalLabel}
+        <span className="block leading-none">{finalLabel}</span>
       </button>
-      {added && (
+      {showFeedback && added && (
         <div className="flex items-center justify-between gap-3 rounded-lg bg-[#eef0ff] px-3 py-2 text-[12px] text-[#1e3a8a]">
           <span>Agregado al carrito</span>
           <Link

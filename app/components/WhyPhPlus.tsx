@@ -9,23 +9,22 @@ type TrustCard = {
   iconClassName?: string;
 };
 
-function TruckIcon() {
+function TruckIcon({ className = "h-11 w-11" }: { className?: string }) {
   return (
     <svg
       viewBox="0 0 64 64"
-      className="h-11 w-11 text-black"
+      className={`${className} text-black`}
       fill="none"
       aria-hidden
     >
-      <circle cx="32" cy="32" r="25" stroke="currentColor" strokeWidth="3" />
       <path
-        d="M17 25h25v18H17V25zM42 31h7l5 6v6H42V31z"
+        d="M7 18h34v27H7V18zM41 27h9l8 10v8H41V27z"
         stroke="currentColor"
-        strokeWidth="3"
+        strokeWidth="4"
         strokeLinejoin="round"
       />
-      <circle cx="25" cy="45" r="3.5" fill="currentColor" />
-      <circle cx="48" cy="45" r="3.5" fill="currentColor" />
+      <circle cx="19" cy="49" r="5" fill="white" stroke="currentColor" strokeWidth="4" />
+      <circle cx="49" cy="49" r="5" fill="white" stroke="currentColor" strokeWidth="4" />
     </svg>
   );
 }
@@ -117,7 +116,7 @@ const CARDS: TrustCard[] = [
   },
   {
     body: "servicio a domicilio",
-    customIcon: <TruckIcon />,
+    customIcon: <TruckIcon className="h-16 w-16" />,
     alt: "Camión de entrega",
   },
   {

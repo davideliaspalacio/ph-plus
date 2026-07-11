@@ -53,19 +53,19 @@ export const CONTENT_SEED: SeedContent = {
       id: "ban_promo_garrafas",
       title: "Pague 3, lleve 5 garrafas",
       image: "/banners/promo-garrafas.svg",
-      href: "/productos/promocion-garrafas",
+      href: "/productos",
     },
     {
       id: "ban_suscripcion",
       title: "Suscripción mensual: ahorra y olvídate de pedir",
       image: "/banners/suscripcion.svg",
-      href: "/productos/suscripcion-mensual-4-botellones",
+      href: "/productos",
     },
     {
       id: "ban_kit_inicial",
       title: "Kit inicial: botellón + dispensador, listo para usar",
       image: "/banners/kit-inicial.svg",
-      href: "/productos/kit-inicial-botellon-19lts",
+      href: "/productos",
     },
   ],
   faq: [

@@ -48,6 +48,7 @@ const PAYMENT_LABELS: Record<CheckoutPaymentMethod, string> = {
   pse: "PSE",
   nequi: "Nequi",
   cash_on_delivery: "Pago contra entrega",
+  payu: "PayU",
 };
 
 const EXPRESS_BUTTONS = [
@@ -113,22 +114,38 @@ export function CheckoutForm<P extends ProductLike = ProductLike>({
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  const contact = {
-    name: draftContact.name ?? "",
-    email: draftContact.email ?? "",
-    phone: draftContact.phone ?? "",
-  };
-  const shipping = {
-    address: draftShipping.address ?? "",
-    city: draftShipping.city ?? "",
-    department: draftShipping.department,
-    postalCode: draftShipping.postalCode ?? "",
-    notes: draftShipping.notes ?? "",
-  };
-  const payment = {
-    method: draftPayment.method,
-    card4Last: draftPayment.card4Last ?? "",
-  };
+  const contact = useMemo(
+    () => ({
+      name: draftContact.name ?? "",
+      email: draftContact.email ?? "",
+      phone: draftContact.phone ?? "",
+    }),
+    [draftContact.email, draftContact.name, draftContact.phone],
+  );
+  const shipping = useMemo(
+    () => ({
+      address: draftShipping.address ?? "",
+      city: draftShipping.city ?? "",
+      department: draftShipping.department,
+      postalCode: draftShipping.postalCode ?? "",
+      notes: draftShipping.notes ?? "",
+    }),
+    [
+      draftShipping.address,
+      draftShipping.city,
+      draftShipping.department,
+      draftShipping.notes,
+      draftShipping.postalCode,
+    ],
+  );
+  const payment = useMemo(
+    () => ({
+      method: draftPayment.method,
+      card4Last: draftPayment.card4Last ?? "",
+    }),
+    [draftPayment.card4Last, draftPayment.method],
+  );
+  const errorCount = Object.keys(errors).length;
 
   // Snapshot vivo para mostrar resumen y total en el CTA.
   const snapshot = useMemo(
@@ -150,10 +167,10 @@ export function CheckoutForm<P extends ProductLike = ProductLike>({
 
   // Limpiar errores cuando ya son válidos.
   useEffect(() => {
-    if (isValid && Object.keys(errors).length > 0) {
-      setErrors({});
-    }
-  }, [isValid, errors]);
+    if (!isValid || errorCount === 0) return;
+    const id = window.setTimeout(() => setErrors({}), 0);
+    return () => window.clearTimeout(id);
+  }, [isValid, errorCount]);
 
   function validateContactField(field: "name" | "email" | "phone") {
     const r = ContactSchema.safeParse(contact);

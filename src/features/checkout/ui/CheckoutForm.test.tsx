@@ -163,11 +163,11 @@ describe("CheckoutForm", () => {
       />,
     );
 
-    // Sin city: shipping default (flat 8.000 o free según subtotal).
-    // Subtotal = 50_000, no califica free shipping (umbral 120_000), shipping = 8_000.
+    // Sin city: shipping base de 11.000 o gratis según subtotal.
+    // Subtotal = 50_000, no califica para envío gratis, shipping = 11_000.
     expect(
       screen.getAllByRole("button", { name: /pagar/i })[0],
-    ).toHaveTextContent(/58/);
+    ).toHaveTextContent(/61/);
 
     await user.type(screen.getByLabelText(/ciudad/i), "Bogotá");
 

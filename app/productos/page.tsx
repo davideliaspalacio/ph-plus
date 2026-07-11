@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import AddToCartButton from "../components/AddToCartButton";
 import ProductVisual from "../components/ProductVisual";
 import type { ProductVisualKey } from "../lib/products";
 
@@ -11,8 +12,9 @@ type CatalogItem = {
   price: string;
   previousPrice?: string;
   visualKey: ProductVisualKey;
+  image?: string;
   imageClassName?: string;
-  slug?: string;
+  slug: string;
 };
 
 type CatalogSection = {
@@ -24,34 +26,75 @@ type CatalogSection = {
 
 const WHATSAPP_NUMBER = "573234392470";
 
+function DeliveryTruckIcon() {
+  return (
+    <svg
+      viewBox="0 0 64 64"
+      className="h-12 w-12 shrink-0 text-black lg:h-11 lg:w-11"
+      fill="none"
+      aria-hidden
+    >
+      <path
+        d="M7 18h34v27H7V18zM41 27h9l8 10v8H41V27z"
+        stroke="currentColor"
+        strokeWidth="4"
+        strokeLinejoin="round"
+      />
+      <circle cx="19" cy="49" r="5" fill="white" stroke="currentColor" strokeWidth="4" />
+      <circle cx="49" cy="49" r="5" fill="white" stroke="currentColor" strokeWidth="4" />
+    </svg>
+  );
+}
+
+function SecureLockIcon() {
+  return (
+    <span className="relative grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#d9dde2] lg:h-11 lg:w-11">
+      <svg viewBox="0 0 48 48" className="h-9 w-9" aria-hidden>
+        <path
+          d="M15 21v-5a9 9 0 0118 0v5"
+          fill="none"
+          stroke="#8b98a3"
+          strokeWidth="4"
+          strokeLinecap="round"
+        />
+        <rect x="11" y="20" width="26" height="22" rx="3" fill="#ffb52e" />
+      </svg>
+    </span>
+  );
+}
+
 const FEATURED_PRODUCTS: CatalogItem[] = [
   {
     name: "Promoción garrafas",
     price: "$73,470",
     previousPrice: "$122,450",
     visualKey: "garrafas",
-    imageClassName: "h-[150px] lg:h-[178px]",
+    image: "/products/oferta-garrafas.png",
+    imageClassName: "h-[178px] lg:h-[178px]",
     slug: "promocion-garrafas",
   },
   {
     name: "Kit inicial de\nbotellón 19 lts",
     price: "$85,000",
     visualKey: "kit",
-    imageClassName: "h-[132px] lg:h-[128px]",
+    image: "/products/botellon-kit.png",
+    imageClassName: "h-[155px] lg:h-[170px]",
     slug: "kit-inicial-botellon-19lts",
   },
   {
     name: "1 recarga\nde 19 lts",
     price: "$50,000",
     visualKey: "recargas",
-    imageClassName: "h-[132px] lg:h-[128px]",
+    image: "/products/recargas-19.png",
+    imageClassName: "h-[155px] lg:h-[170px]",
     slug: "recarga-19lts-individual",
   },
   {
     name: "2 recargas\ncada una de 19 lts",
     price: "$69,000",
     visualKey: "recargas",
-    imageClassName: "h-[132px] lg:h-[128px]",
+    image: "/products/recargas-19.png",
+    imageClassName: "h-[155px] lg:h-[170px]",
     slug: "recargas-19lts",
   },
 ];
@@ -62,28 +105,28 @@ const PET_PRODUCTS: CatalogItem[] = [
     price: "$57,600",
     visualKey: "garrafas",
     imageClassName: "h-[126px] lg:h-[134px]",
-    slug: "garrafa-1l-pack6",
+    slug: "agua-ph-plus-kids-300ml-x24",
   },
   {
     name: "agua ph plus 300\nml x 24 ud",
     price: "$57,600",
     visualKey: "garrafas",
     imageClassName: "h-[126px] lg:h-[134px]",
-    slug: "garrafa-1l-pack6",
+    slug: "agua-ph-plus-300ml-x24",
   },
   {
     name: "agua ph plus 500\nml sport x 12 ud",
     price: "$50,160",
     visualKey: "kit",
     imageClassName: "h-[126px] lg:h-[134px]",
-    slug: "garrafa-1-5l-pack6",
+    slug: "agua-ph-plus-sport-500ml-x12",
   },
   {
     name: "agua ph plus 500\nml x 12 ud",
     price: "$48,480",
     visualKey: "kit",
     imageClassName: "h-[126px] lg:h-[134px]",
-    slug: "garrafa-1-5l-pack6",
+    slug: "agua-ph-plus-500ml-x12",
   },
   {
     name: "agua ph plus FIT\n1LT x 6 ud",
@@ -91,21 +134,21 @@ const PET_PRODUCTS: CatalogItem[] = [
     previousPrice: "$44,220",
     visualKey: "garrafas",
     imageClassName: "h-[126px] lg:h-[134px]",
-    slug: "garrafa-1l-pack6",
+    slug: "agua-ph-plus-fit-1l-x6",
   },
   {
     name: "agua ph plus\n1LT x 6 ud",
     price: "$50,160",
     visualKey: "kit",
     imageClassName: "h-[126px] lg:h-[134px]",
-    slug: "garrafa-1l-pack6",
+    slug: "agua-ph-plus-1l-x6",
   },
   {
     name: "agua ph plus 5LT x\n1ud",
     price: "$24,490",
     visualKey: "kit",
     imageClassName: "h-[132px] lg:h-[138px]",
-    slug: "botellon-5l",
+    slug: "agua-ph-plus-5l-x1",
   },
   {
     name: "1 recarga\nde 19 lts",
@@ -127,14 +170,14 @@ const LOWER_SECTIONS: CatalogSection[] = [
         price: "$108,000",
         visualKey: "kit",
         imageClassName: "h-[140px] lg:h-[148px]",
-        slug: "botellon-19lts",
+        slug: "agua-ph-plus-vidrio-280ml-x24",
       },
       {
         name: "agua ph plus vidrio\n477 ml x 24 ud",
         price: "$132,000",
         visualKey: "kit",
         imageClassName: "h-[140px] lg:h-[148px]",
-        slug: "botellon-19lts",
+        slug: "agua-ph-plus-vidrio-477ml-x24",
       },
     ],
   },
@@ -148,14 +191,14 @@ const LOWER_SECTIONS: CatalogSection[] = [
         price: "$63,600",
         visualKey: "garrafas",
         imageClassName: "h-[128px] lg:h-[136px]",
-        slug: "garrafa-1l-pack6",
+        slug: "agua-ph-plus-hierbabuena-500ml-x12",
       },
       {
         name: "agua SABORIZADA\nph plus LIMONARIA\n500 ml x 12 ud",
         price: "$63,600",
         visualKey: "garrafas",
         imageClassName: "h-[128px] lg:h-[136px]",
-        slug: "garrafa-1l-pack6",
+        slug: "agua-ph-plus-limonaria-500ml-x12",
       },
     ],
   },
@@ -168,34 +211,18 @@ function whatsappHref(item?: CatalogItem) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
-function productHref(item: CatalogItem) {
-  return `/productos/${item.slug ?? "promocion-garrafas"}`;
-}
-
 function TrustStrip() {
   return (
     <div className="mx-auto mt-8 grid max-w-[330px] grid-cols-2 items-center justify-center gap-3 px-4 lg:mt-3 lg:flex lg:max-w-[820px] lg:flex-nowrap lg:gap-3">
       <div className="ph-condensed flex h-[62px] w-[146px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.22)] lg:h-[56px] lg:w-[156px] lg:gap-3 lg:px-3 lg:text-[10px]">
-        <Image
-          src="/home/icon-truck.png"
-          alt=""
-          width={44}
-          height={44}
-          className="h-11 w-11 shrink-0 object-contain lg:h-10 lg:w-10"
-        />
+        <DeliveryTruckIcon />
         <span>
           servicio a domicilio
           <br />a nivel nacional
         </span>
       </div>
       <div className="ph-condensed flex h-[62px] w-[146px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.22)] lg:h-[56px] lg:w-[190px] lg:gap-3 lg:px-3 lg:text-[10px]">
-        <Image
-          src="/home/icon-lock.png"
-          alt=""
-          width={44}
-          height={44}
-          className="h-11 w-11 shrink-0 object-contain lg:h-10 lg:w-10"
-        />
+        <SecureLockIcon />
         <span>
           pago seguro con SSL.
           <br />
@@ -245,20 +272,13 @@ function SectionHeader({
 
 function BuyButton({ item }: { item: CatalogItem }) {
   return (
-    <Link
-      href={productHref(item)}
-      className="ph-condensed mt-2 inline-flex h-[26px] w-[88px] items-center justify-center gap-1 rounded-full bg-[#1e3a8a] px-2 text-[9px] font-bold text-white transition-transform hover:-translate-y-0.5 lg:h-[28px] lg:w-[104px] lg:text-[10px]"
-      aria-label={`Ver detalle de ${item.name.replace(/\n/g, " ")}`}
-    >
-      <Image
-        src="/icons/cart.svg"
-        alt=""
-        width={12}
-        height={12}
-        className="h-4 w-4"
-      />
-      comprar ahora
-    </Link>
+    <AddToCartButton
+      slug={item.slug}
+      mode="cart"
+      label="comprar ahora"
+      showFeedback={false}
+      className="ph-condensed mt-2 h-[26px] w-[104px] px-2 py-0 text-[9px] font-bold lg:h-[28px] lg:w-[118px] lg:text-[10px]"
+    />
   );
 }
 
@@ -272,23 +292,31 @@ function ProductCard({
   className?: string;
 }) {
   const imageBoxClass = featured
-    ? "h-[142px] lg:h-[178px]"
+    ? "h-[180px] lg:h-[178px]"
     : "h-[138px] lg:h-[148px]";
 
   return (
     <article
       className={`ph-condensed flex min-w-0 flex-col items-center text-center ${className}`}
     >
-      <Link
-        href={productHref(item)}
-        aria-label={`Ver detalle de ${item.name.replace(/\n/g, " ")}`}
+      <div
         className={`flex w-full items-center justify-center overflow-visible ${imageBoxClass}`}
       >
-        <ProductVisual
-          visualKey={item.visualKey}
-          className={`w-auto ${item.imageClassName ?? "h-full"}`}
-        />
-      </Link>
+        {item.image ? (
+          <Image
+            src={item.image}
+            alt=""
+            width={380}
+            height={500}
+            className={`w-auto object-contain ${item.imageClassName ?? "h-full"}`}
+          />
+        ) : (
+          <ProductVisual
+            visualKey={item.visualKey}
+            className={`w-auto ${item.imageClassName ?? "h-full"}`}
+          />
+        )}
+      </div>
       <div className="mt-2 flex min-h-[54px] flex-col items-center lg:min-h-[48px]">
         <div className="flex items-baseline justify-center gap-1">
           {item.previousPrice && (
@@ -300,12 +328,9 @@ function ProductCard({
             {item.price}
           </p>
         </div>
-        <Link
-          href={productHref(item)}
-          className="mt-2 max-w-[92px] whitespace-pre-line text-[11px] font-bold leading-[1.05] text-[#6b7280] hover:text-[#1e3a8a] lg:max-w-[104px] lg:text-[9px]"
-        >
+        <p className="mt-2 max-w-[92px] whitespace-pre-line text-[11px] font-bold leading-[1.05] text-[#6b7280] lg:max-w-[104px] lg:text-[9px]">
           {item.name}
-        </Link>
+        </p>
       </div>
       <BuyButton item={item} />
     </article>
@@ -318,10 +343,10 @@ function FeaturedProducts() {
       <div className="lg:hidden">
         <SectionHeader
           title="Productos destacados"
-          subtitle="Ahorra más, disfruta más cada día"
+          subtitle={<span className="whitespace-nowrap">Ahorra más, disfruta más cada día</span>}
         />
         <div className="mt-6 grid grid-cols-3 items-end gap-x-5">
-          {FEATURED_PRODUCTS.slice(0, 3).map((item) => (
+          {[FEATURED_PRODUCTS[0], FEATURED_PRODUCTS[1], FEATURED_PRODUCTS[3]].map((item) => (
             <ProductCard key={item.name} item={item} featured />
           ))}
         </div>
@@ -361,13 +386,17 @@ function PetProducts() {
           }
         />
         <div className="mt-8 grid grid-cols-3 gap-x-5 gap-y-10">
-          {PET_PRODUCTS.map((item, index) => (
+          {PET_PRODUCTS.slice(0, 6).map((item) => (
             <ProductCard
               key={item.name}
               item={item}
-              className={index === 6 ? "col-start-1" : ""}
             />
           ))}
+          <div className="col-span-3 mx-auto grid w-[220px] grid-cols-2 gap-x-5">
+            {PET_PRODUCTS.slice(6).map((item) => (
+              <ProductCard key={item.name} item={item} />
+            ))}
+          </div>
         </div>
       </div>
 

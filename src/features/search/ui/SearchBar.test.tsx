@@ -128,7 +128,7 @@ describe("<SearchBar />", () => {
       const option = screen.getByText(/Agua mineral 1L/i);
       fireEvent.click(option);
 
-      expect(pushMock).toHaveBeenCalledWith("/productos/agua-1l");
+      expect(pushMock).toHaveBeenCalledWith("/productos");
       expect(onSelect).toHaveBeenCalledWith(
         expect.objectContaining({ slug: "agua-1l" }),
       );

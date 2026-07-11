@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
 import type { Product } from "@/app/lib/products";
+import ProductVisual from "@/app/components/ProductVisual";
 import { Badge } from "@/src/shared/ui";
 import { formatCOP } from "@/src/shared/lib/format";
 import { cn } from "@/src/shared/lib/cn";
@@ -26,18 +25,12 @@ export function ProductCard({ product, onAdd, className }: ProductCardProps) {
       )}
     >
       <div className="relative">
-        <Link
-          href={`/productos/${product.slug}`}
-          className="block aspect-square w-full overflow-hidden bg-gradient-to-b from-accent-cyan/15 to-white"
-        >
-          <Image
-            src={`/products/${product.slug}.png`}
-            alt={product.title}
-            width={400}
-            height={400}
-            className="h-full w-full object-contain p-6 transition-transform duration-300 group-hover:scale-[1.03]"
+        <div className="grid aspect-square w-full place-items-center overflow-hidden bg-gradient-to-b from-accent-cyan/15 to-white p-6">
+          <ProductVisual
+            visualKey={product.visualKey}
+            className="h-full w-full transition-transform duration-300 group-hover:scale-[1.03]"
           />
-        </Link>
+        </div>
         <div className="absolute right-3 top-3">
           <WishlistButton slug={product.slug} size="md" />
         </div>
@@ -63,12 +56,9 @@ export function ProductCard({ product, onAdd, className }: ProductCardProps) {
           )}
         </div>
 
-        <Link
-          href={`/productos/${product.slug}`}
-          className="text-[15px] font-extrabold leading-tight text-brand transition-colors hover:text-brand-dark"
-        >
+        <div className="text-[15px] font-extrabold leading-tight text-brand">
           <h3>{product.title}</h3>
-        </Link>
+        </div>
 
         <p className="line-clamp-2 text-[13px] text-ink-muted">
           {product.tagline}
@@ -89,9 +79,9 @@ export function ProductCard({ product, onAdd, className }: ProductCardProps) {
           <button
             type="button"
             onClick={() => onAdd(product)}
-            className="mt-3 inline-flex h-10 items-center justify-center gap-2 rounded-full bg-brand px-4 text-[13px] font-semibold text-white transition-colors hover:bg-brand-dark"
+            className="mt-3 inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-full bg-brand px-4 text-center text-[13px] font-semibold leading-none text-white transition-colors hover:bg-brand-dark"
           >
-            Añadir al carrito
+            <span className="block leading-none">Comprar ahora</span>
           </button>
         )}
       </div>
