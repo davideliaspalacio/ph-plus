@@ -451,7 +451,7 @@ export default function CheckoutPage() {
 
           <section className="mx-auto max-w-[820px] px-5 py-10 sm:px-8 sm:py-14">
             {/* ── Acceder ── */}
-            <div>
+            <div className="rounded-2xl border border-card-border bg-white p-6 shadow-[0_10px_28px_rgba(27,34,166,0.08)] sm:p-8">
               <div className="flex items-center gap-4">
                 <EnterIcon className="h-11 w-11 shrink-0 text-ink" />
                 <h2 className="ph-display text-[20px] uppercase leading-none text-brand sm:text-[24px]">
@@ -518,7 +518,7 @@ export default function CheckoutPage() {
             </div>
 
             {/* ── Acceder como invitado ── */}
-            <div className="mt-14">
+            <div className="mt-10 rounded-2xl border border-card-border bg-white p-6 shadow-[0_10px_28px_rgba(27,34,166,0.08)] sm:p-8">
               <div className="flex items-center gap-4">
                 <EnterIcon className="h-11 w-11 shrink-0 text-ink" />
                 <h2 className="ph-display text-[20px] uppercase leading-none text-brand sm:text-[24px]">
