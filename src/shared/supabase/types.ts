@@ -186,6 +186,23 @@ export interface Database {
         > & { id: string };
         Update: Partial<Database["public"]["Tables"]["settings"]["Row"]>;
       };
+      newsletter_subscribers: {
+        Row: {
+          email: string;
+          name: string | null;
+          source: string;
+          hubspot_synced: boolean;
+          hubspot_contact_id: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: Partial<
+          Database["public"]["Tables"]["newsletter_subscribers"]["Row"]
+        > & { email: string };
+        Update: Partial<
+          Database["public"]["Tables"]["newsletter_subscribers"]["Row"]
+        >;
+      };
       notifications_outbox: {
         Row: EmailMessage;
         Insert: Partial<EmailMessage> & {
