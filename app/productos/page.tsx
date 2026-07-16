@@ -5,7 +5,8 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import AddToCartButton from "../components/AddToCartButton";
 import ProductVisual from "../components/ProductVisual";
-import type { ProductVisualKey } from "../lib/products";
+import { formatCOP, type ProductVisualKey } from "../lib/products";
+import { productRepo } from "@/src/features/catalog";
 
 type CatalogItem = {
   name: string;
@@ -63,7 +64,7 @@ function SecureLockIcon() {
   );
 }
 
-const FEATURED_PRODUCTS: CatalogItem[] = [
+const FEATURED_PRODUCTS_STATIC: CatalogItem[] = [
   {
     name: "Promoción garrafas",
     price: "$73,470",
@@ -99,7 +100,7 @@ const FEATURED_PRODUCTS: CatalogItem[] = [
   },
 ];
 
-const PET_PRODUCTS: CatalogItem[] = [
+const PET_PRODUCTS_STATIC: CatalogItem[] = [
   {
     name: "agua ph plus 300\nml KIDS x 24 ud",
     price: "$57,600",
@@ -159,7 +160,7 @@ const PET_PRODUCTS: CatalogItem[] = [
   },
 ];
 
-const LOWER_SECTIONS: CatalogSection[] = [
+const LOWER_SECTIONS_STATIC: CatalogSection[] = [
   {
     id: "vidrio",
     title: "Presentaciones en vidrio",
@@ -337,7 +338,8 @@ function ProductCard({
   );
 }
 
-function FeaturedProducts() {
+async function FeaturedProducts() {
+  const FEATURED_PRODUCTS = await withDbPrices(FEATURED_PRODUCTS_STATIC);
   return (
     <section>
       <div className="lg:hidden">
@@ -371,7 +373,8 @@ function FeaturedProducts() {
   );
 }
 
-function PetProducts() {
+async function PetProducts() {
+  const PET_PRODUCTS = await withDbPrices(PET_PRODUCTS_STATIC);
   return (
     <section className="pt-12 lg:pt-12">
       <div className="lg:hidden">
@@ -426,7 +429,14 @@ function PetProducts() {
   );
 }
 
-function LowerCatalogSections() {
+async function LowerCatalogSections() {
+  const LOWER_SECTIONS = await Promise.all(
+    LOWER_SECTIONS_STATIC.map(async (section) => ({
+      ...section,
+      products: await withDbPrices(section.products),
+    })),
+  );
+
   return (
     <div className="grid gap-12 pt-12 lg:grid-cols-2 lg:gap-14 lg:pt-14">
       {LOWER_SECTIONS.map((section) => (
@@ -495,6 +505,46 @@ function FinalCta() {
       </p>
     </section>
   );
+}
+
+/**
+ * Reemplaza los precios del código por los de la DB (fuente de verdad).
+ *
+ * Los arrays de esta página definen el LAYOUT (orden, imágenes, visualKey), que
+ * la tabla `products` no tiene — por eso siguen acá. Pero el precio no puede
+ * salir de un string hardcodeado: divergía de la DB apenas alguien lo editaba
+ * en el admin (p. ej. `recarga-19lts-individual` mostraba $50.000 cuando la DB
+ * ya decía $36.000), y el checkout cobra desde la DB. Se pisan sólo los slugs
+ * que existen en la DB; el resto conserva el valor del código.
+ */
+async function withDbPrices(items: CatalogItem[]): Promise<CatalogItem[]> {
+  let bySlug: Map<string, { priceValue: number; prevPriceValue?: number }>;
+  try {
+    const { items: dbProducts } = await productRepo.list({ perPage: 500 });
+    bySlug = new Map(
+      dbProducts.map((p) => [
+        p.slug,
+        { priceValue: p.priceValue, prevPriceValue: p.prevPriceValue },
+      ]),
+    );
+  } catch (error) {
+    // Preferimos servir la página con los precios del código antes que tirar
+    // un 500, pero dejamos rastro: los precios pueden estar desactualizados.
+    console.error("[productos] no se pudieron leer precios de la DB:", error);
+    return items;
+  }
+
+  return items.map((item) => {
+    const db = bySlug.get(item.slug);
+    if (!db) return item;
+    return {
+      ...item,
+      price: formatCOP(db.priceValue),
+      previousPrice: db.prevPriceValue
+        ? formatCOP(db.prevPriceValue)
+        : undefined,
+    };
+  });
 }
 
 export default function ProductsListingPage() {

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { PRODUCTS } from "../lib/products";
+import { PRODUCTS, type Product } from "../lib/products";
+import { productRepo } from "@/src/features/catalog";
 import AddToCartButton from "./AddToCartButton";
 
 type FeaturedItem = {
@@ -51,6 +52,7 @@ const FEATURED: FeaturedItem[] = [
   },
 ];
 
+/** Fallback al catálogo del código, sólo si la DB no tiene el slug. */
 function productBySlug(slug: string) {
   const product = PRODUCTS.find((p) => p.slug === slug);
   if (!product) {
@@ -59,7 +61,30 @@ function productBySlug(slug: string) {
   return product;
 }
 
-export default function Products() {
+/**
+ * Precios desde la DB (fuente de verdad).
+ *
+ * El array `PRODUCTS` diverge de la tabla `products` apenas alguien edita un
+ * precio en el admin, y el checkout ya cobra desde la DB: si la vitrina siguiera
+ * leyendo el código, mostraría un precio y cobraría otro.
+ */
+async function resolveFeatured(): Promise<Map<string, Product>> {
+  try {
+    const found = await Promise.all(
+      FEATURED.map((item) => productRepo.bySlug(item.slug)),
+    );
+    return new Map(
+      found.filter((p): p is Product => p != null).map((p) => [p.slug, p]),
+    );
+  } catch (error) {
+    console.error("[home] no se pudieron leer precios de la DB:", error);
+    return new Map();
+  }
+}
+
+export default async function Products() {
+  const dbBySlug = await resolveFeatured();
+
   return (
     <section id="productos" className="w-full bg-white">
       <div className="mx-auto max-w-[1230px] px-4 pb-4 pt-4 sm:px-8 sm:py-10 lg:px-6 lg:pb-8 lg:pt-20">
@@ -74,7 +99,7 @@ export default function Products() {
 
         <div className="mt-5 grid grid-cols-3 items-end gap-3 md:gap-6 lg:mt-9 lg:gap-14">
           {FEATURED.map((item) => {
-            const product = productBySlug(item.slug);
+            const product = dbBySlug.get(item.slug) ?? productBySlug(item.slug);
             return (
               <article
                 key={item.slug}
