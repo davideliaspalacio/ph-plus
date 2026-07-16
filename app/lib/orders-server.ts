@@ -1,6 +1,5 @@
 import "server-only";
 
-import type { buildCartSummary } from "@/app/lib/cart-summary";
 import { newOrderId } from "@/src/shared/lib/id";
 import { createSupabaseServiceClient } from "@/src/shared/supabase/server";
 
@@ -10,7 +9,21 @@ import { createSupabaseServiceClient } from "@/src/shared/supabase/server";
  * memoria y no se guarda nada (modo mock) — el checkout sigue funcionando.
  */
 
-export type CartSummary = ReturnType<typeof buildCartSummary>;
+/**
+ * Sólo lo que la persistencia necesita de cada línea. Es estructural a
+ * propósito: lo cumple tanto el resumen del server (`buildCartSummaryServer`,
+ * con precios de la DB) como el legacy del catálogo hardcodeado.
+ */
+export type CartSummary = {
+  lines: Array<{
+    item: { quantity: number };
+    product: { slug: string; title: string; priceValue: number };
+    lineTotal: number;
+  }>;
+  subtotal: number;
+  shipping: number;
+  total: number;
+};
 
 export type OrderContactInput = {
   name: string;

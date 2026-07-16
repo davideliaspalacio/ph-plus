@@ -6,10 +6,27 @@ import { ContentEditor, contentRepo, type Content } from "@/src/features/admin/c
 export default function AdminContenidoPage() {
   const [content, setContent] = useState<Content | null>(null);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    void (async () => setContent(await contentRepo.get()))();
+    void (async () => {
+      try {
+        setContent(await contentRepo.get());
+      } catch (e) {
+        setError(
+          e instanceof Error ? e.message : "No se pudo cargar el contenido.",
+        );
+      }
+    })();
   }, []);
+
+  if (error && !content) {
+    return (
+      <p className="rounded-xl bg-red-50 px-4 py-3 text-[14px] font-semibold text-red-700">
+        {error}
+      </p>
+    );
+  }
 
   if (!content) {
     return <p className="text-[14px] text-ink-muted">Cargando contenido…</p>;
@@ -27,25 +44,66 @@ export default function AdminContenidoPage() {
         {saved && (
           <span className="text-[13px] text-whatsapp-dark">Guardado ✓</span>
         )}
+        {error && (
+          <span className="text-[13px] font-semibold text-red-600">{error}</span>
+        )}
       </header>
       <ContentEditor
         initial={content}
         onSave={async (draft) => {
-          // Persistimos todo via los métodos del repo. Para mantenerlo simple
-          // sobreescribimos con un solo "snapshot": actualizamos hero, slugs y
-          // luego re-cargamos.
-          await contentRepo.updateHomeHero(draft.homeHero);
-          await contentRepo.setFeaturedSlugs(draft.featuredSlugs);
-          // banners/faq pueden tener cambios in-place; persistimos via update individuales
-          for (const banner of draft.banners) {
-            await contentRepo.updateBanner(banner);
+          setError(null);
+          try {
+            // El editor entrega un draft completo, pero el repo opera por
+            // ítem (add/update/remove). Hay que diffear contra lo guardado:
+            // los banners/FAQ nuevos traen un id generado en el cliente que no
+            // matchea ninguna fila, así que un updateX los descartaba en
+            // silencio; y los borrados nunca se propagaban.
+            const current = await contentRepo.get();
+
+            await contentRepo.updateHomeHero(draft.homeHero);
+            await contentRepo.setFeaturedSlugs(draft.featuredSlugs);
+
+            const savedBannerIds = new Set(current.banners.map((b) => b.id));
+            const draftBannerIds = new Set(draft.banners.map((b) => b.id));
+            for (const banner of draft.banners) {
+              if (savedBannerIds.has(banner.id)) {
+                await contentRepo.updateBanner(banner);
+              } else {
+                const { id: _id, ...nuevo } = banner;
+                await contentRepo.addBanner(nuevo);
+              }
+            }
+            for (const banner of current.banners) {
+              if (!draftBannerIds.has(banner.id)) {
+                await contentRepo.removeBanner(banner.id);
+              }
+            }
+
+            const savedFaqIds = new Set(current.faq.map((f) => f.id));
+            const draftFaqIds = new Set(draft.faq.map((f) => f.id));
+            for (const faq of draft.faq) {
+              if (savedFaqIds.has(faq.id)) {
+                await contentRepo.updateFaq(faq);
+              } else {
+                const { id: _id, ...nueva } = faq;
+                await contentRepo.addFaq(nueva);
+              }
+            }
+            for (const faq of current.faq) {
+              if (!draftFaqIds.has(faq.id)) {
+                await contentRepo.removeFaq(faq.id);
+              }
+            }
+
+            setContent(await contentRepo.get());
+            setSaved(true);
+            setTimeout(() => setSaved(false), 2000);
+          } catch (e) {
+            // Antes cualquier fallo (p. ej. RLS) reventaba sin feedback.
+            setError(
+              e instanceof Error ? e.message : "No se pudieron guardar los cambios.",
+            );
           }
-          for (const faq of draft.faq) {
-            await contentRepo.updateFaq(faq);
-          }
-          setContent(await contentRepo.get());
-          setSaved(true);
-          setTimeout(() => setSaved(false), 2000);
         }}
       />
     </div>

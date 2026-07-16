@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { buildCartSummary } from "@/app/lib/cart-summary";
+import { buildCartSummaryServer } from "@/app/lib/cart-summary-server";
 import { syncOrderToHubspot } from "@/app/lib/hubspot-server";
 import {
   buildItemsSummary,
@@ -58,7 +58,23 @@ export async function POST(request: Request) {
     );
   }
 
-  const summary = buildCartSummary(parsed.data.items);
+  // Precios desde la DB (fuente de verdad). Si la lectura falla cortamos: cobrar
+  // un importe de una fuente desactualizada es peor que no cobrar.
+  let summary;
+  try {
+    summary = await buildCartSummaryServer(parsed.data.items);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "No se pudieron resolver los precios del carrito",
+      },
+      { status: 500 },
+    );
+  }
+
   if (summary.lines.length === 0 || summary.total <= 0) {
     return NextResponse.json(
       { error: "El carrito no tiene productos válidos" },

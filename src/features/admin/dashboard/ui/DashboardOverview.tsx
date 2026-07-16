@@ -54,6 +54,7 @@ export function DashboardOverview({ orders: ordersProp }: DashboardOverviewProps
   const [orders, setOrders] = useState<Order[] | null>(
     ordersProp ?? null,
   );
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (ordersProp) {
@@ -66,13 +67,28 @@ export function DashboardOverview({ orders: ordersProp }: DashboardOverviewProps
       .then((data) => {
         if (!cancelled) setOrders(data);
       })
-      .catch(() => {
-        if (!cancelled) setOrders([]);
+      .catch((e: unknown) => {
+        // Antes esto hacía `setOrders([])`, así que un fallo de permisos o de
+        // red se veía idéntico a una tienda sin ventas ("Aún no hay pedidos").
+        // Mostrar el error de verdad evita debuggear a ciegas.
+        if (!cancelled) {
+          setError(
+            e instanceof Error ? e.message : "No se pudieron cargar los pedidos.",
+          );
+        }
       });
     return () => {
       cancelled = true;
     };
   }, [ordersProp]);
+
+  if (error) {
+    return (
+      <div className="rounded-xl bg-red-50 px-4 py-3 text-[14px] font-semibold text-red-700">
+        No se pudieron cargar los pedidos: {error}
+      </div>
+    );
+  }
 
   if (orders === null) {
     return (

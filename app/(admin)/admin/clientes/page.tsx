@@ -14,11 +14,20 @@ export default function AdminClientesPage() {
   const [customers, setCustomers] = useState<CustomerView[] | null>(null);
   const [selected, setSelected] = useState<CustomerView | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
+  // Igual que en pedidos: sin catch, un fallo dejaba "Cargando clientes…" fijo.
   useEffect(() => {
     void (async () => {
-      const list = await customerAdminRepo.list();
-      setCustomers(list);
+      try {
+        const list = await customerAdminRepo.list();
+        setCustomers(list);
+      } catch (e) {
+        setLoadError(
+          e instanceof Error ? e.message : "No se pudieron cargar los clientes.",
+        );
+        setCustomers([]);
+      }
     })();
   }, []);
 
@@ -39,6 +48,14 @@ export default function AdminClientesPage() {
 
   if (customers == null) {
     return <p className="text-[14px] text-ink-muted">Cargando clientes…</p>;
+  }
+
+  if (loadError) {
+    return (
+      <p className="rounded-xl bg-red-50 px-4 py-3 text-[14px] font-semibold text-red-700">
+        {loadError}
+      </p>
+    );
   }
 
   return (
