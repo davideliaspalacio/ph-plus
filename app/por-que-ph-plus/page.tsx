@@ -38,7 +38,7 @@ function MobileIntro() {
   return (
     <section className="bg-white px-7 pb-3 pt-5 lg:hidden">
       <h1 className="ph-display text-center text-[28px] uppercase leading-none text-[#6b7280]">
-        Por qué PH PLUS
+        ¿Por qué PH PLUS?
       </h1>
     </section>
   );
@@ -48,17 +48,69 @@ function DesktopIntro() {
   return (
     <section className="hidden bg-white px-6 pb-2 pt-8 text-center lg:block">
       <h1 className="ph-display text-[38px] uppercase leading-none text-[#1e3a8a]">
-        Por qué PH PLUS
+        ¿Por qué PH PLUS?
       </h1>
     </section>
   );
 }
 
-function EducationSection() {
+/** Educación en mobile: matchea el frame — texto IZQ + media DER en ambas. */
+function MobileEducation() {
   return (
-    <section className="bg-white px-6 py-8 lg:py-16">
-      <div className="mx-auto grid max-w-[920px] gap-10 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-14">
-        <div className="hidden lg:block">
+    <section className="bg-white px-6 py-8 lg:hidden">
+      <div className="mx-auto max-w-[360px] space-y-12">
+        <div className="grid grid-cols-[1fr_125px] gap-4">
+          <div>
+            <h2 className="ph-condensed text-center text-[20px] font-bold leading-tight text-[#1e3a8a]">
+              ¿Por qué el pH del agua es tan importante?
+            </h2>
+            <p className="ph-condensed mt-3 text-[13px] font-bold leading-tight text-[#1e3a8a]">
+              En esta demostración comparamos el nivel de PH de diferentes
+              bebidas usando un PHmetro y espectro de colorimetría. PH Plus
+              registra PH 9 — el nivel óptimo para equilibrar tu cuerpo,
+              eliminar acidez y mejorar tu hidratación. No es opinión, es
+              química.
+            </p>
+          </div>
+          <div className="min-h-[190px] w-[125px] overflow-hidden rounded-[6px] bg-[#e8f6fb]">
+            <VideoFrame
+              src="/videos/ph-aguas-mobile.mp4"
+              poster="/videos/posters/ph-aguas-mobile.jpg"
+              label="Video móvil sobre comparación de aguas y pH"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-[1fr_125px] gap-4">
+          <div>
+            <h2 className="ph-condensed text-center text-[20px] font-bold leading-tight text-[#6b7280]">
+              ¿Quieres conocer los procesos de PH PLUS?
+            </h2>
+            <p className="ph-condensed mt-3 text-[13px] font-bold leading-tight text-[#1e3a8a]">
+              Este video te muestra el proceso de producción de PH PLUS, donde
+              combinamos tecnología avanzada y controles rigurosos para obtener
+              un agua con pH 9 de alta pureza y alcalinidad.
+            </p>
+          </div>
+          <div className="min-h-[190px] w-[125px] overflow-hidden rounded-[6px] bg-[#e8f6fb]">
+            <VideoFrame
+              src="/videos/planta-produccion.mp4"
+              poster="/videos/posters/planta-produccion.jpg"
+              label="Video del proceso de producción de PH PLUS"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/** Educación en desktop: se mantiene el layout actual (grilla 2×2). */
+function DesktopEducation() {
+  return (
+    <section className="hidden bg-white px-6 py-16 lg:block">
+      <div className="mx-auto grid max-w-[920px] grid-cols-2 gap-x-16 gap-y-14">
+        <div>
           <div className="relative aspect-video overflow-hidden border-[4px] border-[#8a5cf6] bg-white">
             <VideoFrame
               src="/videos/ph-doctor-desktop.mp4"
@@ -68,25 +120,11 @@ function EducationSection() {
           </div>
         </div>
 
-        <div className="grid gap-5 lg:block">
-          <h2 className="ph-condensed text-center text-[26px] font-bold leading-tight text-[#1e3a8a] lg:text-left lg:text-[24px]">
+        <div>
+          <h2 className="ph-condensed text-left text-[24px] font-bold leading-tight text-[#1e3a8a]">
             ¿Por qué el pH del agua es tan importante?
           </h2>
-          <div className="mx-auto grid max-w-[330px] grid-cols-[128px_1fr] items-center gap-4 lg:hidden">
-            <div className="h-[226px] w-[128px] overflow-hidden rounded-[6px] bg-[#e8f6fb]">
-              <VideoFrame
-                src="/videos/ph-aguas-mobile.mp4"
-                poster="/videos/posters/ph-aguas-mobile.jpg"
-                label="Video móvil sobre comparación de aguas y pH"
-              />
-            </div>
-            <p className="ph-condensed text-[15px] font-bold leading-tight text-[#1e3a8a]">
-              A través de una demostración práctica, el Dr. Hugo Mario Galindo
-              muestra cómo se mide la alcalinidad del agua y qué significa para
-              tu día a día.
-            </p>
-          </div>
-          <p className="ph-condensed mt-5 hidden text-[17px] font-bold leading-tight text-[#1e3a8a] lg:block">
+          <p className="ph-condensed mt-5 text-[17px] font-bold leading-tight text-[#1e3a8a]">
             A través de una demostración práctica, el Dr. Hugo Mario Galindo
             con más de 30 años de experiencia en medicina preventiva y
             ortomolecular, te muestra cómo se mide la alcalinidad del agua y qué
@@ -94,22 +132,18 @@ function EducationSection() {
           </p>
         </div>
 
-        <div className="grid gap-5">
-          <h2 className="ph-condensed text-center text-[25px] font-bold leading-tight text-[#6b7280] lg:text-left lg:text-[24px]">
+        <div>
+          <h2 className="ph-condensed text-left text-[24px] font-bold leading-tight text-[#6b7280]">
             ¿Quieres conocer los procesos de PH PLUS?
           </h2>
-          <p className="ph-condensed mx-auto max-w-[310px] text-center text-[15px] font-bold leading-tight text-[#1e3a8a] lg:hidden">
-            Conoce el proceso de producción de PH PLUS y los controles que
-            permiten obtener un agua con pH 9 de alta pureza y alcalinidad.
-          </p>
-          <p className="ph-condensed mt-5 hidden text-[17px] font-bold leading-tight text-[#1e3a8a] lg:block">
+          <p className="ph-condensed mt-5 text-[17px] font-bold leading-tight text-[#1e3a8a]">
             Este video te muestra el proceso de producción de PH PLUS, donde
             combinamos tecnología avanzada y controles rigurosos para obtener
             un agua con pH 9 de alta pureza y alcalinidad.
           </p>
         </div>
 
-        <div className="mx-auto aspect-[9/16] h-[220px] w-[150px] overflow-hidden rounded-[6px] border-4 border-white bg-[#e8f6fb] shadow-[0_0_0_1px_rgba(0,0,0,0.08)] lg:mx-0 lg:aspect-video lg:h-auto lg:w-[340px]">
+        <div className="aspect-video w-[340px] overflow-hidden rounded-[6px] border-4 border-white bg-[#e8f6fb] shadow-[0_0_0_1px_rgba(0,0,0,0.08)]">
           <VideoFrame
             src="/videos/planta-produccion.mp4"
             poster="/videos/posters/planta-produccion.jpg"
@@ -161,7 +195,8 @@ export default function PorQuePhPlusPage() {
       <main className="flex-1 bg-white">
         <MobileIntro />
         <DesktopIntro />
-        <EducationSection />
+        <MobileEducation />
+        <DesktopEducation />
         <StoriesCarousel />
         <PageCta />
       </main>

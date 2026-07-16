@@ -294,13 +294,38 @@ export default function CheckoutPage() {
       }
     }
 
+    // Pago contra entrega: registramos el pedido (persistencia + HubSpot) en
+    // el server. Si falla, dejamos avanzar al cliente con un id de respaldo.
+    let orderId = fallbackOrderId;
     try {
-      sessionStorage.setItem("phplus.lastOrder", JSON.stringify(payload));
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items,
+          contact,
+          shipping,
+          customerType: isAuthenticated ? "authenticated" : "guest",
+        }),
+      });
+      if (response.ok) {
+        const data = (await response.json()) as { orderId?: string };
+        if (data.orderId) orderId = data.orderId;
+      }
+    } catch {
+      // ignore — seguimos con el id de respaldo
+    }
+
+    try {
+      sessionStorage.setItem(
+        "phplus.lastOrder",
+        JSON.stringify({ ...payload, orderId }),
+      );
     } catch {
       // ignore
     }
     clear();
-    router.push(`/checkout/exito?order=${fallbackOrderId}`);
+    router.push(`/checkout/exito?order=${orderId}`);
   }
 
   if (!ready) {
@@ -754,7 +779,9 @@ export default function CheckoutPage() {
                     className="inline-flex items-center justify-center rounded-full bg-brand px-6 py-2.5 text-[13px] font-semibold text-white transition-all hover:scale-[1.02] hover:bg-brand-dark disabled:opacity-60"
                   >
                     {submitting
-                      ? "Conectando con PayU..."
+                      ? payment === "payu"
+                        ? "Conectando con PayU..."
+                        : "Registrando pedido..."
                       : payment === "payu"
                         ? "Pagar con PayU"
                         : "Confirmar pedido"}

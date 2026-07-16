@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import NewsletterSignup from "./NewsletterSignup";
+
 const MAPS_URL =
   "https://www.google.com/maps/search/?api=1&query=Av%20km%201.5%20via%20Siberia%20Parque%20Agroindustrial%20de%20Occidente%20Bodega%202%20local%2078%20Cota%20Cundinamarca";
 
@@ -146,7 +148,9 @@ function LockIcon({ className = "h-10 w-10" }: { className?: string }) {
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-[#1e2aab] text-white">
+    <>
+      <NewsletterSignup />
+      <footer className="w-full bg-[#1e2aab] text-white">
       <div className="ph-condensed relative mx-auto h-[154px] max-w-[430px] overflow-hidden px-4 lg:hidden">
         <Image
           src="/brand/logo-ph-plus-figma.png"
@@ -235,20 +239,9 @@ export default function Footer() {
             height={130}
             className="h-auto w-[330px]"
           />
-          <div className="mt-8 flex items-center gap-5">
-            <Image
-              src="/home/icon-invima.png"
-              alt="INVIMA"
-              width={95}
-              height={90}
-              className="h-[90px] w-[95px] bg-white object-contain"
-            />
-            <div className="text-[22px] font-bold leading-[1.24]">
-              <p>Registro sanitario INVIMA</p>
-              <p>RSA: 0030646-2024</p>
-              <p>RSA-0024829-2023</p>
-            </div>
-          </div>
+          <p className="mt-8 max-w-[380px] text-[26px] font-bold leading-[1.24]">
+            Cuidarte empieza por lo que eliges cada día
+          </p>
           <div className="mt-8 whitespace-pre-line text-[22px] font-bold leading-[1.28]">
             <p>Lunes a viernes: 8 am - 5pm</p>
             <p>info@aguaphplus.com</p>
@@ -312,6 +305,7 @@ export default function Footer() {
           </div>
         </div>
       </div>
-    </footer>
+      </footer>
+    </>
   );
 }

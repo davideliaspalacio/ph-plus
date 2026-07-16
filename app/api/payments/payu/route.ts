@@ -2,6 +2,12 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { buildCartSummary } from "@/app/lib/cart-summary";
+import { syncOrderToHubspot } from "@/app/lib/hubspot-server";
+import {
+  buildItemsSummary,
+  isSupabaseOrderPersistenceEnabled,
+  persistPendingOrder,
+} from "@/app/lib/orders-server";
 import {
   createPayuCheckoutSignature,
   formatPayuAmount,
@@ -10,8 +16,6 @@ import {
   sanitizePayuReference,
   type PayuCheckoutFields,
 } from "@/app/lib/payu-server";
-import { newOrderId } from "@/src/shared/lib/id";
-import { createSupabaseServiceClient } from "@/src/shared/supabase/server";
 
 export const runtime = "nodejs";
 
@@ -42,75 +46,6 @@ const payuRequestSchema = z.object({
 
 function truncate(value: string, max: number): string {
   return value.length > max ? value.slice(0, max) : value;
-}
-
-function isSupabaseOrderPersistenceEnabled(): boolean {
-  return (
-    process.env.NEXT_PUBLIC_DATA_BACKEND === "supabase" &&
-    Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL) &&
-    Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY)
-  );
-}
-
-async function persistPendingOrder(
-  input: z.infer<typeof payuRequestSchema>,
-  summary: ReturnType<typeof buildCartSummary>,
-): Promise<string> {
-  const orderId = newOrderId();
-  if (!isSupabaseOrderPersistenceEnabled()) return orderId;
-
-  const supabase = await createSupabaseServiceClient();
-  const now = new Date().toISOString();
-
-  const { error: orderError } = await supabase.from("orders").insert({
-    id: orderId,
-    user_id: null,
-    status: "pending_payment",
-    contact: input.contact,
-    shipping: {
-      ...input.shipping,
-      postalCode: "",
-    },
-    payment: {
-      method: "payu",
-      provider: "payu",
-    },
-    totals: {
-      subtotal: summary.subtotal,
-      discount: 0,
-      shipping: summary.shipping,
-      total: summary.total,
-    },
-    coupon_code: null,
-    tracking_number: null,
-    created_at: now,
-    updated_at: now,
-  } as never);
-
-  if (orderError) {
-    throw new Error(`No se pudo crear la orden en Supabase: ${orderError.message}`);
-  }
-
-  const lines = summary.lines.map((line) => ({
-    order_id: orderId,
-    slug: line.product.slug,
-    title: line.product.title,
-    quantity: line.item.quantity,
-    unit_price: line.product.priceValue,
-    line_total: line.lineTotal,
-  }));
-
-  const { error: linesError } = await supabase
-    .from("order_lines")
-    .insert(lines as never);
-
-  if (linesError) {
-    throw new Error(
-      `No se pudieron crear las líneas de la orden: ${linesError.message}`,
-    );
-  }
-
-  return orderId;
 }
 
 export async function POST(request: Request) {
@@ -148,7 +83,7 @@ export async function POST(request: Request) {
 
   let orderId: string;
   try {
-    orderId = await persistPendingOrder(parsed.data, summary);
+    orderId = await persistPendingOrder(parsed.data, summary, "payu");
   } catch (error) {
     return NextResponse.json(
       {
@@ -160,6 +95,22 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
+
+  // Sincroniza contacto + negocio a HubSpot. Fail-safe: nunca tira, así que un
+  // fallo del CRM no impide continuar al pago.
+  await syncOrderToHubspot({
+    orderId,
+    contact: {
+      name: parsed.data.contact.name,
+      email: parsed.data.contact.email,
+      phone: parsed.data.contact.phone,
+      city: parsed.data.shipping.city,
+      address: parsed.data.shipping.address,
+    },
+    amount: summary.total,
+    paymentMethod: "payu",
+    itemsSummary: buildItemsSummary(summary),
+  });
 
   const origin = getRequestOrigin(request);
   const referenceCode = sanitizePayuReference(orderId);
