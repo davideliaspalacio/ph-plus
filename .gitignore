@@ -51,3 +51,7 @@ phplus-screenshots.zip
 /.claude
 *.log
 2026-*-local-command-*.txt
+
+# Playwright demo (videos + outputs — binarios)
+demo-output/
+demo-videos/
