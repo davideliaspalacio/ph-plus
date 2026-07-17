@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import Header from "../components/Header";
@@ -29,16 +28,9 @@ type Shipping = {
   department: string;
   notes: string;
 };
-type PaymentMethod = "payu" | "contra-entrega";
 
-const PAYMENT_OPTIONS: { value: PaymentMethod; label: string; hint: string }[] = [
-  {
-    value: "payu",
-    label: "Pagar en línea con PayU",
-    hint: "Tarjeta, PSE, Nequi y otros métodos habilitados en PayU",
-  },
-  { value: "contra-entrega", label: "Pago contra entrega", hint: "Efectivo al recibir" },
-];
+/** Métodos habilitados dentro de PayU, para mostrarlos como sello de confianza. */
+const PAYU_METHODS = ["Tarjetas", "PSE", "Nequi", "Otros"];
 
 type PayuCheckoutResponse = {
   action: string;
@@ -174,8 +166,75 @@ const designInput =
 const designButton =
   "ph-display inline-flex w-full items-center justify-center gap-3 rounded-[8px] bg-brand px-6 py-4 text-[20px] uppercase leading-none text-white shadow-[0_4px_10px_rgba(27,34,166,0.25)] transition-transform hover:-translate-y-0.5 hover:bg-brand-dark disabled:opacity-60";
 
+function Spinner({ className = "h-5 w-5" }: { className?: string }) {
+  return (
+    <svg className={`animate-spin ${className}`} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      />
+      <path
+        className="opacity-90"
+        fill="currentColor"
+        d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4z"
+      />
+    </svg>
+  );
+}
+
+function LockShield({ className = "h-6 w-6" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
+      <path
+        d="M12 3l7 3v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9V6l7-3z"
+        fill="currentColor"
+        opacity="0.15"
+      />
+      <path
+        d="M12 3l7 3v5c0 4.4-3 7.7-7 9-4-1.3-7-4.6-7-9V6l7-3z"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M9.5 11.5V10a2.5 2.5 0 0 1 5 0v1.5M8.8 11.5h6.4v4H8.8z"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Overlay a pantalla completa mientras se prepara el pago con PayU. */
+function PayuLoadingOverlay() {
+  return (
+    <div
+      role="status"
+      aria-live="assertive"
+      className="fixed inset-0 z-50 grid place-items-center bg-brand/70 px-6 backdrop-blur-sm"
+    >
+      <div className="w-full max-w-sm rounded-3xl bg-white px-8 py-10 text-center shadow-[0_24px_60px_rgba(15,23,42,0.35)]">
+        <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-[#eef0ff] text-brand">
+          <Spinner className="h-8 w-8" />
+        </div>
+        <p className="mt-5 text-[18px] font-extrabold text-brand">
+          Conectando con PayU…
+        </p>
+        <p className="mt-2 text-[14px] leading-relaxed text-ink-muted">
+          Te estamos redirigiendo a la pasarela de pago segura. No cierres ni
+          actualices esta ventana.
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export default function CheckoutPage() {
-  const router = useRouter();
   const initialLoading = useMockLoading();
   const { items, hydrated, clear } = useCart();
   const isAuthenticated = useSession((state) => state.isAuthenticated());
@@ -195,7 +254,6 @@ export default function CheckoutPage() {
     department: "Cundinamarca",
     notes: "",
   });
-  const [payment, setPayment] = useState<PaymentMethod>("payu");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -273,7 +331,7 @@ export default function CheckoutPage() {
       orderId: fallbackOrderId,
       contact,
       shipping,
-      payment,
+      payment: "payu",
       customerType: isAuthenticated ? "authenticated" : "guest",
       lines: summary.lines.map((l) => ({
         slug: l.product.slug,
@@ -290,63 +348,8 @@ export default function CheckoutPage() {
       createdAt: new Date().toISOString(),
     };
 
-    if (payment === "payu") {
-      try {
-        const response = await fetch("/api/payments/payu", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            items,
-            contact,
-            shipping,
-            customerType: isAuthenticated ? "authenticated" : "guest",
-          }),
-        });
-        const data = (await response.json()) as
-          | PayuCheckoutResponse
-          | { error?: string };
-
-        if (!response.ok || !("action" in data)) {
-          throw new Error(
-            "error" in data && data.error
-              ? data.error
-              : "No pudimos preparar el pago con PayU.",
-          );
-        }
-
-        try {
-          sessionStorage.setItem(
-            "phplus.lastOrder",
-            JSON.stringify({
-              ...payload,
-              orderId: data.orderId,
-              payuReferenceCode: data.referenceCode,
-              persisted: data.persisted,
-            }),
-          );
-        } catch {
-          // ignore
-        }
-
-        clear();
-        redirectToPayu(data);
-        return;
-      } catch (error) {
-        setSubmitError(
-          error instanceof Error
-            ? error.message
-            : "No pudimos conectar con PayU. Intenta nuevamente.",
-        );
-        setSubmitting(false);
-        return;
-      }
-    }
-
-    // Pago contra entrega: registramos el pedido (persistencia + HubSpot) en
-    // el server. Si falla, dejamos avanzar al cliente con un id de respaldo.
-    let orderId = fallbackOrderId;
     try {
-      const response = await fetch("/api/orders", {
+      const response = await fetch("/api/payments/payu", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -356,24 +359,44 @@ export default function CheckoutPage() {
           customerType: isAuthenticated ? "authenticated" : "guest",
         }),
       });
-      if (response.ok) {
-        const data = (await response.json()) as { orderId?: string };
-        if (data.orderId) orderId = data.orderId;
-      }
-    } catch {
-      // ignore — seguimos con el id de respaldo
-    }
+      const data = (await response.json()) as
+        | PayuCheckoutResponse
+        | { error?: string };
 
-    try {
-      sessionStorage.setItem(
-        "phplus.lastOrder",
-        JSON.stringify({ ...payload, orderId }),
+      if (!response.ok || !("action" in data)) {
+        throw new Error(
+          "error" in data && data.error
+            ? data.error
+            : "No pudimos preparar el pago con PayU.",
+        );
+      }
+
+      try {
+        sessionStorage.setItem(
+          "phplus.lastOrder",
+          JSON.stringify({
+            ...payload,
+            orderId: data.orderId,
+            payuReferenceCode: data.referenceCode,
+            persisted: data.persisted,
+          }),
+        );
+      } catch {
+        // ignore
+      }
+
+      clear();
+      // El overlay sigue visible hasta que el navegador salta a PayU: por eso
+      // NO hacemos setSubmitting(false) en el camino feliz.
+      redirectToPayu(data);
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "No pudimos conectar con PayU. Intenta nuevamente.",
       );
-    } catch {
-      // ignore
+      setSubmitting(false);
     }
-    clear();
-    router.push(`/checkout/exito?order=${orderId}`);
   }
 
   if (!ready) {
@@ -646,6 +669,7 @@ export default function CheckoutPage() {
   /* ─────────────────── Pasos 1 y 2: Pago y Revisar ─────────────────────── */
   return (
     <>
+      {submitting && <PayuLoadingOverlay />}
       <Header />
 
       <main className="flex-1 bg-white">
@@ -681,43 +705,36 @@ export default function CheckoutPage() {
           <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_360px] lg:items-start">
             <div className="rounded-2xl border border-card-border bg-white p-5 sm:p-6">
               {step === 1 && (
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <h2 className="text-[16px] font-extrabold text-brand">
                     Método de pago
                   </h2>
-                  <p className="text-[13px] text-ink-muted">
-                    PayU abrirá una pantalla segura para finalizar el pago con
-                    los métodos habilitados en tu cuenta.
-                  </p>
-                  <div className="space-y-3">
-                    {PAYMENT_OPTIONS.map((opt) => (
-                      <label
-                        key={opt.value}
-                        className={
-                          "flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition-colors " +
-                          (payment === opt.value
-                            ? "border-brand bg-[#eef0ff]"
-                            : "border-card-border hover:border-brand")
-                        }
-                      >
-                        <input
-                          type="radio"
-                          name="payment"
-                          value={opt.value}
-                          checked={payment === opt.value}
-                          onChange={() => setPayment(opt.value)}
-                          className="mt-1 h-4 w-4 accent-[#1b22a6]"
-                        />
-                        <span>
-                          <span className="block text-[14px] font-semibold text-ink">
-                            {opt.label}
-                          </span>
-                          <span className="block text-[12px] text-ink-muted">
-                            {opt.hint}
-                          </span>
-                        </span>
-                      </label>
-                    ))}
+
+                  <div className="rounded-2xl border-2 border-brand bg-[#eef0ff] p-5">
+                    <div className="flex items-center gap-3">
+                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white">
+                        <LockShield className="h-6 w-6" />
+                      </span>
+                      <div>
+                        <p className="text-[15px] font-bold text-ink">
+                          Pago en línea con PayU
+                        </p>
+                        <p className="text-[12px] text-ink-muted">
+                          Te llevamos a la pasarela segura de PayU para
+                          finalizar el pago.
+                        </p>
+                      </div>
+                    </div>
+                    <ul className="mt-4 flex flex-wrap gap-2">
+                      {PAYU_METHODS.map((m) => (
+                        <li
+                          key={m}
+                          className="rounded-full bg-white px-3 py-1 text-[12px] font-semibold text-brand shadow-[0_1px_3px_rgba(27,34,166,0.12)]"
+                        >
+                          {m}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
 
                   <Field label="Notas para la entrega (opcional)">
@@ -765,7 +782,7 @@ export default function CheckoutPage() {
                       Método de pago
                     </p>
                     <p className="mt-1 text-[14px] text-ink">
-                      {PAYMENT_OPTIONS.find((p) => p.value === payment)?.label}
+                      Pago en línea con PayU
                     </p>
                   </div>
 
@@ -817,15 +834,10 @@ export default function CheckoutPage() {
                     type="button"
                     onClick={submitOrder}
                     disabled={submitting}
-                    className="inline-flex items-center justify-center rounded-full bg-brand px-6 py-2.5 text-[13px] font-semibold text-white transition-all hover:scale-[1.02] hover:bg-brand-dark disabled:opacity-60"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-2.5 text-[13px] font-semibold text-white transition-all hover:scale-[1.02] hover:bg-brand-dark disabled:cursor-wait disabled:opacity-70 disabled:hover:scale-100"
                   >
-                    {submitting
-                      ? payment === "payu"
-                        ? "Conectando con PayU..."
-                        : "Registrando pedido..."
-                      : payment === "payu"
-                        ? "Pagar con PayU"
-                        : "Confirmar pedido"}
+                    {submitting && <Spinner className="h-4 w-4" />}
+                    {submitting ? "Conectando con PayU..." : "Pagar con PayU"}
                   </button>
                 )}
               </div>
