@@ -457,6 +457,64 @@ async function LowerCatalogSections() {
   );
 }
 
+/** Slugs que ya tienen un slot curado arriba (con foto y layout propios). */
+function curatedSlugs(): Set<string> {
+  return new Set([
+    ...FEATURED_PRODUCTS_STATIC.map((p) => p.slug),
+    ...PET_PRODUCTS_STATIC.map((p) => p.slug),
+    ...LOWER_SECTIONS_STATIC.flatMap((s) => s.products.map((p) => p.slug)),
+  ]);
+}
+
+/**
+ * Todo lo que está en la DB y no tiene slot curado.
+ *
+ * Sin esto, un producto creado en el admin no aparecía en ninguna parte de la
+ * tienda: la página sólo pintaba los slugs escritos en el código. Los slots de
+ * arriba se mantienen porque guardan diseño (orden e imágenes propias) que la
+ * tabla `products` no tiene; el resto se arma solo desde la DB usando su
+ * `visualKey` como ilustración — igual que ya hacen las presentaciones PET,
+ * que tampoco tienen foto.
+ */
+async function CatalogFromDb() {
+  let items: CatalogItem[];
+  try {
+    const { items: dbProducts } = await productRepo.list({ perPage: 500 });
+    const curated = curatedSlugs();
+    items = dbProducts
+      .filter((p) => !curated.has(p.slug))
+      .map((p) => ({
+        name: p.title,
+        price: formatCOP(p.priceValue),
+        previousPrice: p.prevPriceValue
+          ? formatCOP(p.prevPriceValue)
+          : undefined,
+        visualKey: p.visualKey,
+        imageClassName: "h-[126px] lg:h-[134px]",
+        slug: p.slug,
+      }));
+  } catch (error) {
+    console.error("[productos] no se pudo leer el catálogo de la DB:", error);
+    return null;
+  }
+
+  if (items.length === 0) return null;
+
+  return (
+    <section id="catalogo" className="pt-12 lg:pt-14">
+      <SectionHeader
+        title="Todo el catálogo"
+        subtitle="Nuestra línea completa de hidratación PH PLUS"
+      />
+      <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-3 lg:gap-x-7">
+        {items.map((item) => (
+          <ProductCard key={item.slug} item={item} />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function PerfectPresentationCard() {
   return (
     <section className="mx-auto mt-14 hidden max-w-[610px] rounded-[18px] bg-[#1e3a8a] px-8 py-6 text-center text-white shadow-[3px_5px_0_rgba(0,0,0,0.25)] lg:block">
@@ -559,6 +617,7 @@ export default function ProductsListingPage() {
           <FeaturedProducts />
           <PetProducts />
           <LowerCatalogSections />
+          <CatalogFromDb />
           <PerfectPresentationCard />
         </section>
 
