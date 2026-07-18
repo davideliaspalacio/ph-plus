@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useMemo } from "react";
+import ProductVisual from "@/app/components/ProductVisual";
 import { Drawer, Button, EmptyState } from "@/src/shared/ui";
 import { formatCOP } from "@/src/shared/lib/format";
 import { useCart } from "@/src/features/cart/store/useCart";
@@ -79,16 +79,14 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
               key={line.product.slug}
               className="flex items-start gap-3 py-4"
             >
-              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-card-border/30">
-                {line.product.gallery?.[0] && (
-                  <Image
-                    src={`/products/${line.product.slug}.png`}
-                    alt={line.product.title}
-                    fill
-                    sizes="64px"
-                    className="object-contain p-1"
-                  />
-                )}
+              {/* Ilustración por visualKey, igual que /carrito. Antes se
+                  armaba `/products/${slug}.png`, pero esos archivos no existen
+                  para casi ningún slug → miniatura rota en todo el carrito. */}
+              <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-card-border/30">
+                <ProductVisual
+                  visualKey={line.product.visualKey}
+                  className="h-14 w-auto"
+                />
               </div>
               <div className="flex-1">
                 <div className="text-[13px] font-bold text-brand">

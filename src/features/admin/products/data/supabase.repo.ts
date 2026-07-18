@@ -148,6 +148,8 @@ type ProductPatchDb = Partial<{
   rating_count: number;
   is_active: boolean;
   in_stock: boolean;
+  meta_title: string | null;
+  meta_description: string | null;
 }>;
 
 function toDbPatch(patch: Partial<Product>): ProductPatchDb {
@@ -175,6 +177,20 @@ function toDbPatch(patch: Partial<Product>): ProductPatchDb {
     out.rating_count = patch.rating.count;
   }
   if (patch.inStock !== undefined) out.in_stock = patch.inStock;
+
+  // El form del admin manda estos campos fuera del shape de `Product` (vía el
+  // `values as Partial<Product>` de la page). Sin este mapeo, el checkbox
+  // "Activo" y la pestaña SEO se descartaban en silencio.
+  const extra = patch as Partial<Product> & {
+    isActive?: boolean;
+    metaTitle?: string;
+    metaDescription?: string;
+  };
+  if (extra.isActive !== undefined) out.is_active = extra.isActive;
+  if (extra.metaTitle !== undefined) out.meta_title = extra.metaTitle || null;
+  if (extra.metaDescription !== undefined) {
+    out.meta_description = extra.metaDescription || null;
+  }
   return out;
 }
 

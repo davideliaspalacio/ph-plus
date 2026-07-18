@@ -36,7 +36,7 @@ export default function Hero() {
       <div className="lg:hidden">
         <div className="relative h-[198px] w-full overflow-hidden bg-[#1e3a8a]">
           <Image
-            src="/home/hero-desktop.png"
+            src="/home/hero-desktop.jpg"
             alt="Mujer hidratándose con agua PH PLUS al aire libre"
             fill
             priority
@@ -88,7 +88,7 @@ export default function Hero() {
       <div className="hidden lg:block">
         <div className="relative h-[560px] w-full overflow-hidden bg-[#1e3a8a]">
           <Image
-            src="/home/hero-desktop.png"
+            src="/home/hero-desktop.jpg"
             alt="Mujer hidratándose con agua PH PLUS al aire libre"
             fill
             priority
