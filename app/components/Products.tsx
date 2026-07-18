@@ -20,7 +20,7 @@ type FeaturedItem = {
 const FEATURED: FeaturedItem[] = [
   {
     slug: "kit-inicial-botellon-19lts",
-    image: "/products/botellon-kit.png",
+    image: "/products/botellon-kit.jpg",
     alt: "Kit inicial de botellón PH PLUS de 19 litros",
     articleClassName: "order-2 md:order-1",
     imageClassName: "h-[172px] max-w-[132px] lg:h-[354px] lg:max-w-[300px]",
@@ -41,7 +41,7 @@ const FEATURED: FeaturedItem[] = [
   },
   {
     slug: "recargas-19lts",
-    image: "/products/recargas-19.png",
+    image: "/products/recargas-19.jpg",
     alt: "Dos recargas de botellón PH PLUS de 19 litros",
     articleClassName: "order-3 md:order-3",
     imageClassName: "h-[172px] max-w-[132px] lg:h-[354px] lg:max-w-[300px]",
