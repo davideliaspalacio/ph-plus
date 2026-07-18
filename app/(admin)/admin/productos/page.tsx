@@ -90,7 +90,7 @@ export default function AdminProductosPage() {
                 longDescription: [values.description],
                 features: [],
                 includes: [],
-                gallery: [],
+                gallery: values.gallery ?? [],
                 specs: [],
                 usage: [],
                 reviews: [],

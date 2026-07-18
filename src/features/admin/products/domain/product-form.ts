@@ -47,6 +47,17 @@ export const ProductFormSchema = z
       .min(0, "Mín 0")
       .max(100, "Máx 100"),
     isActive: z.boolean(),
+    // Galería: fotos subidas al Storage (`src`) y/o ilustraciones legacy.
+    gallery: z
+      .array(
+        z.object({
+          visualKey: VisualKeyEnum,
+          bg: z.string(),
+          caption: z.string(),
+          src: z.string().url().optional(),
+        }),
+      )
+      .default([]),
     // Campos opcionales de SEO.
     metaTitle: z.string().optional(),
     metaDescription: z.string().optional(),
@@ -80,6 +91,7 @@ export const PRODUCT_FORM_DEFAULTS: ProductFormValues = {
   visualKey: "garrafas",
   popularity: 50,
   isActive: true,
+  gallery: [],
   metaTitle: undefined,
   metaDescription: undefined,
 };

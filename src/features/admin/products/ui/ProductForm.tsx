@@ -6,12 +6,13 @@ import {
   PRODUCT_CATEGORIES,
   PRODUCT_SIZES,
 } from "@/src/features/catalog";
-import type { Product } from "@/app/lib/products";
+import type { GalleryImage, Product } from "@/app/lib/products";
 import {
   ProductFormSchema,
   PRODUCT_FORM_DEFAULTS,
   type ProductFormValues,
 } from "../domain/product-form";
+import { uploadProductImage } from "../data/upload-image";
 
 export interface ProductFormProps {
   product?: Product;
@@ -33,6 +34,7 @@ type FormState = {
   visualKey: string;
   popularity: string;
   isActive: boolean;
+  gallery: GalleryImage[];
   metaTitle: string;
   metaDescription: string;
   stockCurrent: string;
@@ -55,6 +57,7 @@ function toInitialState(product?: Product): FormState {
     visualKey: (base as { visualKey?: string }).visualKey ?? "garrafas",
     popularity: String(base.popularity ?? 50),
     isActive: product ? product.inStock !== false : true,
+    gallery: product?.gallery ?? [],
     metaTitle: "",
     metaDescription: "",
     stockCurrent: "",
@@ -88,6 +91,44 @@ export function ProductForm({
 }: ProductFormProps) {
   const [state, setState] = useState<FormState>(() => toInitialState(product));
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  async function handleFiles(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    setUploadError(null);
+    setUploading(true);
+    try {
+      for (const file of Array.from(files)) {
+        const src = await uploadProductImage(file, state.slug);
+        setState((prev) => ({
+          ...prev,
+          gallery: [
+            ...prev.gallery,
+            {
+              visualKey: (prev.visualKey || "garrafas") as GalleryImage["visualKey"],
+              bg: "#f4f6fb",
+              caption: prev.title || file.name,
+              src,
+            },
+          ],
+        }));
+      }
+    } catch (error) {
+      setUploadError(
+        error instanceof Error ? error.message : "No se pudo subir la imagen.",
+      );
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function removeGalleryItem(index: number) {
+    setState((prev) => ({
+      ...prev,
+      gallery: prev.gallery.filter((_, i) => i !== index),
+    }));
+  }
 
   function set<K extends keyof FormState>(key: K, value: FormState[K]) {
     setState((prev) => ({ ...prev, [key]: value }));
@@ -111,6 +152,7 @@ export function ProductForm({
       visualKey: state.visualKey,
       popularity: Number(state.popularity),
       isActive: state.isActive,
+      gallery: state.gallery,
       metaTitle: state.metaTitle || undefined,
       metaDescription: state.metaDescription || undefined,
     };
@@ -243,9 +285,71 @@ export function ProductForm({
   );
 
   const imagesTab = (
-    <div className="rounded-2xl border border-dashed border-card-border bg-white p-8 text-center text-[14px] text-ink-muted">
-      Subida de imágenes próximamente. Por ahora las imágenes se gestionan vía
-      seeds.
+    <div className="flex flex-col gap-4">
+      {state.gallery.length > 0 && (
+        <ul className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+          {state.gallery.map((img, i) => (
+            <li
+              key={`${img.src ?? img.visualKey}-${i}`}
+              className="group relative overflow-hidden rounded-xl border border-card-border bg-white"
+            >
+              {img.src ? (
+                // Preview del admin: URL remota de Storage, sin next/image.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={img.src}
+                  alt={img.caption}
+                  className="h-24 w-full object-contain p-1"
+                />
+              ) : (
+                <div
+                  className="grid h-24 w-full place-items-center text-[11px] text-ink-muted"
+                  style={{ background: img.bg }}
+                >
+                  ilustración ({img.visualKey})
+                </div>
+              )}
+              <button
+                type="button"
+                onClick={() => removeGalleryItem(i)}
+                aria-label={`Quitar imagen ${i + 1}`}
+                className="absolute right-1 top-1 grid h-6 w-6 place-items-center rounded-full bg-black/60 text-[12px] text-white opacity-0 transition-opacity group-hover:opacity-100"
+              >
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <label className="flex cursor-pointer flex-col items-center gap-2 rounded-2xl border border-dashed border-card-border bg-white p-8 text-center text-[14px] text-ink-muted transition-colors hover:border-brand">
+        <span className="font-semibold text-brand">
+          {uploading ? "Subiendo…" : "Subir imágenes"}
+        </span>
+        <span className="text-[12px]">
+          JPG/PNG/WebP hasta 5MB. Podés seleccionar varias.
+        </span>
+        <input
+          type="file"
+          accept="image/*"
+          multiple
+          className="hidden"
+          disabled={uploading}
+          onChange={(e) => {
+            void handleFiles(e.target.files);
+            e.target.value = "";
+          }}
+        />
+      </label>
+
+      {uploadError && (
+        <p className="rounded-xl bg-red-50 px-4 py-3 text-[13px] font-semibold text-red-700">
+          {uploadError}
+        </p>
+      )}
+      <p className="text-[12px] text-ink-muted">
+        La primera imagen es la principal. Se guardan al guardar el producto.
+      </p>
     </div>
   );
 

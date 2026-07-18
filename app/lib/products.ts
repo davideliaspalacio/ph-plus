@@ -13,6 +13,9 @@ export type GalleryImage = {
   visualKey: ProductVisualKey;
   bg: string;
   caption: string;
+  /** URL de foto real (subida desde el admin). Si está, se muestra en lugar
+   *  de la ilustración `visualKey`. */
+  src?: string;
 };
 
 export type SpecRow = { label: string; value: string };

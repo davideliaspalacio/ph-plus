@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import ProductVisual from "./ProductVisual";
 import type { GalleryImage } from "../lib/products";
 
@@ -18,13 +19,23 @@ export default function ProductGallery({
   return (
     <div className="flex flex-col gap-4">
       <div
-        className="flex h-80 w-full items-center justify-center rounded-3xl p-8 sm:h-96 sm:p-10 lg:h-[420px]"
+        className="relative flex h-80 w-full items-center justify-center overflow-hidden rounded-3xl p-8 sm:h-96 sm:p-10 lg:h-[420px]"
         style={{ background: current?.bg ?? fallbackBg }}
       >
-        <ProductVisual
-          visualKey={current?.visualKey ?? "kit"}
-          className="h-64 w-auto sm:h-72 lg:h-80"
-        />
+        {current?.src ? (
+          <Image
+            src={current.src}
+            alt={current.caption}
+            fill
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="object-contain p-6"
+          />
+        ) : (
+          <ProductVisual
+            visualKey={current?.visualKey ?? "kit"}
+            className="h-64 w-auto sm:h-72 lg:h-80"
+          />
+        )}
       </div>
 
       {images.length > 1 && (
@@ -37,14 +48,27 @@ export default function ProductGallery({
               aria-label={`Ver imagen ${i + 1}: ${img.caption}`}
               aria-pressed={i === active}
               className={
-                "flex h-20 items-center justify-center rounded-xl p-2 transition-all " +
+                "relative flex h-20 items-center justify-center overflow-hidden rounded-xl p-2 transition-all " +
                 (i === active
                   ? "ring-2 ring-brand ring-offset-2"
                   : "ring-1 ring-card-border hover:ring-brand")
               }
               style={{ background: img.bg }}
             >
-              <ProductVisual visualKey={img.visualKey} className="h-14 w-auto" />
+              {img.src ? (
+                <Image
+                  src={img.src}
+                  alt={img.caption}
+                  fill
+                  sizes="120px"
+                  className="object-contain p-1"
+                />
+              ) : (
+                <ProductVisual
+                  visualKey={img.visualKey}
+                  className="h-14 w-auto"
+                />
+              )}
             </button>
           ))}
         </div>

@@ -490,6 +490,8 @@ async function CatalogFromDb() {
           ? formatCOP(p.prevPriceValue)
           : undefined,
         visualKey: p.visualKey,
+        // Foto subida desde el admin (si hay); si no, ilustración visualKey.
+        image: p.gallery?.[0]?.src,
         imageClassName: "h-[126px] lg:h-[134px]",
         slug: p.slug,
       }));
