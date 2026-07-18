@@ -158,14 +158,6 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     imageClassName: "h-[132px] lg:h-[138px]",
     slug: "agua-ph-plus-5l-x1",
   },
-  {
-    name: "1 recarga\nde 19 lts",
-    price: "$50,000",
-    visualKey: "recargas",
-    image: "/products/recarga-19-individual.jpg",
-    imageClassName: "h-[132px] lg:h-[138px]",
-    slug: "recarga-19lts-individual",
-  },
 ];
 
 const LOWER_SECTIONS_STATIC: CatalogSection[] = [
@@ -256,17 +248,20 @@ function SectionHeader({
   title,
   subtitle,
   compact = false,
+  titleClassName,
 }: {
   title: string;
   subtitle: React.ReactNode;
   compact?: boolean;
+  titleClassName?: string;
 }) {
   return (
     <div className="text-center">
       <h2
         className={
           "ph-display uppercase leading-none text-[#1e3a8a] " +
-          (compact ? "text-[26px] lg:text-[30px]" : "text-[29px] lg:text-[32px]")
+          (titleClassName ??
+            (compact ? "text-[26px] lg:text-[30px]" : "text-[29px] lg:text-[32px]"))
         }
       >
         {title}
@@ -450,21 +445,24 @@ async function LowerCatalogSections() {
   );
 
   return (
-    <div className="grid gap-12 pt-12 lg:grid-cols-2 lg:gap-14 lg:pt-14">
-      {LOWER_SECTIONS.map((section) => (
-        <section key={section.id} id={section.id}>
+    <div className="pt-12 lg:pt-14">
+      <div className="grid grid-cols-2 gap-x-7 lg:gap-x-9">
+        {LOWER_SECTIONS.map((section) => (
           <SectionHeader
+            key={section.id}
             title={section.title}
             subtitle={section.subtitle}
-            compact
+            titleClassName="text-[26px] leading-none lg:text-[60px]"
           />
-          <div className="mt-8 grid grid-cols-2 gap-x-7 lg:gap-x-9">
-            {section.products.map((item) => (
-              <ProductCard key={item.name} item={item} />
-            ))}
-          </div>
-        </section>
-      ))}
+        ))}
+      </div>
+      <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4 lg:gap-x-9">
+        {LOWER_SECTIONS.flatMap((section) =>
+          section.products.map((item) => (
+            <ProductCard key={item.slug} item={item} />
+          )),
+        )}
+      </div>
     </div>
   );
 }
