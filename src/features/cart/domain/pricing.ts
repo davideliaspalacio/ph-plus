@@ -7,6 +7,7 @@
  */
 
 export const SHIPPING_FLAT = 11_000;
+/** Retenido por compatibilidad de tipos; PH PLUS ya no maneja envío gratis. */
 export const FREE_SHIPPING_THRESHOLD = 120_000;
 
 export type CartItemInput = {
@@ -40,9 +41,14 @@ export type ProductLookup<P extends ProductLike = ProductLike> = (
   slug: string,
 ) => P | undefined;
 
+export type CartSummaryOptions = {
+  shippingCost?: number | null;
+};
+
 export function buildCartSummary<P extends ProductLike = ProductLike>(
   items: CartItemInput[],
   lookup: ProductLookup<P>,
+  options: CartSummaryOptions = {},
 ): CartSummary<P> {
   const lines: CartLine<P>[] = [];
 
@@ -59,13 +65,15 @@ export function buildCartSummary<P extends ProductLike = ProductLike>(
 
   const subtotal = lines.reduce((acc, l) => acc + l.lineTotal, 0);
   const totalItems = lines.reduce((acc, l) => acc + l.item.quantity, 0);
-  const qualifiesForFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+  const qualifiesForFreeShipping = false;
   const shipping =
-    lines.length === 0 || qualifiesForFreeShipping ? 0 : SHIPPING_FLAT;
+    lines.length === 0
+      ? 0
+      : typeof options.shippingCost === "number"
+        ? Math.max(0, options.shippingCost)
+        : SHIPPING_FLAT;
   const total = subtotal + shipping;
-  const amountToFreeShipping = qualifiesForFreeShipping
-    ? 0
-    : Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
+  const amountToFreeShipping = 0;
 
   return {
     lines,

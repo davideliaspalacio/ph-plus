@@ -10,7 +10,6 @@ type FeaturedItem = {
   alt: string;
   articleClassName: string;
   imageClassName: string;
-  imageFrameClassName?: string;
   imageInnerClassName?: string;
   copyClassName: string;
   titleOverride?: string;
@@ -23,10 +22,8 @@ const FEATURED: FeaturedItem[] = [
     image: "/products/botellon-kit.jpg",
     alt: "Kit inicial de botellón PH PLUS de 19 litros",
     articleClassName: "order-2 md:order-1",
-    imageClassName: "h-[172px] max-w-[132px] lg:h-[354px] lg:max-w-[300px]",
-    imageFrameClassName:
-      "overflow-hidden rounded-[8px] border border-[#e0e0e0] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.12)] lg:rounded-[18px] lg:border-[#d9d9d9] lg:shadow-[0_1px_5px_rgba(0,0,0,0.16)]",
-    imageInnerClassName: "p-2 lg:p-6",
+    imageClassName: "h-[189px] max-w-[139px] lg:h-[387px] lg:max-w-[297px]",
+    imageInnerClassName: "p-2 lg:scale-[1.08] lg:p-6",
     copyClassName: "",
   },
   {
@@ -34,7 +31,8 @@ const FEATURED: FeaturedItem[] = [
     image: "/products/oferta-garrafas.png",
     alt: "Promoción de garrafas PH PLUS pague 3 lleve 5",
     articleClassName: "order-1 md:order-2",
-    imageClassName: "h-[186px] max-w-[154px] lg:h-[380px] lg:max-w-[355px]",
+    imageClassName: "h-[189px] max-w-[167px] lg:h-[387px] lg:max-w-[387px]",
+    imageInnerClassName: "translate-y-[4px] scale-[1.35] lg:translate-y-[14px] lg:scale-[1.85]",
     copyClassName: "",
     titleOverride: "Promoción de Garrafas",
     titleClassName: "hidden lg:block",
@@ -44,10 +42,8 @@ const FEATURED: FeaturedItem[] = [
     image: "/products/recargas-19.jpg",
     alt: "Dos recargas de botellón PH PLUS de 19 litros",
     articleClassName: "order-3 md:order-3",
-    imageClassName: "h-[172px] max-w-[132px] lg:h-[354px] lg:max-w-[300px]",
-    imageFrameClassName:
-      "overflow-hidden rounded-[8px] border border-[#e0e0e0] bg-white shadow-[0_1px_4px_rgba(0,0,0,0.12)] lg:rounded-[18px] lg:border-[#d9d9d9] lg:shadow-[0_1px_5px_rgba(0,0,0,0.16)]",
-    imageInnerClassName: "p-2 lg:p-5",
+    imageClassName: "h-[189px] max-w-[139px] lg:h-[387px] lg:max-w-[297px]",
+    imageInnerClassName: "p-2 lg:scale-[1.08] lg:p-5",
     copyClassName: "",
   },
 ];
@@ -87,7 +83,7 @@ export default async function Products() {
 
   return (
     <section id="productos" className="w-full bg-white">
-      <div className="mx-auto max-w-[1230px] px-4 pb-4 pt-4 sm:px-8 sm:py-10 lg:px-6 lg:pb-8 lg:pt-20">
+      <div className="mx-auto max-w-[1200px] px-4 pb-4 pt-4 sm:px-8 sm:py-10 lg:px-6 lg:pb-8 lg:pt-20">
         <div>
           <h2 className="ph-display text-center text-[24px] uppercase leading-none text-[#1e3a8a] sm:text-[40px] lg:text-[48px]">
             PRODUCTOS DESTACADOS
@@ -97,7 +93,7 @@ export default async function Products() {
           </p>
         </div>
 
-        <div className="mt-5 grid grid-cols-3 items-end gap-3 md:gap-6 lg:mt-9 lg:gap-14">
+        <div className="mt-5 grid grid-cols-3 items-start gap-3 md:gap-6 lg:mt-9 lg:gap-14">
           {FEATURED.map((item) => {
             const product = dbBySlug.get(item.slug) ?? productBySlug(item.slug);
             return (
@@ -110,11 +106,7 @@ export default async function Products() {
               >
                 <div
                   className={
-                    "relative block w-full " +
-                    item.imageClassName +
-                    (item.imageFrameClassName
-                      ? " " + item.imageFrameClassName
-                      : "")
+                    "relative block w-full " + item.imageClassName
                   }
                 >
                   <Image
@@ -123,7 +115,7 @@ export default async function Products() {
                     fill
                     sizes="(min-width: 1024px) 480px, 34vw"
                     className={
-                      "object-contain lg:scale-[1.08]" +
+                      "object-contain" +
                       (item.imageInnerClassName
                         ? " " + item.imageInnerClassName
                         : "")
@@ -170,8 +162,9 @@ export default async function Products() {
                     slug={product.slug}
                     mode="cart"
                     label="comprar ahora"
+                    labelClassName="sr-only lg:not-sr-only"
                     showFeedback={false}
-                    className="ph-condensed h-[26px] w-[108px] border border-black px-2 py-0 text-[9px] font-bold sm:h-[36px] sm:w-[154px] sm:text-[14px] lg:h-[68px] lg:w-[300px] lg:text-[29px]"
+                    className="ph-condensed h-[26px] w-[42px] border border-black px-0 py-0 !text-[15px] font-bold sm:h-[36px] sm:w-[54px] sm:!text-[20px] lg:h-[68px] lg:w-[300px] lg:px-2 lg:!text-[29px]"
                   />
                 </div>
               </article>

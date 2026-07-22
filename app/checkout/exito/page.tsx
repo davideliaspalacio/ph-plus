@@ -107,11 +107,7 @@ function SuccessContent() {
             </ul>
             <div className="mt-3 flex justify-between border-t border-card-border pt-3 text-[13px]">
               <span className="text-ink-muted">Envío</span>
-              <span>
-                {order.totals.shipping === 0
-                  ? "Gratis"
-                  : formatCOP(order.totals.shipping)}
-              </span>
+              <span>{formatCOP(order.totals.shipping)}</span>
             </div>
             <div className="mt-2 flex items-baseline justify-between">
               <span className="text-[14px] font-semibold">Total</span>

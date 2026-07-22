@@ -5,8 +5,8 @@
  *   comparar nombres de ciudades de forma tolerante a errores de tipeo.
  * - `matchZone` busca la primera zona activa cuyas `regions` incluyan la
  *   ciudad (ya normalizada).
- * - `calculateShipping` combina lo anterior con la regla de envío gratis
- *   por umbral configurable a nivel de zona.
+ * - `calculateShipping` devuelve el costo de la zona activa. El domicilio no
+ *   aplica gratis en el sitio público.
  */
 
 import type { ShippingZone } from "./zone";
@@ -59,14 +59,10 @@ export function calculateShipping(input: {
     return { zone: null, cost: null, freeApplied: false, leadTime: null };
   }
 
-  const threshold = zone.freeShippingThreshold;
-  const freeApplied =
-    typeof threshold === "number" && input.subtotal >= threshold;
-
   return {
     zone,
-    cost: freeApplied ? 0 : zone.cost,
-    freeApplied,
+    cost: zone.cost,
+    freeApplied: false,
     leadTime: { min: zone.leadTimeDaysMin, max: zone.leadTimeDaysMax },
   };
 }

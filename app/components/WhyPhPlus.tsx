@@ -145,7 +145,7 @@ const CARDS: TrustCard[] = [
 export default function WhyPhPlus() {
   return (
     <section id="por-que" className="w-full bg-white py-1 lg:py-9">
-      <div className="mx-auto max-w-[1180px] px-5 sm:px-8 lg:px-6">
+      <div className="mx-auto max-w-[1200px] px-5 sm:px-8 lg:px-6">
         <div className="mx-auto grid max-w-[560px] grid-cols-2 gap-x-6 gap-y-3 py-5 lg:hidden">
           <MobileBenefit icon={<ShieldIcon />}>
             Con Calcio y Magnesio

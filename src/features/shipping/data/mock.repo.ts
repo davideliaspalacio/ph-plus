@@ -3,7 +3,7 @@
  *
  * - Namespace: `phplus.db.shipping-zones.v1` (cada zona es una entrada
  *   `phplus.db.shipping-zones.v1:<id>`).
- * - Si el namespace está vacío al primer `list()`, siembra 4 zonas alineadas
+ * - Si el namespace está vacío al primer `list()`, siembra zonas alineadas
  *   con el contenido del prototipo en `app/envios/page.tsx`.
  * - `archive(id)` marca `isActive: false` (no borra) — el día que migremos a
  *   Supabase mantenemos historial.
@@ -17,39 +17,33 @@ import type { ShippingZoneRepository } from "./ports";
 
 export const SHIPPING_ZONES_STORAGE_PREFIX = "phplus.db.shipping-zones.v1";
 
-const FREE_THRESHOLD = 120_000;
-
 export const SHIPPING_ZONES_SEED: ShippingZone[] = [
   {
     id: "zone-bogota",
     name: "Bogotá D.C.",
     regions: ["Bogotá", "Bogota", "Bogotá D.C."],
-    cost: 8_000,
+    cost: 11_000,
     leadTimeDaysMin: 1,
     leadTimeDaysMax: 2,
-    freeShippingThreshold: FREE_THRESHOLD,
     isActive: true,
   },
   {
     id: "zone-cundinamarca",
-    name: "Cundinamarca cercana",
+    name: "Alrededores Bogotá",
     regions: [
       "Chía",
       "Cota",
       "Funza",
-      "Mosquera",
       "Cajicá",
-      "La Calera",
-      "Soacha",
-      "Zipaquirá",
-      "Facatativá",
-      "Madrid",
-      "Fusagasugá",
+      "Cajica",
+      "Tenjo",
+      "Tabio",
+      "Tocancipá",
+      "Tocancipa",
     ],
-    cost: 12_000,
+    cost: 15_000,
     leadTimeDaysMin: 2,
     leadTimeDaysMax: 3,
-    freeShippingThreshold: FREE_THRESHOLD,
     isActive: true,
   },
   {
@@ -57,31 +51,28 @@ export const SHIPPING_ZONES_SEED: ShippingZone[] = [
     name: "Ciudades principales",
     regions: [
       "Medellín",
-      "Cali",
       "Barranquilla",
-      "Bucaramanga",
-      "Manizales",
-      "Pereira",
-      "Armenia",
+      "Cartagena",
     ],
-    cost: 18_000,
+    cost: 11_000,
     leadTimeDaysMin: 3,
     leadTimeDaysMax: 5,
     isActive: true,
   },
   {
-    id: "zone-resto-pais",
-    name: "Resto del país",
+    id: "zone-alrededores",
+    name: "Alrededores otras ciudades",
     regions: [
-      "Cartagena",
-      "Santa Marta",
-      "Cúcuta",
-      "Ibagué",
-      "Neiva",
-      "Pasto",
-      "Villavicencio",
+      "Bello",
+      "Sabaneta",
+      "Envigado",
+      "Itagüí",
+      "Itagui",
+      "Villacampestre",
+      "Manzanillo",
+      "Cali",
     ],
-    cost: 22_000,
+    cost: 15_000,
     leadTimeDaysMin: 4,
     leadTimeDaysMax: 7,
     isActive: true,

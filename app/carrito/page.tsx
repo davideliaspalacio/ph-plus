@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -10,8 +10,12 @@ import ProductVisual from "../components/ProductVisual";
 import { useCart } from "../components/CartProvider";
 import { CartLineSkeleton } from "../components/Skeletons";
 import { useMockLoading } from "../components/useMockLoading";
-import { buildCartSummary, FREE_SHIPPING_THRESHOLD } from "../lib/cart-summary";
+import { buildCartSummary } from "../lib/cart-summary";
 import { formatCOP } from "../lib/products";
+import {
+  getShippingDestination,
+  SHIPPING_DESTINATION_GROUPS,
+} from "../lib/shipping-rates";
 
 const MIN_ORDER_VALUE = 50_000;
 
@@ -64,14 +68,23 @@ function TrashIcon() {
 export default function CartPage() {
   const initialLoading = useMockLoading();
   const { items, hydrated, setQuantity, removeItem, clear } = useCart();
-  const summary = useMemo(() => buildCartSummary(items), [items]);
+  const [shippingCity, setShippingCity] = useState("");
+  const selectedShippingDestination = useMemo(
+    () => getShippingDestination(shippingCity),
+    [shippingCity],
+  );
+  const summary = useMemo(
+    () =>
+      buildCartSummary(items, {
+        shippingCost: selectedShippingDestination?.cost ?? 0,
+      }),
+    [items, selectedShippingDestination?.cost],
+  );
   const ready = hydrated && !initialLoading;
   const isEmpty = ready && summary.lines.length === 0;
-
-  const toFreeShipping =
-    summary.qualifiesForFreeShipping || summary.subtotal === 0
-      ? 0
-      : FREE_SHIPPING_THRESHOLD - summary.subtotal;
+  const checkoutHref = selectedShippingDestination
+    ? `/checkout?city=${encodeURIComponent(selectedShippingDestination.value)}`
+    : "#shipping-city";
 
   return (
     <>
@@ -195,20 +208,46 @@ export default function CartPage() {
               </div>
 
               <aside className="rounded-2xl border border-card-border bg-[#fafbfd] p-6">
-                <h2 className="text-[18px] font-extrabold text-brand">
+                <div
+                  id="shipping-city"
+                  className="rounded-2xl border border-brand/20 bg-white p-4"
+                >
+                  <label
+                    htmlFor="cart-shipping-city"
+                    className="block text-[13px] font-extrabold uppercase tracking-wide text-brand"
+                  >
+                    SELECCIONA TU CIUDAD PARA CALCULAR EL TOTAL DE TU ENVÍO.
+                  </label>
+                  <select
+                    id="cart-shipping-city"
+                    value={shippingCity}
+                    onChange={(event) => setShippingCity(event.target.value)}
+                    className="mt-3 w-full rounded-xl border border-card-border bg-white px-3 py-3 text-[14px] font-semibold text-ink outline-none transition-colors focus:border-brand focus:ring-2 focus:ring-brand/15"
+                  >
+                    <option value="">Selecciona tu ciudad</option>
+                    {SHIPPING_DESTINATION_GROUPS.map((group) => (
+                      <optgroup key={group.label} label={group.label}>
+                        {group.destinations.map((destination) => (
+                          <option key={destination.value} value={destination.value}>
+                            {destination.label} - {formatCOP(destination.cost)}
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </select>
+                  <p className="mt-2 text-[12px] leading-relaxed text-ink-muted">
+                    El domicilio se suma automáticamente según los costos de
+                    envío vigentes.
+                  </p>
+                </div>
+
+                <h2 className="mt-5 text-[18px] font-extrabold text-brand">
                   Resumen
                 </h2>
 
                 <div className="mt-4 rounded-lg bg-white px-3 py-2 text-center text-[12px] font-bold uppercase tracking-wide text-brand shadow-sm">
                   Pedido mínimo {formatCOP(MIN_ORDER_VALUE)}
                 </div>
-
-                {toFreeShipping > 0 && (
-                  <div className="mt-3 rounded-lg bg-[#eef0ff] px-3 py-2 text-[12px] text-brand">
-                    Te faltan <strong>{formatCOP(toFreeShipping)}</strong> para
-                    envío gratis.
-                  </div>
-                )}
 
                 <dl className="mt-4 space-y-2 text-[14px]">
                   <div className="flex justify-between">
@@ -220,10 +259,10 @@ export default function CartPage() {
                   <div className="flex justify-between">
                     <dt className="text-ink-muted">Envío</dt>
                     <dd className="font-semibold text-ink">
-                      {summary.shipping === 0 ? (
-                        <span className="text-whatsapp-dark">Gratis</span>
-                      ) : (
+                      {selectedShippingDestination ? (
                         formatCOP(summary.shipping)
+                      ) : (
+                        <span className="text-brand">Por calcular</span>
                       )}
                     </dd>
                   </div>
@@ -234,15 +273,25 @@ export default function CartPage() {
                     Total
                   </span>
                   <span className="text-[22px] font-extrabold text-brand">
-                    {formatCOP(summary.total)}
+                    {selectedShippingDestination
+                      ? formatCOP(summary.total)
+                      : "Por calcular"}
                   </span>
                 </div>
 
                 <Link
-                  href="/checkout"
-                  className="mt-5 flex w-full items-center justify-center rounded-full bg-brand px-6 py-3 text-[14px] font-semibold text-white transition-all hover:scale-[1.02] hover:bg-brand-dark"
+                  href={checkoutHref}
+                  aria-disabled={!selectedShippingDestination}
+                  className={
+                    "mt-5 flex w-full items-center justify-center rounded-full px-6 py-3 text-[14px] font-semibold text-white transition-all " +
+                    (selectedShippingDestination
+                      ? "bg-brand hover:scale-[1.02] hover:bg-brand-dark"
+                      : "cursor-not-allowed bg-brand/45")
+                  }
                 >
-                  Proceder al pago
+                  {selectedShippingDestination
+                    ? "Proceder al pago"
+                    : "Selecciona ciudad para continuar"}
                 </Link>
 
                 <a
@@ -262,11 +311,10 @@ export default function CartPage() {
                 </a>
 
                 <p className="mt-4 text-center text-[11px] leading-[1.5] text-ink-muted">
-                  Pagos seguros • Entrega a domicilio en Cundinamarca y
-                  principales ciudades.
+                  Pagos seguros • Entrega a domicilio según cobertura.
                 </p>
                 <p className="mt-2 text-center text-[11px] font-semibold leading-[1.5] text-brand">
-                  Producto disponible solo en Bogotá, Medellín y Cartagena.
+                  El costo depende de la ciudad seleccionada.
                 </p>
                 <Link
                   href="/envios"

@@ -41,13 +41,9 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
                 {formatCOP(summary.subtotal)}
               </span>
             </div>
-            {!summary.qualifiesForFreeShipping && (
-              <p className="rounded-2xl bg-brand/5 px-3 py-2 text-[12px] text-brand">
-                Te faltan{" "}
-                <strong>{formatCOP(summary.amountToFreeShipping)}</strong>{" "}
-                para envío gratis.
-              </p>
-            )}
+            <p className="rounded-2xl bg-brand/5 px-3 py-2 text-[12px] text-brand">
+              El envío se calcula en el carrito según tu ciudad.
+            </p>
             <div className="grid grid-cols-2 gap-2">
               <Link href="/carrito" onClick={onClose}>
                 <Button variant="outline" fullWidth>

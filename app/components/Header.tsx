@@ -90,7 +90,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#1e2aab] text-white shadow-[0_2px_12px_rgba(0,0,0,0.08)]">
-      <div className="relative mx-auto flex h-[50px] max-w-[390px] items-center px-0 sm:h-[64px] sm:max-w-[1440px] sm:px-6 lg:hidden">
+      <div className="relative flex h-[72px] w-full max-w-none items-center px-0 sm:h-[84px] sm:px-6 lg:hidden">
         <Link href="/" className="flex h-full shrink-0 items-center">
           <Image
             src="/brand/logo-ph-plus-figma.png"
@@ -98,7 +98,7 @@ export default function Header() {
             width={160}
             height={48}
             priority
-            className="h-[42px] w-[100px] object-contain sm:h-10 sm:w-auto"
+            className="h-[56px] w-[130px] object-contain object-left min-[390px]:h-[58px] min-[390px]:w-[136px] sm:h-[70px] sm:w-[170px]"
           />
         </Link>
 
@@ -109,7 +109,7 @@ export default function Header() {
           height={155}
           priority
           className={
-            "absolute left-[96px] top-[3px] h-[56px] w-[35px] object-contain sm:left-[130px] " +
+            "absolute left-[116px] top-[3px] h-[66px] w-[42px] object-contain min-[390px]:left-[122px] min-[390px]:top-[4px] min-[390px]:h-[70px] min-[390px]:w-[44px] sm:left-[160px] sm:top-[3px] sm:h-[80px] sm:w-[50px] " +
             (searchOpen ? "hidden" : "")
           }
         />
@@ -117,7 +117,7 @@ export default function Header() {
         {searchOpen ? (
           <form
             onSubmit={submitSearch}
-            className="absolute left-[112px] right-3 top-[7px] z-10 flex h-9 items-center rounded-full bg-white px-3 text-[#1e3a8a] shadow-[0_4px_14px_rgba(0,0,0,0.18)] sm:left-[190px] sm:right-6 sm:top-[12px] sm:h-10"
+            className="absolute left-[136px] right-3 top-[14px] z-10 flex h-11 items-center rounded-full bg-white px-3 text-[#1e3a8a] shadow-[0_4px_14px_rgba(0,0,0,0.18)] min-[390px]:left-[148px] sm:left-[210px] sm:right-6 sm:top-[18px] sm:h-12"
           >
             <input
               ref={searchInputRef}
@@ -133,14 +133,14 @@ export default function Header() {
               type="button"
               aria-label="Cerrar búsqueda"
               onClick={() => setSearchOpen(false)}
-              className="mr-2 grid h-6 w-6 shrink-0 place-items-center rounded-full text-[18px] font-bold leading-none text-[#7180b8] transition-colors hover:text-[#1e3a8a]"
+              className="mr-2 grid h-7 w-7 shrink-0 place-items-center rounded-full text-[20px] font-bold leading-none text-[#7180b8] transition-colors hover:text-[#1e3a8a]"
             >
               ×
             </button>
             <button
               type="submit"
               aria-label="Buscar"
-              className="grid h-6 w-6 shrink-0 place-items-center"
+              className="grid h-7 w-7 shrink-0 place-items-center"
             >
               <SearchIcon />
             </button>
@@ -153,13 +153,19 @@ export default function Header() {
               setOpen(false);
               setSearchOpen(true);
             }}
-            className="ml-auto grid h-[22px] w-[22px] place-items-center transition-opacity hover:opacity-80"
+            className="ml-auto grid h-[34px] w-[34px] place-items-center transition-opacity hover:opacity-80 min-[390px]:h-9 min-[390px]:w-9"
           >
             <SearchIcon />
           </button>
         )}
 
-        <div className={searchOpen ? "hidden" : "ml-3 flex items-center gap-3"}>
+        <div
+          className={
+            searchOpen
+              ? "hidden"
+              : "ml-2 flex items-center gap-2"
+          }
+        >
           <button
             type="button"
             onClick={() => setMiniCartOpen(true)}
@@ -168,13 +174,13 @@ export default function Header() {
                 ? ` con ${totalItems} producto${totalItems === 1 ? "" : "s"}`
                 : ""
             }`}
-            className="relative grid h-[35px] w-[35px] place-items-center transition-opacity hover:opacity-80"
+            className="relative grid h-11 w-11 place-items-center transition-opacity hover:opacity-80 min-[390px]:h-[46px] min-[390px]:w-[46px]"
           >
-            <CartIcon className="h-[35px] w-[35px]" />
+            <CartIcon className="h-10 w-10 min-[390px]:h-[42px] min-[390px]:w-[42px]" />
             {showBadge && (
               <span
                 className={
-                  "absolute -right-1 -top-1 grid h-4 min-w-4 place-items-center rounded-full bg-white px-1 text-[9px] font-extrabold text-[#1e3a8a] shadow-[0_2px_6px_rgba(0,0,0,0.18)] " +
+                  "absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-white px-1 text-[10px] font-extrabold text-[#1e3a8a] shadow-[0_2px_6px_rgba(0,0,0,0.18)] " +
                   (bouncing ? "cart-badge-bounce" : "")
                 }
               >
@@ -188,14 +194,14 @@ export default function Header() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Contáctanos por WhatsApp"
-            className="grid h-[23px] w-[23px] place-items-center rounded-full bg-[#25d366] transition-colors hover:bg-[#1fb055]"
+            className="grid h-[34px] w-[34px] place-items-center rounded-full bg-[#25d366] transition-colors hover:bg-[#1fb055] min-[390px]:h-9 min-[390px]:w-9"
           >
             <Image
               src="/icons/whatsapp.svg"
               alt=""
               width={23}
               height={23}
-              className="h-[19px] w-[19px]"
+              className="h-[30px] w-[30px] min-[390px]:h-8 min-[390px]:w-8"
             />
           </a>
 
@@ -204,21 +210,26 @@ export default function Header() {
             aria-label="Menú"
             aria-expanded={open}
             onClick={() => setOpen((v) => !v)}
-            className="grid h-[42px] w-[41px] place-items-center"
+            className="grid h-11 w-11 place-items-center min-[390px]:h-[46px] min-[390px]:w-[46px]"
           >
-            <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" aria-hidden>
+            <svg
+              viewBox="0 0 24 24"
+              className="h-9 w-9"
+              fill="none"
+              aria-hidden
+            >
               {open ? (
                 <path
                   d="M6 6l12 12M18 6L6 18"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="2.2"
                   strokeLinecap="round"
                 />
               ) : (
                 <path
                   d="M4 7h16M4 12h16M4 17h16"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="2.2"
                   strokeLinecap="round"
                 />
               )}
@@ -240,7 +251,7 @@ export default function Header() {
             width={295}
             height={123}
             priority
-            className="h-full w-full object-contain"
+            className="h-full w-full -translate-x-[50px] object-contain object-left"
           />
         </Link>
 
@@ -250,7 +261,7 @@ export default function Header() {
           width={88}
           height={158}
           priority
-          className="pointer-events-none ml-4 mt-[10px] h-[158px] w-[88px] shrink-0 self-start object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.25)]"
+          className="pointer-events-none ml-4 mt-[-8px] h-[204px] w-[114px] shrink-0 self-start object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.25)]"
         />
 
         <nav className="ph-display ml-9 flex flex-1 items-center justify-center gap-11 whitespace-nowrap text-[21px] uppercase leading-none">

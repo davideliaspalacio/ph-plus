@@ -26,8 +26,8 @@ type Category = {
 const CATEGORIES: Category[] = [
   {
     title: "Farmacias",
-    gridClassName: "grid-cols-3 gap-x-3 gap-y-3 lg:grid-cols-3 lg:gap-x-12 lg:gap-y-5",
-    panelClassName: "min-h-[116px] lg:min-h-[156px]",
+    gridClassName: "grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-3 lg:gap-x-12 lg:gap-y-5",
+    panelClassName: "min-h-[280px] lg:min-h-[156px]",
     logos: [
       { src: "/HOME PHPLUS/cruzverde ok.png", alt: "Cruz Verde", className: "max-w-[112px] lg:max-w-[164px]" },
       { src: "/HOME PHPLUS/farmatodo.png", alt: "Farmatodo", className: "max-w-[112px] lg:max-w-[158px]" },
@@ -39,33 +39,33 @@ const CATEGORIES: Category[] = [
   },
   {
     title: "Supermercados",
-    gridClassName: "grid-cols-3 gap-x-4 gap-y-3 lg:grid-cols-5 lg:gap-x-9 lg:gap-y-2",
-    panelClassName: "min-h-[128px] lg:min-h-[175px]",
+    gridClassName: "grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-5 lg:gap-x-16 lg:gap-y-8",
+    panelClassName: "min-h-[300px] lg:min-h-[230px]",
     logos: [
       { src: "/HOME PHPLUS/log de carulla recortado 1.png", alt: "Carulla", className: "max-w-[82px] lg:max-w-[124px]" },
       { src: "/HOME PHPLUS/exito ok.png", alt: "Éxito", className: "max-w-[78px] lg:max-w-[118px]" },
       { src: "/HOME PHPLUS/jumbo sin fondo.png", alt: "Jumbo", className: "max-w-[58px] lg:max-w-[88px]" },
       { src: "/HOME PHPLUS/mercaldas.png", alt: "Mercaldas", className: "max-w-[72px] lg:max-w-[112px]" },
       { src: "/HOME PHPLUS/olimpica.png", alt: "Olímpica", className: "max-w-[82px] lg:max-w-[124px]" },
-      { src: "/HOME PHPLUS/fithub ok.png", alt: "Fithub", className: "max-w-[74px] lg:max-w-[116px]", cellClassName: "col-start-2 lg:col-start-3" },
+      { src: "/HOME PHPLUS/fithub ok.png", alt: "Fithub", className: "max-w-[74px] lg:max-w-[116px]", cellClassName: "lg:col-start-3 lg:mt-1" },
     ],
   },
   {
     title: "Hoteles",
-    gridClassName: "grid-cols-6 gap-x-2 gap-y-3 lg:grid-cols-5 lg:gap-x-9",
-    panelClassName: "min-h-[176px] lg:min-h-[150px]",
+    gridClassName: "grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-5 lg:gap-x-16",
+    panelClassName: "min-h-[320px] lg:min-h-[188px]",
     logos: [
-      { src: "/HOME PHPLUS/marriot.png", alt: "Marriott", className: "max-w-[64px] lg:max-w-[120px]", cellClassName: "col-span-2 !h-[46px] lg:col-span-1 lg:!h-[64px]" },
-      { src: "/HOME PHPLUS/intercontinental.png", alt: "InterContinental", className: "max-w-[112px] lg:max-w-[208px]", cellClassName: "col-span-2 !h-[46px] lg:col-span-1 lg:!h-[64px]" },
-      { src: "/HOME PHPLUS/binn.png", alt: "Binn Hotel", className: "max-w-[66px] lg:max-w-[112px]", cellClassName: "col-span-2 !h-[46px] lg:col-span-1 lg:!h-[64px]" },
-      { src: "/HOME PHPLUS/haven.png", alt: "Haven Hotel", className: "max-w-[58px] lg:max-w-[112px]", cellClassName: "col-start-2 col-span-2 !h-[46px] lg:col-start-auto lg:col-span-1 lg:!h-[64px]" },
-      { src: "/HOME PHPLUS/wam.png", alt: "Wam", className: "max-w-[44px] lg:max-w-[74px]", cellClassName: "col-span-2 !h-[46px] lg:col-span-1 lg:!h-[64px]" },
+      { src: "/HOME PHPLUS/marriot.png", alt: "Marriott", className: "max-w-[64px] lg:max-w-[120px]", cellClassName: "!h-[74px] lg:!h-[76px]" },
+      { src: "/HOME PHPLUS/intercontinental.png", alt: "InterContinental", className: "max-w-[112px] lg:max-w-[208px]", cellClassName: "!h-[74px] lg:!h-[76px]" },
+      { src: "/HOME PHPLUS/binn.png", alt: "Binn Hotel", className: "max-w-[66px] lg:max-w-[112px]", cellClassName: "!h-[74px] lg:!h-[76px]" },
+      { src: "/HOME PHPLUS/haven.png", alt: "Haven Hotel", className: "max-w-[58px] lg:max-w-[112px]", cellClassName: "!h-[74px] lg:!h-[76px]" },
+      { src: "/HOME PHPLUS/wam.png", alt: "Wam", className: "max-w-[44px] lg:max-w-[74px]", cellClassName: "!h-[74px] lg:!h-[76px]" },
     ],
   },
   {
     title: "Restaurantes",
-    gridClassName: "grid-cols-4 gap-x-3 gap-y-3 lg:grid-cols-6 lg:gap-x-9 lg:gap-y-3",
-    panelClassName: "min-h-[126px] lg:min-h-[170px]",
+    gridClassName: "grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-6 lg:gap-x-9 lg:gap-y-3",
+    panelClassName: "min-h-[416px] lg:min-h-[170px]",
     logos: [
       { src: "/HOME PHPLUS/ROKO.png", alt: "Rokko", className: "max-w-[70px] lg:max-w-[112px]" },
       { src: "/HOME PHPLUS/HARRYS.png", alt: "Harrys", className: "max-w-[44px] lg:max-w-[72px]" },
@@ -73,7 +73,7 @@ const CATEGORIES: Category[] = [
       { src: "/HOME PHPLUS/LA ÚNICA.png", alt: "La Única", className: "max-w-[42px] lg:max-w-[68px]" },
       { src: "/HOME PHPLUS/CUMBIA HOUSE.png", alt: "Cumbia House", className: "max-w-[46px] lg:max-w-[72px]" },
       { src: "/HOME PHPLUS/OSAKA.png", alt: "Osaka", className: "max-w-[86px] lg:max-w-[132px]" },
-      { src: "/HOME PHPLUS/NOA.png", alt: "Noa", className: "max-w-[38px] lg:max-w-[60px]", cellClassName: "col-start-2 lg:col-start-3" },
+      { src: "/HOME PHPLUS/NOA.png", alt: "Noa", className: "max-w-[38px] lg:max-w-[60px]", cellClassName: "lg:col-start-3" },
       { src: "/HOME PHPLUS/CALLE DRAGONES.png", alt: "Calle Dragones", className: "max-w-[46px] lg:max-w-[72px]" },
     ],
   },
@@ -95,12 +95,12 @@ function CategoryPanel({ category }: { category: Category }) {
         {category.title}
       </h2>
       <div
-        className={`mx-auto mt-5 grid max-w-[336px] place-content-center overflow-hidden rounded-[10px] border border-[#d7d7d7] bg-[#f8f8f8] px-4 py-4 shadow-[4px_5px_0_rgba(0,0,0,0.28)] lg:max-w-[820px] lg:px-8 lg:py-5 ${category.panelClassName ?? ""} ${category.gridClassName}`}
+        className={`mx-auto mt-5 grid w-full max-w-[336px] place-content-center place-items-center overflow-hidden rounded-[10px] border border-[#d7d7d7] bg-[#f8f8f8] px-4 py-4 shadow-[4px_5px_0_rgba(0,0,0,0.28)] lg:max-w-[1200px] lg:px-16 lg:py-8 ${category.panelClassName ?? ""} ${category.gridClassName}`}
       >
         {category.logos.map((logo) => (
           <div
             key={logo.src}
-            className={`grid h-[38px] min-w-0 place-items-center lg:h-[64px] ${logo.cellClassName ?? ""}`}
+            className={`grid h-[68px] min-w-0 place-items-center lg:h-[64px] ${logo.cellClassName ?? ""}`}
           >
             <Image
               src={logo.src}
@@ -155,9 +155,9 @@ function Cta() {
   return (
     <section className="px-5 pb-9 pt-4 text-center lg:pb-12 lg:pt-6">
       <h2 className="ph-condensed mx-auto max-w-[720px] text-[25px] font-bold leading-tight text-[#1e3a8a] lg:text-[38px]">
-        No es solo agua. Es lo que eliges para tu cuerpo.
+        Elige lo mejor para tu cuerpo.
         <br />
-        Empieza hoy a hidratarte mejor
+        Empieza a hidratarte con PH PLUS
       </h2>
       <p className="ph-condensed mt-7 text-[14px] font-bold text-[#6b7280] lg:text-[22px]">
         Compra fácil por WhatsApp y recíbelo en casa.

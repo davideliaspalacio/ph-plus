@@ -8,7 +8,7 @@ export default function Testimonial() {
   return (
     <section className="w-full bg-white">
       {/* Mobile + tablet (< lg): título y subtítulo centrados arriba */}
-      <div className="mx-auto max-w-[1100px] px-5 py-5 sm:px-8 sm:py-12 lg:hidden">
+      <div className="mx-auto max-w-[1100px] px-5 pb-5 pt-10 sm:px-8 sm:pb-12 sm:pt-16 lg:hidden">
         <h2 className="ph-display text-center text-[24px] uppercase leading-none text-[#1e3a8a] sm:text-[40px]">
           gotas que cuentan historias
         </h2>
@@ -50,7 +50,7 @@ export default function Testimonial() {
 
       {/* Desktop (lg+): dos columnas — foto a la izquierda, contenido a la
           derecha alineado a la izquierda (título, subtítulo, cita y botón). */}
-      <div className="mx-auto hidden max-w-[1100px] px-6 py-14 lg:block">
+      <div className="mx-auto hidden max-w-[1100px] px-6 pb-14 pt-24 lg:block">
         <div className="grid grid-cols-[340px_1fr] items-center gap-12">
           <div className="relative mx-auto h-[360px] w-[294px] bg-white">
             <Image

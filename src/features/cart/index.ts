@@ -17,6 +17,7 @@ export {
   FREE_SHIPPING_THRESHOLD,
   type CartLine,
   type CartSummary,
+  type CartSummaryOptions,
   type CartItemInput,
   type ProductLike,
   type ProductLookup,

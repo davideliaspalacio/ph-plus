@@ -7,9 +7,8 @@
  *
  * Reglas:
  *  - El cupón se valida con la fecha inyectada (`now`) para que sea testeable.
- *  - `free_shipping` válido fuerza envío 0 e ignora la zona resuelta.
  *  - Si no hay zona/ciudad o no matchea, se usa el `shipping` del summary
- *    como fallback (flat / free por umbral global).
+ *    como fallback.
  *  - El total nunca baja de `shippingCost` (subtotal descontado se clampa a 0).
  */
 
@@ -54,7 +53,6 @@ export function computeCheckoutPricing<P extends ProductLike = ProductLike>(
   // --- coupon ---
   let discount = 0;
   let couponReason: string | null = "NO_COUPON";
-  let couponFreeShipping = false;
 
   if (input.coupon) {
     const validation = validateCoupon(input.coupon, {
@@ -66,7 +64,6 @@ export function computeCheckoutPricing<P extends ProductLike = ProductLike>(
       couponReason = "OK";
       const d = computeDiscount(input.coupon, summary.subtotal);
       discount = d.discountSubtotal;
-      couponFreeShipping = d.freeShipping;
     } else {
       couponReason = validation.reason;
     }
@@ -80,11 +77,7 @@ export function computeCheckoutPricing<P extends ProductLike = ProductLike>(
   let shippingZoneId: string | null;
   let shippingFreeApplied: boolean;
 
-  if (couponFreeShipping) {
-    shippingCost = 0;
-    shippingZoneId = null;
-    shippingFreeApplied = true;
-  } else if (input.shippingZones && input.shippingZones.length > 0 && input.city) {
+  if (input.shippingZones && input.shippingZones.length > 0 && input.city) {
     const result = calculateShipping({
       zones: input.shippingZones,
       city: input.city,

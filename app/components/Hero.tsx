@@ -55,7 +55,7 @@ export default function Hero() {
             </h1>
           </div>
 
-          <ul className="ph-condensed absolute bottom-[18px] left-[-2px] flex w-[270px] flex-col gap-1 text-[16px] font-bold leading-tight text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
+          <ul className="ph-condensed absolute bottom-[18px] left-[18px] flex w-[252px] flex-col gap-1 text-[16px] font-bold leading-tight text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.7)]">
             {BULLETS.slice(0, 2).map((b) => (
               <li key={b}>
                 <span className="flex items-start gap-2">
@@ -86,21 +86,21 @@ export default function Hero() {
       </div>
 
       <div className="hidden lg:block">
-        <div className="relative h-[560px] w-full overflow-hidden bg-[#1e3a8a]">
+        <div className="relative h-[580px] w-full overflow-hidden bg-[#1e3a8a]">
           <Image
             src="/home/hero-pc.jpg"
             alt="Mujer hidratándose con agua PH PLUS al aire libre"
             fill
             priority
             sizes="(min-width: 1024px) 100vw, 0px"
-            className="object-cover object-[58%_center]"
+            className="object-cover object-[58%_42%]"
           />
 
           <div className="absolute inset-y-0 left-0 w-[44%] bg-linear-to-r from-black/25 to-transparent" />
 
           <div className="absolute inset-0">
             <div className="relative mx-auto h-full max-w-[1200px] px-6">
-              <div className="absolute left-6 top-8 max-w-[560px] text-white">
+              <div className="absolute left-6 top-20 max-w-[560px] text-white">
                 <h1 className="ph-display text-[50px] uppercase leading-[1] text-white">
                   <span className="whitespace-nowrap">
                     HIDRATACIÓN CONSCIENTE
@@ -111,7 +111,7 @@ export default function Hero() {
                   DESDE 2014
                 </h1>
 
-                <ul className="ph-condensed absolute left-[-22px] top-[288px] flex w-[482px] flex-col gap-1 text-[20px] font-bold leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.75)]">
+                <ul className="ph-condensed absolute left-0 top-[288px] flex w-[482px] flex-col gap-1 text-[20px] font-bold leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.75)]">
                   {BULLETS.map((b) => (
                     <li key={b}>
                       <span className="flex items-start gap-2">

@@ -16,6 +16,7 @@ import {
   sanitizePayuReference,
   type PayuCheckoutFields,
 } from "@/app/lib/payu-server";
+import { getShippingDestination } from "@/app/lib/shipping-rates";
 
 export const runtime = "nodejs";
 
@@ -33,7 +34,7 @@ const contactSchema = z.object({
 const shippingSchema = z.object({
   address: z.string().min(3).max(120),
   city: z.string().min(2).max(80),
-  department: z.string().min(2).max(80),
+  department: z.string().max(80).optional().default(""),
   notes: z.string().max(500).optional().default(""),
 });
 
@@ -58,11 +59,26 @@ export async function POST(request: Request) {
     );
   }
 
+  const destination = getShippingDestination(parsed.data.shipping.city);
+  if (!destination) {
+    return NextResponse.json(
+      { error: "Selecciona una ciudad válida para calcular el envío" },
+      { status: 400 },
+    );
+  }
+  const shipping = {
+    ...parsed.data.shipping,
+    city: destination.label,
+    department: destination.department,
+  };
+
   // Precios desde la DB (fuente de verdad). Si la lectura falla cortamos: cobrar
   // un importe de una fuente desactualizada es peor que no cobrar.
   let summary;
   try {
-    summary = await buildCartSummaryServer(parsed.data.items);
+    summary = await buildCartSummaryServer(parsed.data.items, {
+      shippingCost: destination.cost,
+    });
   } catch (error) {
     return NextResponse.json(
       {
@@ -99,7 +115,11 @@ export async function POST(request: Request) {
 
   let orderId: string;
   try {
-    orderId = await persistPendingOrder(parsed.data, summary, "payu");
+    orderId = await persistPendingOrder(
+      { ...parsed.data, shipping },
+      summary,
+      "payu",
+    );
   } catch (error) {
     return NextResponse.json(
       {
@@ -120,8 +140,8 @@ export async function POST(request: Request) {
       name: parsed.data.contact.name,
       email: parsed.data.contact.email,
       phone: parsed.data.contact.phone,
-      city: parsed.data.shipping.city,
-      address: parsed.data.shipping.address,
+      city: shipping.city,
+      address: shipping.address,
     },
     amount: summary.total,
     paymentMethod: "payu",
@@ -158,8 +178,8 @@ export async function POST(request: Request) {
     payerPhone: truncate(parsed.data.contact.phone, 20),
     telephone: truncate(parsed.data.contact.phone, 20),
     billingCountry: "CO",
-    shippingAddress: truncate(parsed.data.shipping.address, 50),
-    shippingCity: truncate(parsed.data.shipping.city, 50),
+    shippingAddress: truncate(shipping.address, 50),
+    shippingCity: truncate(shipping.city, 50),
     shippingCountry: "CO",
     responseUrl: `${origin}/checkout/payu/respuesta`,
     confirmationUrl: `${origin}/api/payments/payu/confirmation`,

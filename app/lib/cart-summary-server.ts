@@ -3,6 +3,7 @@ import "server-only";
 import { buildCartSummary as buildLegacySummary } from "@/app/lib/cart-summary";
 import {
   buildCartSummary as buildSummaryDomain,
+  type CartSummaryOptions,
   type CartItemInput,
 } from "@/src/features/cart/domain/pricing";
 import { createSupabaseServiceClient } from "@/src/shared/supabase/server";
@@ -88,9 +89,10 @@ async function fetchPricesFromDb(
  */
 export async function buildCartSummaryServer(
   items: CartItemInput[],
+  options: CartSummaryOptions = {},
 ): Promise<ServerCartSummary> {
   if (!isSupabaseEnabled()) {
-    const legacy = buildLegacySummary(items);
+    const legacy = buildLegacySummary(items, options);
     return {
       lines: legacy.lines.map((line) => ({
         item: line.item,
@@ -109,8 +111,10 @@ export async function buildCartSummaryServer(
 
   const slugs = [...new Set(items.map((i) => i.slug))];
   const prices = await fetchPricesFromDb(slugs);
-  const summary = buildSummaryDomain<ServerCartLineProduct>(items, (slug) =>
-    prices.get(slug),
+  const summary = buildSummaryDomain<ServerCartLineProduct>(
+    items,
+    (slug) => prices.get(slug),
+    options,
   );
 
   return {

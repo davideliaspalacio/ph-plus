@@ -4,6 +4,8 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import Reveal from "../components/Reveal";
 import ScrollToTop from "../components/ScrollToTop";
+import { SHIPPING_COST_ROWS } from "../lib/shipping-rates";
+import { formatCOP } from "../lib/products";
 import { mockServerDelay } from "../lib/mock-loading";
 
 export const dynamic = "force-dynamic";
@@ -13,39 +15,6 @@ export const metadata: Metadata = {
   description:
     "Consulta los costos de envío, cobertura y tiempos estimados de entrega de Agua PH PLUS.",
 };
-
-const SHIPPING_ROWS = [
-  {
-    text: "Envío Bogotá - Medellín - Barranquilla - Cartagena",
-    price: "$11.000",
-    emphasis: true,
-  },
-  {
-    text: "Envío Alrededores Bogotá: Cajica, Tenjo, Tabio, Cota, Chía, Tocancipa, Funza",
-    price: "$15.000",
-  },
-  {
-    text: "Envío Alrededores Medellín",
-    price: "$15.000",
-  },
-  {
-    text: "Bello, Sabaneta, Envigado, Itagui",
-    price: "$15.000",
-    noBullet: true,
-  },
-  {
-    text: "Envío Alrededores Barranquilla: Villacampestre",
-    price: "$15.000",
-  },
-  {
-    text: "Envío Alrededores Cartagena: Manzanillo",
-    price: "$15.000",
-  },
-  {
-    text: "Cali",
-    price: "$15.000",
-  },
-];
 
 const DELIVERY_ROWS = [
   { zone: "Alrededores Bogotá:", day: "jueves-viernes" },
@@ -126,7 +95,7 @@ export default async function EnviosPage() {
             <Reveal>
               <InfoCard title="Costos de envío">
                 <div className="space-y-4">
-                  {SHIPPING_ROWS.map((row) => (
+                  {SHIPPING_COST_ROWS.map((row) => (
                     <div
                       key={row.text}
                       className="grid grid-cols-[1fr_auto] items-start gap-4 lg:grid-cols-[minmax(0,1fr)_150px] lg:gap-8"
@@ -143,7 +112,7 @@ export default async function EnviosPage() {
                         {row.text}
                       </p>
                       <p className="ph-condensed text-right text-[19px] font-bold leading-tight text-[#1e3a8a] lg:text-[26px]">
-                        {row.price}
+                        {formatCOP(row.cost)}
                       </p>
                     </div>
                   ))}

@@ -8,6 +8,7 @@ import {
   isSupabaseOrderPersistenceEnabled,
   persistPendingOrder,
 } from "@/app/lib/orders-server";
+import { getShippingDestination } from "@/app/lib/shipping-rates";
 
 export const runtime = "nodejs";
 
@@ -25,7 +26,7 @@ const contactSchema = z.object({
 const shippingSchema = z.object({
   address: z.string().min(3).max(120),
   city: z.string().min(2).max(80),
-  department: z.string().min(2).max(80),
+  department: z.string().max(80).optional().default(""),
   notes: z.string().max(500).optional().default(""),
 });
 
@@ -53,10 +54,25 @@ export async function POST(request: Request) {
     );
   }
 
+  const destination = getShippingDestination(parsed.data.shipping.city);
+  if (!destination) {
+    return NextResponse.json(
+      { error: "Selecciona una ciudad válida para calcular el envío" },
+      { status: 400 },
+    );
+  }
+  const shipping = {
+    ...parsed.data.shipping,
+    city: destination.label,
+    department: destination.department,
+  };
+
   // Precios desde la DB (fuente de verdad), igual que en el flujo de PayU.
   let summary;
   try {
-    summary = await buildCartSummaryServer(parsed.data.items);
+    summary = await buildCartSummaryServer(parsed.data.items, {
+      shippingCost: destination.cost,
+    });
   } catch (error) {
     return NextResponse.json(
       {
@@ -78,7 +94,11 @@ export async function POST(request: Request) {
 
   let orderId: string;
   try {
-    orderId = await persistPendingOrder(parsed.data, summary, "cash_on_delivery");
+    orderId = await persistPendingOrder(
+      { ...parsed.data, shipping },
+      summary,
+      "cash_on_delivery",
+    );
   } catch (error) {
     return NextResponse.json(
       {
@@ -97,8 +117,8 @@ export async function POST(request: Request) {
       name: parsed.data.contact.name,
       email: parsed.data.contact.email,
       phone: parsed.data.contact.phone,
-      city: parsed.data.shipping.city,
-      address: parsed.data.shipping.address,
+      city: shipping.city,
+      address: shipping.address,
     },
     amount: summary.total,
     paymentMethod: "cash_on_delivery",

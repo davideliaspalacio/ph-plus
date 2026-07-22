@@ -79,7 +79,7 @@ function ShippingTab({ product }: { product: Product }) {
     <div className="space-y-3 text-[14px] leading-[1.7] text-ink sm:text-[15px]">
       <p>{shipping}</p>
       <ul className="list-disc pl-5">
-        <li>Envío gratis desde $80.000 en Bogotá.</li>
+        <li>El envío se calcula según la ciudad seleccionada.</li>
         <li>Pago seguro y atención por WhatsApp.</li>
         <li>Devolución hasta 7 días tras la entrega.</li>
       </ul>

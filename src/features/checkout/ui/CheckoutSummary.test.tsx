@@ -57,16 +57,14 @@ describe("CheckoutSummary", () => {
     expect(screen.getByTestId("summary-total").textContent).toContain("108");
   });
 
-  it("renderiza 'Gratis' cuando shipping = 0", () => {
+  it("renderiza valor monetario cuando shipping = 0", () => {
     render(
       <CheckoutSummary
         snapshot={makeSnapshot({ shipping: 0, total: 100_000 })}
         couponRepo={emptyRepo}
       />,
     );
-    expect(screen.getByTestId("summary-shipping").textContent).toMatch(
-      /gratis/i,
-    );
+    expect(screen.getByTestId("summary-shipping").textContent).toContain("0");
   });
 
   it("muestra descuento sólo si discount > 0", () => {
