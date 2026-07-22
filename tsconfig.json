@@ -34,6 +34,8 @@
     "node_modules",
     "e2e",
     "playwright.config.ts",
+    "playwright.audit.config.ts",
+    "playwright.demo.config.ts",
     "**/*.test.ts",
     "**/*.test.tsx"
   ]
