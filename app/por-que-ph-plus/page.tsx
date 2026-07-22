@@ -97,6 +97,7 @@ function MobileEducation() {
               src="/videos/planta-produccion.mp4"
               poster="/videos/posters/planta-produccion.jpg"
               label="Video del proceso de producción de PH PLUS"
+              videoClassName="object-[50%_25%]"
             />
           </div>
         </div>
@@ -148,6 +149,7 @@ function DesktopEducation() {
             src="/videos/planta-produccion.mp4"
             poster="/videos/posters/planta-produccion.jpg"
             label="Video del proceso de producción de PH PLUS"
+            videoClassName="object-[50%_25%]"
           />
         </div>
       </div>

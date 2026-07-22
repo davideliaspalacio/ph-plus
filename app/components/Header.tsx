@@ -247,13 +247,13 @@ export default function Header() {
         <Image
           src="/home/ph9-drop.png"
           alt=""
-          width={98}
-          height={155}
+          width={88}
+          height={158}
           priority
-          className="ml-4 h-[92px] w-[52px] shrink-0 object-contain"
+          className="pointer-events-none ml-4 mt-[10px] h-[158px] w-[88px] shrink-0 self-start object-contain drop-shadow-[0_6px_14px_rgba(0,0,0,0.25)]"
         />
 
-        <nav className="ph-display ml-9 flex flex-1 items-center justify-center gap-7 whitespace-nowrap text-[21px] uppercase leading-none">
+        <nav className="ph-display ml-9 flex flex-1 items-center justify-center gap-11 whitespace-nowrap text-[21px] uppercase leading-none">
           {NAV.map((item) => (
             <Link
               key={item.href}
