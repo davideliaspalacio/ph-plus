@@ -13,6 +13,7 @@ import {
   buildCartSummary as buildSummaryDomain,
   FREE_SHIPPING_THRESHOLD as DOMAIN_FREE_SHIPPING_THRESHOLD,
   SHIPPING_FLAT as DOMAIN_SHIPPING_FLAT,
+  type CartSummaryOptions,
   type CartSummary as DomainCartSummary,
 } from "@/src/features/cart/domain/pricing";
 
@@ -37,10 +38,14 @@ export type CartSummary = {
 const productLookup = (slug: string): Product | undefined =>
   PRODUCTS.find((p) => p.slug === slug);
 
-export function buildCartSummary(items: CartItem[]): CartSummary {
+export function buildCartSummary(
+  items: CartItem[],
+  options: CartSummaryOptions = {},
+): CartSummary {
   const summary: DomainCartSummary<Product> = buildSummaryDomain<Product>(
     items,
     productLookup,
+    options,
   );
   return {
     lines: summary.lines.map((l) => ({

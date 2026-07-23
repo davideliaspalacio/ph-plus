@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -10,6 +10,10 @@ import { useCart } from "../components/CartProvider";
 import { useMockLoading } from "../components/useMockLoading";
 import { buildCartSummary } from "../lib/cart-summary";
 import { formatCOP } from "../lib/products";
+import {
+  getShippingDestination,
+  SHIPPING_DESTINATION_GROUPS,
+} from "../lib/shipping-rates";
 import { login, useSession } from "../../src/features/auth";
 
 /** 0 = datos (acceder / invitado) · 1 = método de pago · 2 = revisar */
@@ -39,19 +43,6 @@ type PayuCheckoutResponse = {
   referenceCode: string;
   persisted: boolean;
 };
-
-const DEPARTMENTS = [
-  "Cundinamarca",
-  "Antioquia",
-  "Atlántico",
-  "Bolívar",
-  "Boyacá",
-  "Caldas",
-  "Risaralda",
-  "Santander",
-  "Tolima",
-  "Valle del Cauca",
-];
 
 const GUEST_BULLETS = ["Sin crear cuentas", "Sin contraseña", "Compra en 2 mn"];
 
@@ -238,7 +229,6 @@ export default function CheckoutPage() {
   const initialLoading = useMockLoading();
   const { items, hydrated, clear } = useCart();
   const isAuthenticated = useSession((state) => state.isAuthenticated());
-  const summary = useMemo(() => buildCartSummary(items), [items]);
   const ready = hydrated && !initialLoading;
 
   const [step, setStep] = useState<Step>(0);
@@ -251,12 +241,38 @@ export default function CheckoutPage() {
   const [shipping, setShipping] = useState<Shipping>({
     address: "",
     city: "",
-    department: "Cundinamarca",
+    department: "",
     notes: "",
   });
+  const selectedShippingDestination = useMemo(
+    () => getShippingDestination(shipping.city),
+    [shipping.city],
+  );
+  const summary = useMemo(
+    () =>
+      buildCartSummary(items, {
+        shippingCost: selectedShippingDestination?.cost ?? 0,
+      }),
+    [items, selectedShippingDestination?.cost],
+  );
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const city = new URLSearchParams(window.location.search).get("city");
+    const destination = city ? getShippingDestination(city) : undefined;
+    if (!destination) return;
+    setShipping((current) =>
+      current.city
+        ? current
+        : {
+            ...current,
+            city: destination.value,
+            department: destination.department,
+          },
+    );
+  }, []);
 
   async function handleInlineLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -287,7 +303,9 @@ export default function CheckoutPage() {
     if (!/^\S+@\S+\.\S+$/.test(contact.email)) err.email = "Email no válido";
     if (!/^[\d\s+()-]{7,}$/.test(contact.phone)) err.phone = "Teléfono no válido";
     if (!shipping.address.trim()) err.address = "Ingresa una dirección";
-    if (!shipping.city.trim()) err.city = "Ingresa tu ciudad";
+    if (!selectedShippingDestination) {
+      err.city = "Selecciona una ciudad disponible";
+    }
     setErrors(err);
     return Object.keys(err).length === 0;
   }
@@ -327,10 +345,15 @@ export default function CheckoutPage() {
     setSubmitting(true);
     setSubmitError(null);
     const fallbackOrderId = `PH-${Math.floor(100000 + Math.random() * 900000)}`;
+    const normalizedShipping = {
+      ...shipping,
+      city: selectedShippingDestination?.label ?? shipping.city,
+      department: selectedShippingDestination?.department ?? shipping.department,
+    };
     const payload = {
       orderId: fallbackOrderId,
       contact,
-      shipping,
+      shipping: normalizedShipping,
       payment: "payu",
       customerType: isAuthenticated ? "authenticated" : "guest",
       lines: summary.lines.map((l) => ({
@@ -355,7 +378,7 @@ export default function CheckoutPage() {
         body: JSON.stringify({
           items,
           contact,
-          shipping,
+          shipping: normalizedShipping,
           customerType: isAuthenticated ? "authenticated" : "guest",
         }),
       });
@@ -616,28 +639,31 @@ export default function CheckoutPage() {
                 </DesignField>
 
                 <DesignField label="Ciudad*" htmlFor="guest-city" error={errors.city}>
-                  <input
+                  <select
                     id="guest-city"
                     className={designInput}
                     value={shipping.city}
                     onChange={(e) =>
-                      setShipping((s) => ({ ...s, city: e.target.value }))
+                      setShipping((s) => {
+                        const destination = getShippingDestination(e.target.value);
+                        return {
+                          ...s,
+                          city: e.target.value,
+                          department: destination?.department ?? "",
+                        };
+                      })
                     }
                     autoComplete="address-level2"
-                  />
-                </DesignField>
-
-                <DesignField label="Departamento*" htmlFor="guest-department">
-                  <select
-                    id="guest-department"
-                    className={designInput}
-                    value={shipping.department}
-                    onChange={(e) =>
-                      setShipping((s) => ({ ...s, department: e.target.value }))
-                    }
                   >
-                    {DEPARTMENTS.map((d) => (
-                      <option key={d}>{d}</option>
+                    <option value="">Selecciona tu ciudad</option>
+                    {SHIPPING_DESTINATION_GROUPS.map((group) => (
+                      <optgroup key={group.label} label={group.label}>
+                        {group.destinations.map((destination) => (
+                          <option key={destination.value} value={destination.value}>
+                            {destination.label} - {formatCOP(destination.cost)}
+                          </option>
+                        ))}
+                      </optgroup>
                     ))}
                   </select>
                 </DesignField>
@@ -769,7 +795,8 @@ export default function CheckoutPage() {
                       Dirección
                     </p>
                     <p className="mt-1 text-[14px] text-ink">
-                      {shipping.address}, {shipping.city}, {shipping.department}
+                      {shipping.address},{" "}
+                      {selectedShippingDestination?.label ?? shipping.city}
                     </p>
                     {shipping.notes && (
                       <p className="mt-1 text-[13px] text-ink-muted">
@@ -875,11 +902,7 @@ export default function CheckoutPage() {
                 <div className="flex justify-between">
                   <dt className="text-ink-muted">Envío</dt>
                   <dd className="text-ink">
-                    {summary.shipping === 0 ? (
-                      <span className="text-whatsapp-dark">Gratis</span>
-                    ) : (
-                      formatCOP(summary.shipping)
-                    )}
+                    {formatCOP(summary.shipping)}
                   </dd>
                 </div>
               </dl>

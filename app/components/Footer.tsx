@@ -10,110 +10,50 @@ const SOCIAL_LINKS = [
   {
     label: "Instagram",
     href: "https://www.instagram.com/aguaphplus",
-    icon: "instagram",
-    className:
-      "bg-linear-to-br from-[#feda75] via-[#d62976] to-[#4f5bd5]",
   },
   {
     label: "Facebook",
     href: "https://www.facebook.com/aguaphplus",
-    icon: "facebook",
-    className: "bg-[#1877f2]",
   },
   {
     label: "YouTube",
     href: "https://www.youtube.com/@aguaphplus",
-    icon: "youtube",
-    className: "bg-[#ff0000]",
   },
   {
     label: "TikTok",
     href: "https://www.tiktok.com/@aguaphplus",
-    icon: "tiktok",
-    className: "bg-[#050505]",
   },
 ];
-
-function SocialIcon({ icon }: { icon: string }) {
-  if (icon === "instagram") {
-    return (
-      <svg viewBox="0 0 24 24" className="h-[70%] w-[70%]" aria-hidden>
-        <rect
-          x="4"
-          y="4"
-          width="16"
-          height="16"
-          rx="5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <circle
-          cx="12"
-          cy="12"
-          r="3.5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <circle cx="16.7" cy="7.3" r="1.2" fill="currentColor" />
-      </svg>
-    );
-  }
-
-  if (icon === "facebook") {
-    return (
-      <svg viewBox="0 0 24 24" className="h-[74%] w-[74%]" aria-hidden>
-        <path
-          fill="currentColor"
-          d="M14.2 8.2h2.1V4.7c-.4 0-1.6-.1-3-.1-3 0-5 1.8-5 5.2v2.9H5v3.9h3.3V24h4.1v-7.4h3.3l.5-3.9h-3.8v-2.5c0-1.1.3-2 1.8-2Z"
-        />
-      </svg>
-    );
-  }
-
-  if (icon === "youtube") {
-    return (
-      <svg viewBox="0 0 24 24" className="h-[78%] w-[78%]" aria-hidden>
-        <path
-          fill="currentColor"
-          d="M9 7.2v9.6l8.3-4.8L9 7.2Z"
-        />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" className="h-[74%] w-[74%]" aria-hidden>
-      <path
-        fill="currentColor"
-        d="M16.6 5.1c-.9-.6-1.5-1.6-1.7-2.8h-3.3v13.2a2.8 2.8 0 1 1-2-2.7V9.4a6.2 6.2 0 1 0 5.3 6.1V8.8a8 8 0 0 0 4.6 1.5V7a4.7 4.7 0 0 1-2.9-1.9Z"
-      />
-    </svg>
-  );
-}
 
 function SocialLinks({ compact = false }: { compact?: boolean }) {
   return (
     <div
-      className={`flex items-center ${compact ? "gap-1.5" : "gap-3"}`}
+      className={
+        "relative shrink-0 " +
+        (compact
+          ? "h-[19px] w-[64px] min-[700px]:h-[30px] min-[700px]:w-[106px]"
+          : "h-[44px] w-[148px] 2xl:h-[62px] 2xl:w-[208px]")
+      }
+      role="group"
       aria-label="Redes sociales de PH PLUS"
     >
-      {SOCIAL_LINKS.map((social) => (
+      <Image
+        src="/footer/social-icons.png"
+        alt=""
+        fill
+        sizes={compact ? "(min-width: 700px) 106px, 64px" : "(min-width: 1536px) 208px, 148px"}
+        className="object-contain"
+      />
+      {SOCIAL_LINKS.map((social, index) => (
         <a
           key={social.label}
           href={social.href}
           target="_blank"
           rel="noopener noreferrer"
           aria-label={`Abrir ${social.label} de PH PLUS`}
-          className={
-            "grid shrink-0 place-items-center rounded-[8px] text-white shadow-[0_2px_5px_rgba(0,0,0,0.25)] ring-1 ring-white/10 transition-transform hover:-translate-y-0.5 " +
-            social.className +
-            (compact ? " h-[17px] w-[17px]" : " h-[38px] w-[38px]")
-          }
-        >
-          <SocialIcon icon={social.icon} />
-        </a>
+          className="absolute inset-y-0 transition-transform hover:-translate-y-0.5"
+          style={{ left: `${index * 25}%`, width: "25%" }}
+        />
       ))}
     </div>
   );
@@ -121,11 +61,21 @@ function SocialLinks({ compact = false }: { compact?: boolean }) {
 
 function PinIcon({ className = "h-10 w-10" }: { className?: string }) {
   return (
-    <svg viewBox="0 0 24 24" className={`${className} shrink-0`} aria-hidden>
+    <svg viewBox="0 0 100 100" className={`${className} shrink-0`} aria-hidden>
+      <ellipse
+        cx="50"
+        cy="82"
+        rx="32"
+        ry="10"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="7"
+      />
       <path
-        d="M12 2C7.6 2 4 5.6 4 10c0 6.5 8 12 8 12s8-5.5 8-12c0-4.4-3.6-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"
+        d="M50 9C32.9 9 19 22.5 19 39.1 19 63.7 50 83 50 83s31-19.3 31-43.9C81 22.5 67.1 9 50 9Z"
         fill="currentColor"
       />
+      <circle cx="50" cy="39" r="10.5" fill="#252bae" />
     </svg>
   );
 }
@@ -150,112 +100,161 @@ export default function Footer() {
   return (
     <>
       <NewsletterSignup />
-      <footer className="w-full bg-[#1e2aab] text-white">
-      <div className="ph-condensed relative mx-auto h-[154px] max-w-[430px] overflow-hidden px-4 lg:hidden">
-        <Image
-          src="/brand/logo-ph-plus-figma.png"
-          alt="PH PLUS"
-          width={160}
-          height={48}
-          className="absolute left-[14px] top-[14px] h-[34px] w-[132px] object-contain"
-        />
+      <footer id="footer" className="w-full bg-[#252bae] text-white">
+        <div className="ph-condensed mx-auto grid max-w-[860px] grid-cols-[1.08fr_1.16fr_1fr] gap-x-3 px-5 py-6 text-[7.2px] font-bold leading-[1.15] min-[700px]:gap-x-8 min-[700px]:px-10 min-[700px]:py-7 min-[700px]:text-[12px] lg:hidden">
+          <div className="min-w-0">
+            <div className="relative h-[38px] w-[132px] overflow-hidden min-[700px]:h-[64px] min-[700px]:w-[218px]">
+              <Image
+                src="/brand/logo-ph-plus-figma.png"
+                alt="PH PLUS"
+                width={295}
+                height={123}
+                className="h-full w-full object-contain object-left"
+              />
+            </div>
 
-        <Image
-          src="/home/icon-invima.png"
-          alt="INVIMA"
-          width={58}
-          height={42}
-          className="absolute left-[14px] top-[58px] h-[42px] w-[58px] bg-white object-contain"
-        />
-        <div className="absolute left-[78px] top-[61px] w-[118px] text-[7.5px] font-bold leading-[1.12]">
-          <p>Registro sanitario INVIMA</p>
-          <p>RSA: 0030646-2024</p>
-          <p>RSA-0024829-2023</p>
-        </div>
-        <div className="absolute left-[14px] top-[111px] w-[150px] text-[7.5px] font-bold leading-[1.18]">
-          <p>Lunes a viernes: 8 am - 5pm</p>
-          <p>info@aguaphplus.com</p>
-          <p>whatsapp: +57 3234392470</p>
-        </div>
+            <div className="mt-3 flex items-center gap-2 min-[700px]:mt-5 min-[700px]:gap-3">
+              <Image
+                src="/home/icon-invima.png"
+                alt="INVIMA"
+                width={96}
+                height={70}
+                className="h-[42px] w-[58px] shrink-0 bg-white object-contain min-[700px]:h-[80px] min-[700px]:w-[112px]"
+              />
+              <div className="min-w-0 leading-[1.13]">
+                <p>Registro sanitario INVIMA</p>
+                <p>RSA: 0030646-2024</p>
+                <p>RSA-0024829-2023</p>
+              </div>
+            </div>
 
-        <div className="absolute left-[190px] top-[34px] flex w-[128px] gap-1.5 text-[7px] font-bold leading-[1.12]">
-          <PinIcon className="h-[20px] w-[20px]" />
-          <div>
-            <p>
-              Av km 1,5 vía Siberia, Parque Agroindustrial de Occidente,
-              Bodega 2 local 78, Cota - Cundinamarca
-            </p>
-            <a
-              href={MAPS_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 inline-block hover:underline"
-            >
-              Ver en Google Maps
-            </a>
+            <div className="mt-4 leading-[1.2] min-[700px]:mt-5">
+              <p>Lunes a viernes: 8 am - 5pm</p>
+              <p>info@aguaphplus.com</p>
+              <p>whatsapp: +57 3234392470</p>
+            </div>
+          </div>
+
+          <div className="min-w-0 pt-7 min-[700px]:pt-10">
+            <div className="flex items-start gap-1.5 min-[700px]:gap-4">
+              <PinIcon className="h-[18px] w-[18px] min-[700px]:h-[34px] min-[700px]:w-[34px]" />
+              <div className="min-w-0">
+                <p>
+                  Av km 1,5 vía Siberia, Parque Agroindustrial de Occidente,
+                  Bodega 2 local 78, Cota - Cundinamarca
+                </p>
+                <a
+                  href={MAPS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 inline-block hover:underline min-[700px]:mt-2"
+                >
+                  Ver en Google Maps
+                </a>
+              </div>
+            </div>
+
+            <div className="mt-8 flex items-start gap-1.5 leading-none min-[700px]:mt-12 min-[700px]:gap-4">
+              <LockIcon className="h-[18px] w-[18px] min-[700px]:h-[34px] min-[700px]:w-[34px]" />
+              <div className="min-w-0">
+                <p>Pagos seguros SSL</p>
+                <Image
+                  src="/footer/payment-badges.png"
+                  alt="Visa, Mastercard y PSE"
+                  width={293}
+                  height={53}
+                  className="mt-1 h-auto w-[92px] object-contain min-[700px]:mt-2 min-[700px]:w-[178px]"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="min-w-0 pt-7 text-right min-[700px]:pt-10">
+            <nav className="flex flex-col gap-0.5 leading-[1.16]" aria-label="Enlaces legales">
+              <Link href="/politica-de-privacidad" className="hover:underline">
+                Política de Privacidad
+              </Link>
+              <Link href="/terminos-y-condiciones" className="hover:underline">
+                Términos y Condiciones
+              </Link>
+              <Link href="/politica-de-cambios" className="hover:underline">
+                Política de Cambios
+              </Link>
+            </nav>
+            <div className="mt-6 leading-[1.16] min-[700px]:mt-9">
+              <p>Agua PH PLUS © 2026</p>
+              <p>Todos los derechos reservados</p>
+              <p>NIT: 901.219.610.3</p>
+            </div>
+            <div className="mt-4 flex justify-end min-[700px]:mt-7">
+              <SocialLinks compact />
+            </div>
           </div>
         </div>
-        <div className="absolute left-[190px] top-[111px] flex items-start gap-1.5 text-[7px] font-bold leading-none">
-          <LockIcon className="h-[20px] w-[20px]" />
-          <div>
-            <p>Pagos seguros SSL</p>
+
+        <div
+          className="ph-condensed relative mx-auto hidden max-w-[2048px] lg:block"
+          style={{ height: "clamp(360px, 25vw, 512px)" }}
+        >
+          <div
+            className="absolute overflow-hidden"
+            style={{
+              left: "clamp(60px, 4.2vw, 86px)",
+              top: "0px",
+              height: "clamp(96px, 6.4vw, 132px)",
+              width: "clamp(320px, 22vw, 455px)",
+            }}
+          >
             <Image
-              src="/footer/payment-badges.png"
-              alt="Visa, Mastercard y PSE"
-              width={293}
-              height={53}
-              className="mt-1 h-auto w-[92px] object-contain"
+              src="/brand/logo-ph-plus-figma.png"
+              alt="PH PLUS"
+              width={441}
+              height={130}
+              className="absolute top-0 h-auto"
+              style={{
+                left: "clamp(-94px, -4.6vw, -66px)",
+                width: "clamp(320px, 22vw, 455px)",
+              }}
             />
           </div>
-        </div>
 
-        <div className="absolute right-[14px] top-[34px] text-right text-[7px] font-bold leading-[1.16]">
-          <Link href="/politica-de-privacidad" className="block hover:underline">
-            Política de Privacidad
-          </Link>
-          <Link href="/terminos-y-condiciones" className="block hover:underline">
-            Términos y Condiciones
-          </Link>
-          <Link href="/politica-de-cambios" className="block hover:underline">
-            Política de Cambios
-          </Link>
-        </div>
-        <div className="absolute right-[14px] top-[76px] text-right text-[7px] font-bold leading-[1.16]">
-          <p>Agua PH PLUS © 2026</p>
-          <p>Todos los derechos reservados</p>
-          <p>NIT: 901.219.610.3</p>
-        </div>
-        <div className="absolute right-[14px] top-[116px]">
-          <SocialLinks compact />
-        </div>
-      </div>
-
-      <div className="ph-condensed mx-auto hidden min-h-[270px] max-w-[1280px] grid-cols-[410px_1fr_330px] items-center gap-9 px-10 py-8 lg:grid">
-        <div className="flex flex-col">
-          <Image
-            src="/brand/logo-ph-plus-figma.png"
-            alt="PH PLUS"
-            width={441}
-            height={130}
-            className="h-auto w-[330px]"
-          />
-          <p className="mt-8 max-w-[380px] text-[26px] font-bold leading-[1.24]">
+          <p
+            className="absolute max-w-[320px] text-[22px] font-bold leading-[1.22]"
+            style={{
+              left: "clamp(60px, 4.2vw, 86px)",
+              top: "clamp(130px, 9.1vw, 186px)",
+            }}
+          >
             Cuidarte empieza por lo que eliges cada día
           </p>
-          <div className="mt-8 whitespace-pre-line text-[22px] font-bold leading-[1.28]">
+
+          <div
+            className="absolute whitespace-pre-line text-[18px] font-bold leading-[1.32]"
+            style={{
+              left: "clamp(60px, 4.2vw, 86px)",
+              top: "clamp(238px, 16.3vw, 334px)",
+            }}
+          >
             <p>Lunes a viernes: 8 am - 5pm</p>
             <p>info@aguaphplus.com</p>
             <p>whatsapp: +57 3234392470</p>
           </div>
-        </div>
 
-        <div className="flex flex-col justify-center text-[23px] font-bold leading-[1.28]">
-          <div className="flex items-start gap-8">
-            <PinIcon className="h-[72px] w-[72px]" />
+          <div
+            className="absolute flex items-start gap-7 text-[18px] font-bold leading-[1.28]"
+            style={{
+              left: "clamp(522px, 38.2vw, 782px)",
+              top: "clamp(108px, 7.6vw, 156px)",
+            }}
+          >
+            <PinIcon className="h-[58px] w-[58px]" />
             <div>
-              <p className="max-w-[490px]">
-                Av km 1,5 vía Siberia, Parque Agroindustrial de Occidente,
-                Bodega 2 local 78, Cota - Cundinamarca
+              <p>
+                Av km 1,5 vía Siberia, Parque
+                <br />
+                Agroindustrial de Occidente, Bodega 2
+                <br />
+                local 78, Cota - Cundinamarca
               </p>
               <a
                 href={MAPS_URL}
@@ -268,43 +267,69 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="mt-9 flex items-start gap-8">
-            <LockIcon className="h-[72px] w-[72px]" />
+          <div
+            className="absolute flex items-start gap-7 text-[18px] font-bold leading-[1.28]"
+            style={{
+              left: "clamp(522px, 38.2vw, 782px)",
+              top: "clamp(240px, 16.8vw, 344px)",
+            }}
+          >
+            <LockIcon className="h-[58px] w-[58px]" />
             <div>
               <p>Pagos seguros SSL</p>
               <Image
                 src="/footer/payment-badges.png"
                 alt="Visa, Mastercard y PSE"
-                width={293}
-                height={53}
-                className="mt-3 h-auto w-[265px] object-contain"
+                width={811}
+                height={148}
+                className="mt-3 h-auto w-[215px] object-contain"
               />
             </div>
           </div>
-        </div>
 
-        <div className="flex flex-col text-left text-[23px] font-bold leading-[1.3] md:col-span-2 lg:col-span-1 lg:items-end lg:justify-center lg:text-right">
-          <Link href="/politica-de-privacidad" className="hover:underline">
-            Política de Privacidad
-          </Link>
-          <Link href="/terminos-y-condiciones" className="hover:underline">
-            Términos y Condiciones
-          </Link>
-          <Link href="/politica-de-cambios" className="hover:underline">
-            Política de Cambios
-          </Link>
+          <nav
+            className="absolute flex w-[280px] flex-col items-center gap-1.5 text-center text-[18px] font-bold leading-[1.32]"
+            style={{
+              right: "clamp(60px, 4.2vw, 86px)",
+              top: "clamp(92px, 6.5vw, 133px)",
+            }}
+            aria-label="Enlaces legales"
+          >
+            <Link href="/politica-de-privacidad" className="hover:underline">
+              Política de Privacidad
+            </Link>
+            <Link href="/terminos-y-condiciones" className="hover:underline">
+              Términos y Condiciones
+            </Link>
+            <Link href="/politica-de-cambios" className="hover:underline">
+              Política de Cambios
+            </Link>
+          </nav>
 
-          <div className="mt-8">
+          <div
+            className="absolute w-[280px] text-center text-[18px] font-bold leading-[1.32]"
+            style={{
+              right: "clamp(60px, 4.2vw, 86px)",
+              top: "clamp(210px, 14.7vw, 301px)",
+            }}
+          >
             <p>Agua PH PLUS © 2026</p>
             <p>Todos los derechos reservados</p>
             <p>NIT: 901.219.610.3</p>
           </div>
 
-          <div className="mt-5">
-            <SocialLinks />
+          <div
+            className="absolute w-[280px]"
+            style={{
+              right: "clamp(60px, 4.2vw, 86px)",
+              top: "clamp(292px, 20.4vw, 418px)",
+            }}
+          >
+            <div className="flex justify-center">
+              <SocialLinks />
+            </div>
           </div>
         </div>
-      </div>
       </footer>
     </>
   );

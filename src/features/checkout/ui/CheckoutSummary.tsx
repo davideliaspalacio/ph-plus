@@ -90,11 +90,7 @@ export function CheckoutSummary<P extends ProductLike = ProductLike>({
         <div className="flex justify-between">
           <dt className="text-ink-muted">Envío</dt>
           <dd className="text-ink" data-testid="summary-shipping">
-            {totals.shipping === 0 ? (
-              <span className="text-whatsapp-dark">Gratis</span>
-            ) : (
-              formatMoney(totals.shipping)
-            )}
+            {formatMoney(totals.shipping)}
           </dd>
         </div>
       </dl>

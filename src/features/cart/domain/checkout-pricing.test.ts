@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import type { Coupon } from "@/src/features/coupons";
 import type { ShippingZone } from "@/src/features/shipping";
 import {
-  FREE_SHIPPING_THRESHOLD,
   SHIPPING_FLAT,
   type CartItemInput,
   type ProductLike,
@@ -107,7 +106,7 @@ describe("computeCheckoutPricing", () => {
     expect(result.total).toBe(36_000 - 5_000 + SHIPPING_FLAT);
   });
 
-  it("coupon free_shipping OK fuerza shipping=0 e ignora zona", () => {
+  it("coupon free_shipping OK no elimina el costo de envío", () => {
     const items: CartItemInput[] = [{ slug: "agua-5l", quantity: 2 }]; // 36_000
     const coupon = baseCoupon({ type: "free_shipping", value: 0 });
     const result = computeCheckoutPricing({
@@ -120,11 +119,11 @@ describe("computeCheckoutPricing", () => {
     });
 
     expect(result.discount).toBe(0);
-    expect(result.shippingCost).toBe(0);
-    expect(result.shippingFreeApplied).toBe(true);
-    expect(result.shippingZoneId).toBeNull();
+    expect(result.shippingCost).toBe(15_000);
+    expect(result.shippingFreeApplied).toBe(false);
+    expect(result.shippingZoneId).toBe("z-bog");
     expect(result.couponReason).toBe("OK");
-    expect(result.total).toBe(36_000);
+    expect(result.total).toBe(36_000 + 15_000);
   });
 
   it("coupon vencido → discount=0, couponReason='EXPIRED'", () => {
@@ -174,7 +173,7 @@ describe("computeCheckoutPricing", () => {
     expect(result.total).toBe(36_000 + 15_000);
   });
 
-  it("shipping zone free shipping aplica por umbral de zona", () => {
+  it("shipping zone cobra aunque exista umbral de zona", () => {
     const items: CartItemInput[] = [{ slug: "agua-5l", quantity: 2 }]; // 36_000
     const zones = [zone({ cost: 15_000, freeShippingThreshold: 30_000 })];
     const result = computeCheckoutPricing({
@@ -185,10 +184,10 @@ describe("computeCheckoutPricing", () => {
       now: NOW,
     });
 
-    expect(result.shippingCost).toBe(0);
+    expect(result.shippingCost).toBe(15_000);
     expect(result.shippingZoneId).toBe("z-bog");
-    expect(result.shippingFreeApplied).toBe(true);
-    expect(result.total).toBe(36_000);
+    expect(result.shippingFreeApplied).toBe(false);
+    expect(result.total).toBe(36_000 + 15_000);
   });
 
   it("shipping sin match de ciudad → fallback flat del pricing simple", () => {
@@ -207,8 +206,8 @@ describe("computeCheckoutPricing", () => {
     expect(result.shippingFreeApplied).toBe(false);
   });
 
-  it("coupon free_shipping prevalece sobre cost de zona", () => {
-    const items: CartItemInput[] = [{ slug: "kit-dispensador", quantity: 1 }]; // 280_000 (ya califica para envío gratis fallback)
+  it("coupon free_shipping no prevalece sobre cost de zona", () => {
+    const items: CartItemInput[] = [{ slug: "kit-dispensador", quantity: 1 }];
     const coupon = baseCoupon({ type: "free_shipping", value: 0 });
     const zones = [zone({ cost: 25_000 })];
     const result = computeCheckoutPricing({
@@ -220,11 +219,11 @@ describe("computeCheckoutPricing", () => {
       now: NOW,
     });
 
-    expect(result.shippingCost).toBe(0);
-    expect(result.shippingFreeApplied).toBe(true);
-    expect(result.shippingZoneId).toBeNull();
+    expect(result.shippingCost).toBe(25_000);
+    expect(result.shippingFreeApplied).toBe(false);
+    expect(result.shippingZoneId).toBe("z-bog");
     expect(result.couponReason).toBe("OK");
-    expect(result.total).toBe(280_000);
+    expect(result.total).toBe(280_000 + 25_000);
   });
 
   it("fallback flat cuando hay sólo zonas pero falta city", () => {
@@ -240,14 +239,13 @@ describe("computeCheckoutPricing", () => {
     expect(result.shippingZoneId).toBeNull();
   });
 
-  it("expone qualifiesForFreeShipping por umbral fallback", () => {
+  it("no marca envío gratis por umbral fallback", () => {
     const items: CartItemInput[] = [{ slug: "kit-dispensador", quantity: 1 }]; // 280_000
     const result = computeCheckoutPricing({
       items,
       lookup: findBySlug,
       now: NOW,
     });
-    expect(result.qualifiesForFreeShipping).toBe(true);
-    expect(result.subtotal).toBeGreaterThanOrEqual(FREE_SHIPPING_THRESHOLD);
+    expect(result.qualifiesForFreeShipping).toBe(false);
   });
 });

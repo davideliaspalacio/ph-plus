@@ -53,7 +53,7 @@ describe("buildCartSummary", () => {
     expect(result.qualifiesForFreeShipping).toBe(false);
   });
 
-  it("regala envío cuando el subtotal alcanza exactamente el umbral", () => {
+  it("cobra envío aunque el subtotal alcance exactamente el umbral", () => {
     // necesitamos exactamente 120.000 -> 6 x agua-5l = 108.000 + 12.000 (3 x agua-1l) no es exacto.
     // Construimos un caso exacto: priceValue forzado.
     const exactCatalog = [{ slug: "x", priceValue: FREE_SHIPPING_THRESHOLD }];
@@ -61,18 +61,18 @@ describe("buildCartSummary", () => {
       [{ slug: "x", quantity: 1 }],
       (s) => exactCatalog.find((c) => c.slug === s),
     );
-    expect(result.qualifiesForFreeShipping).toBe(true);
-    expect(result.shipping).toBe(0);
-    expect(result.total).toBe(FREE_SHIPPING_THRESHOLD);
+    expect(result.qualifiesForFreeShipping).toBe(false);
+    expect(result.shipping).toBe(SHIPPING_FLAT);
+    expect(result.total).toBe(FREE_SHIPPING_THRESHOLD + SHIPPING_FLAT);
   });
 
-  it("regala envío cuando el subtotal supera el umbral", () => {
+  it("cobra envío aunque el subtotal supere el umbral", () => {
     const items: CartItemInput[] = [{ slug: "kit-dispensador", quantity: 1 }];
     const result = buildCartSummary(items, findBySlug);
     expect(result.subtotal).toBe(280_000);
-    expect(result.shipping).toBe(0);
-    expect(result.qualifiesForFreeShipping).toBe(true);
-    expect(result.total).toBe(280_000);
+    expect(result.shipping).toBe(SHIPPING_FLAT);
+    expect(result.qualifiesForFreeShipping).toBe(false);
+    expect(result.total).toBe(280_000 + SHIPPING_FLAT);
   });
 
   it("ignora silenciosamente items cuyo producto no existe en el catálogo", () => {
@@ -86,11 +86,12 @@ describe("buildCartSummary", () => {
     expect(result.subtotal).toBe(5_000);
   });
 
-  it("expone freeShippingThreshold y la distancia restante a envío gratis", () => {
+  it("mantiene compatibilidad de campos de envío gratis sin aplicar la regla", () => {
     const items: CartItemInput[] = [{ slug: "agua-5l", quantity: 1 }];
     const result = buildCartSummary(items, findBySlug);
     expect(result.freeShippingThreshold).toBe(FREE_SHIPPING_THRESHOLD);
-    expect(result.amountToFreeShipping).toBe(FREE_SHIPPING_THRESHOLD - 18_000);
+    expect(result.qualifiesForFreeShipping).toBe(false);
+    expect(result.amountToFreeShipping).toBe(0);
   });
 
   it("amountToFreeShipping es 0 cuando ya califica", () => {

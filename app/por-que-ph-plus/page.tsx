@@ -61,7 +61,7 @@ function MobileEducation() {
       <div className="mx-auto max-w-[360px] space-y-12">
         <div className="grid grid-cols-[1fr_125px] gap-4">
           <div>
-            <h2 className="ph-condensed text-center text-[20px] font-bold leading-tight text-[#1e3a8a]">
+            <h2 className="ph-condensed text-center text-[20px] font-bold leading-tight text-[#6b7280]">
               ¿Por qué el pH del agua es tan importante?
             </h2>
             <p className="ph-condensed mt-3 text-[13px] font-bold leading-tight text-[#1e3a8a]">
@@ -122,7 +122,7 @@ function DesktopEducation() {
         </div>
 
         <div>
-          <h2 className="ph-condensed text-left text-[24px] font-bold leading-tight text-[#1e3a8a]">
+          <h2 className="ph-condensed text-left text-[24px] font-bold leading-tight text-[#6b7280]">
             ¿Por qué el pH del agua es tan importante?
           </h2>
           <p className="ph-condensed mt-5 text-[17px] font-bold leading-tight text-[#1e3a8a]">

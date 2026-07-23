@@ -102,28 +102,28 @@ describe("calculateShipping", () => {
     expect(r.leadTime).toEqual({ min: 3, max: 5 });
   });
 
-  it("aplica envío gratis cuando el subtotal alcanza el umbral", () => {
+  it("cobra envío aunque el subtotal alcance el umbral", () => {
     const r = calculateShipping({
       zones: ZONES,
       city: "Bogotá",
       subtotal: 120000,
     });
     expect(r.zone?.id).toBe("bog");
-    expect(r.cost).toBe(0);
-    expect(r.freeApplied).toBe(true);
+    expect(r.cost).toBe(8000);
+    expect(r.freeApplied).toBe(false);
   });
 
-  it("aplica envío gratis cuando el subtotal supera el umbral", () => {
+  it("cobra envío aunque el subtotal supere el umbral", () => {
     const r = calculateShipping({
       zones: ZONES,
       city: "Bogotá",
       subtotal: 250000,
     });
-    expect(r.cost).toBe(0);
-    expect(r.freeApplied).toBe(true);
+    expect(r.cost).toBe(8000);
+    expect(r.freeApplied).toBe(false);
   });
 
-  it("no aplica envío gratis si subtotal < umbral", () => {
+  it("cobra envío si subtotal < umbral", () => {
     const r = calculateShipping({
       zones: ZONES,
       city: "Bogotá",
@@ -133,7 +133,7 @@ describe("calculateShipping", () => {
     expect(r.freeApplied).toBe(false);
   });
 
-  it("no aplica envío gratis cuando la zona no tiene umbral configurado", () => {
+  it("cobra envío cuando la zona no tiene umbral configurado", () => {
     const r = calculateShipping({
       zones: ZONES,
       city: "Medellín",

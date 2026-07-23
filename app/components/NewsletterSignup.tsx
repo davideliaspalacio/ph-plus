@@ -36,7 +36,7 @@ export default function NewsletterSignup() {
   }
 
   return (
-    <section className="w-full bg-white">
+    <section className="hidden w-full bg-white lg:block">
       <div className="mx-auto max-w-[1280px] px-6 py-10 sm:py-12">
         <div className="flex flex-col items-center gap-5 rounded-3xl bg-[#eef0ff] px-6 py-8 text-center sm:px-10">
           <div>

@@ -42,6 +42,7 @@ export default function AddToCartButton({
   variant = "primary",
   showIcon = true,
   className = "",
+  labelClassName = "",
   label,
   showFeedback = true,
 }: {
@@ -51,6 +52,7 @@ export default function AddToCartButton({
   variant?: Variant;
   showIcon?: boolean;
   className?: string;
+  labelClassName?: string;
   label?: string;
   showFeedback?: boolean;
 }) {
@@ -85,6 +87,7 @@ export default function AddToCartButton({
       <button
         type="button"
         onClick={handleClick}
+        aria-label={finalLabel}
         className={
           "inline-flex items-center justify-center gap-[0.42em] whitespace-nowrap rounded-full px-6 py-2.5 text-center text-[13px] font-semibold leading-none transition-all " +
           VARIANT_STYLES[variant] +
@@ -93,7 +96,9 @@ export default function AddToCartButton({
         }
       >
         {showIcon && <CartIconSmall />}
-        <span className="block leading-none">{finalLabel}</span>
+        <span className={"block leading-none " + labelClassName}>
+          {finalLabel}
+        </span>
       </button>
       {showFeedback && added && (
         <div className="flex items-center justify-between gap-3 rounded-lg bg-[#eef0ff] px-3 py-2 text-[12px] text-[#1e3a8a]">

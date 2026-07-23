@@ -15,6 +15,10 @@ type CatalogItem = {
   visualKey: ProductVisualKey;
   image?: string;
   imageClassName?: string;
+  badge?: {
+    text: string;
+    className?: string;
+  };
   slug: string;
 };
 
@@ -26,12 +30,13 @@ type CatalogSection = {
 };
 
 const WHATSAPP_NUMBER = "573234392470";
+const SHOW_FULL_CATALOG = false;
 
 function DeliveryTruckIcon() {
   return (
     <svg
       viewBox="0 0 64 64"
-      className="h-12 w-12 shrink-0 text-black lg:h-11 lg:w-11"
+      className="h-12 w-12 shrink-0 text-black lg:h-14 lg:w-14"
       fill="none"
       aria-hidden
     >
@@ -49,7 +54,7 @@ function DeliveryTruckIcon() {
 
 function SecureLockIcon() {
   return (
-    <span className="relative grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#d9dde2] lg:h-11 lg:w-11">
+    <span className="relative grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[#d9dde2] lg:h-14 lg:w-14">
       <svg viewBox="0 0 48 48" className="h-9 w-9" aria-hidden>
         <path
           d="M15 21v-5a9 9 0 0118 0v5"
@@ -71,7 +76,8 @@ const FEATURED_PRODUCTS_STATIC: CatalogItem[] = [
     previousPrice: "$122,450",
     visualKey: "garrafas",
     image: "/products/oferta-garrafas.png",
-    imageClassName: "h-[178px] lg:h-[178px]",
+    imageClassName:
+      "h-[178px] translate-y-[10px] scale-[1.25] lg:h-[235px] lg:translate-y-[14px] lg:scale-x-[2.02] lg:scale-y-[1.82]",
     slug: "promocion-garrafas",
   },
   {
@@ -79,7 +85,7 @@ const FEATURED_PRODUCTS_STATIC: CatalogItem[] = [
     price: "$85,000",
     visualKey: "kit",
     image: "/products/botellon-kit.jpg",
-    imageClassName: "h-[155px] lg:h-[170px]",
+    imageClassName: "h-[155px] lg:h-[220px] lg:scale-x-[1.16]",
     slug: "kit-inicial-botellon-19lts",
   },
   {
@@ -87,7 +93,7 @@ const FEATURED_PRODUCTS_STATIC: CatalogItem[] = [
     price: "$50,000",
     visualKey: "recargas",
     image: "/products/recarga-19-individual.jpg",
-    imageClassName: "h-[155px] lg:h-[170px]",
+    imageClassName: "h-[155px] lg:h-[220px] lg:scale-x-[1.16]",
     slug: "recarga-19lts-individual",
   },
   {
@@ -95,7 +101,7 @@ const FEATURED_PRODUCTS_STATIC: CatalogItem[] = [
     price: "$69,000",
     visualKey: "recargas",
     image: "/products/recargas-19.jpg",
-    imageClassName: "h-[155px] lg:h-[170px]",
+    imageClassName: "h-[155px] lg:h-[220px] lg:scale-x-[1.16]",
     slug: "recargas-19lts",
   },
 ];
@@ -106,7 +112,11 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     price: "$57,600",
     visualKey: "garrafas",
     image: "/products/kids-300ml.jpg",
-    imageClassName: "h-[126px] lg:h-[134px]",
+    imageClassName: "h-[126px] lg:h-[168px] lg:scale-x-[1.12]",
+    badge: {
+      text: "recomendado",
+      className: "left-[8%] top-[17px] lg:left-[16%] lg:top-[24px]",
+    },
     slug: "agua-ph-plus-kids-300ml-x24",
   },
   {
@@ -114,7 +124,7 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     price: "$57,600",
     visualKey: "garrafas",
     image: "/products/agua-300ml.jpg",
-    imageClassName: "h-[126px] lg:h-[134px]",
+    imageClassName: "h-[126px] lg:h-[168px] lg:scale-x-[1.12]",
     slug: "agua-ph-plus-300ml-x24",
   },
   {
@@ -122,7 +132,7 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     price: "$50,160",
     visualKey: "kit",
     image: "/products/agua-sport-500ml.jpg",
-    imageClassName: "h-[126px] lg:h-[134px]",
+    imageClassName: "h-[126px] lg:h-[168px] lg:scale-x-[1.12]",
     slug: "agua-ph-plus-sport-500ml-x12",
   },
   {
@@ -130,7 +140,7 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     price: "$48,480",
     visualKey: "kit",
     image: "/products/agua-500ml.jpg",
-    imageClassName: "h-[126px] lg:h-[134px]",
+    imageClassName: "h-[126px] lg:h-[168px] lg:scale-x-[1.12]",
     slug: "agua-ph-plus-500ml-x12",
   },
   {
@@ -139,7 +149,11 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     previousPrice: "$44,220",
     visualKey: "garrafas",
     image: "/products/agua-fit-1l.jpg",
-    imageClassName: "h-[126px] lg:h-[134px]",
+    imageClassName: "h-[126px] lg:h-[168px] lg:scale-x-[1.12]",
+    badge: {
+      text: "+ vendido",
+      className: "left-[8%] top-[16px] lg:left-[16%] lg:top-[23px]",
+    },
     slug: "agua-ph-plus-fit-1l-x6",
   },
   {
@@ -147,7 +161,7 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     price: "$50,160",
     visualKey: "kit",
     image: "/products/agua-1l.jpg",
-    imageClassName: "h-[126px] lg:h-[134px]",
+    imageClassName: "h-[126px] lg:h-[168px] lg:scale-x-[1.12]",
     slug: "agua-ph-plus-1l-x6",
   },
   {
@@ -155,7 +169,11 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     price: "$24,490",
     visualKey: "kit",
     image: "/products/agua-5l.jpg",
-    imageClassName: "h-[132px] lg:h-[138px]",
+    imageClassName: "h-[132px] lg:h-[174px] lg:scale-x-[1.12]",
+    badge: {
+      text: "+ ahorro",
+      className: "left-[10%] top-[18px] lg:left-[16%] lg:top-[25px]",
+    },
     slug: "agua-ph-plus-5l-x1",
   },
 ];
@@ -171,7 +189,7 @@ const LOWER_SECTIONS_STATIC: CatalogSection[] = [
         price: "$108,000",
         visualKey: "kit",
         image: "/products/vidrio-280ml.jpg",
-        imageClassName: "h-[140px] lg:h-[148px]",
+        imageClassName: "h-[140px] lg:h-[180px] lg:scale-x-[1.12]",
         slug: "agua-ph-plus-vidrio-280ml-x24",
       },
       {
@@ -179,7 +197,7 @@ const LOWER_SECTIONS_STATIC: CatalogSection[] = [
         price: "$132,000",
         visualKey: "kit",
         image: "/products/vidrio-477ml.jpg",
-        imageClassName: "h-[140px] lg:h-[148px]",
+        imageClassName: "h-[140px] lg:h-[180px] lg:scale-x-[1.12]",
         slug: "agua-ph-plus-vidrio-477ml-x24",
       },
     ],
@@ -194,7 +212,7 @@ const LOWER_SECTIONS_STATIC: CatalogSection[] = [
         price: "$63,600",
         visualKey: "garrafas",
         image: "/products/hierbabuena-500ml.jpg",
-        imageClassName: "h-[128px] lg:h-[136px]",
+        imageClassName: "h-[128px] lg:h-[172px] lg:scale-x-[1.12]",
         slug: "agua-ph-plus-hierbabuena-500ml-x12",
       },
       {
@@ -202,7 +220,7 @@ const LOWER_SECTIONS_STATIC: CatalogSection[] = [
         price: "$63,600",
         visualKey: "garrafas",
         image: "/products/limonaria-500ml.jpg",
-        imageClassName: "h-[128px] lg:h-[136px]",
+        imageClassName: "h-[128px] lg:h-[172px] lg:scale-x-[1.12]",
         slug: "agua-ph-plus-limonaria-500ml-x12",
       },
     ],
@@ -218,15 +236,15 @@ function whatsappHref(item?: CatalogItem) {
 
 function TrustStrip() {
   return (
-    <div className="mx-auto mt-8 grid max-w-[330px] grid-cols-2 items-center justify-center gap-3 px-4 lg:mt-3 lg:flex lg:max-w-[820px] lg:flex-nowrap lg:gap-3">
-      <div className="ph-condensed flex h-[62px] w-[146px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.22)] lg:h-[56px] lg:w-[156px] lg:gap-3 lg:px-3 lg:text-[10px]">
+    <div className="mx-auto mt-8 grid max-w-[330px] grid-cols-2 items-center justify-center gap-3 px-4 lg:mt-5 lg:flex lg:max-w-[1200px] lg:flex-nowrap lg:gap-5 lg:px-0">
+      <div className="ph-condensed flex h-[62px] w-[146px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.22)] lg:h-[70px] lg:w-[205px] lg:gap-4 lg:px-4 lg:text-[14px]">
         <DeliveryTruckIcon />
         <span>
           servicio a domicilio
           <br />a nivel nacional
         </span>
       </div>
-      <div className="ph-condensed flex h-[62px] w-[146px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.22)] lg:h-[56px] lg:w-[190px] lg:gap-3 lg:px-3 lg:text-[10px]">
+      <div className="ph-condensed flex h-[62px] w-[146px] items-center gap-3 rounded-[8px] border border-[#d7d7d7] bg-[#f8f8f8] px-3 text-[11px] leading-tight text-[#303030] shadow-[2px_3px_0_rgba(0,0,0,0.22)] lg:h-[70px] lg:w-[245px] lg:gap-4 lg:px-4 lg:text-[14px]">
         <SecureLockIcon />
         <span>
           pago seguro con SSL.
@@ -236,7 +254,7 @@ function TrustStrip() {
       </div>
       <Link
         href="/envios"
-        className="ph-condensed col-span-2 mx-auto inline-flex h-[24px] min-w-[206px] items-center justify-center rounded-full border-2 border-[#1e3a8a] bg-white px-4 text-[9px] font-bold text-[#6b7280] shadow-[2px_3px_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 lg:h-[28px] lg:min-w-[285px] lg:text-[10px]"
+        className="ph-condensed col-span-2 mx-auto inline-flex h-[32px] min-w-[260px] items-center justify-center rounded-full border-2 border-[#1e3a8a] bg-white px-5 text-[12px] font-bold text-[#6b7280] shadow-[3px_4px_0_rgba(0,0,0,0.35)] transition-transform hover:-translate-y-0.5 lg:h-[54px] lg:min-w-[500px] lg:border-[4px] lg:px-9 lg:text-[20px] lg:shadow-[7px_8px_0_rgba(0,0,0,0.35)]"
       >
         Ver costos de envío y tiempos de entrega
       </Link>
@@ -261,7 +279,7 @@ function SectionHeader({
         className={
           "ph-display uppercase leading-none text-[#1e3a8a] " +
           (titleClassName ??
-            (compact ? "text-[26px] lg:text-[30px]" : "text-[29px] lg:text-[32px]"))
+            (compact ? "text-[26px] lg:text-[40px]" : "text-[29px] lg:text-[42px]"))
         }
       >
         {title}
@@ -269,7 +287,7 @@ function SectionHeader({
       <div
         className={
           "ph-condensed mt-2 font-bold leading-tight text-[#6b7280] " +
-          (compact ? "text-[17px] lg:text-[18px]" : "text-[22px] lg:text-[22px]")
+          (compact ? "text-[17px] lg:text-[24px]" : "text-[22px] lg:text-[28px]")
         }
       >
         {subtitle}
@@ -285,8 +303,34 @@ function BuyButton({ item }: { item: CatalogItem }) {
       mode="cart"
       label="comprar ahora"
       showFeedback={false}
-      className="ph-condensed mt-2 h-[26px] w-[104px] px-2 py-0 text-[9px] font-bold lg:h-[28px] lg:w-[118px] lg:text-[10px]"
+      className="ph-condensed mt-2 h-[26px] w-[104px] px-2 py-0 text-[9px] font-bold lg:mt-4 lg:h-[48px] lg:w-[230px] lg:text-[19px]"
     />
+  );
+}
+
+function ProductBottleBadge({
+  text,
+  className = "",
+}: {
+  text: string;
+  className?: string;
+}) {
+  return (
+    <div
+      aria-hidden
+      className={`pointer-events-none absolute z-20 -rotate-[48deg] ${className}`}
+    >
+      <span className="absolute left-[51px] top-[-18px] h-[24px] w-[18px] rounded-t-full border-l-[2px] border-t-[2px] border-[#1f2937]" />
+      <span
+        className="relative block h-[34px] w-[86px] rounded-[4px] border-b-[3px] border-r-[3px] border-[#233f9b] bg-[#bcefff] shadow-[1px_2px_0_rgba(30,58,138,0.18)] lg:h-[42px] lg:w-[104px]"
+        style={{ clipPath: "polygon(0 0, 83% 0, 100% 50%, 83% 100%, 0 100%)" }}
+      >
+        <span className="absolute right-[11px] top-1/2 h-[9px] w-[9px] -translate-y-1/2 rounded-full border-[2px] border-[#233f9b] bg-white lg:right-[14px] lg:h-[11px] lg:w-[11px]" />
+        <span className="ph-condensed absolute left-[9px] top-1/2 -translate-y-1/2 text-[11px] font-bold leading-none text-[#111827] lg:left-[12px] lg:text-[14px]">
+          {text}
+        </span>
+      </span>
+    </div>
   );
 }
 
@@ -300,16 +344,19 @@ function ProductCard({
   className?: string;
 }) {
   const imageBoxClass = featured
-    ? "h-[180px] lg:h-[178px]"
-    : "h-[138px] lg:h-[148px]";
+    ? "h-[180px] lg:h-[240px]"
+    : "h-[138px] lg:h-[184px]";
 
   return (
     <article
-      className={`ph-condensed flex min-w-0 flex-col items-center text-center ${className}`}
+      className={`ph-condensed flex w-full min-w-0 flex-col items-center text-center ${className}`}
     >
       <div
-        className={`flex w-full items-center justify-center overflow-visible ${imageBoxClass}`}
+        className={`relative flex w-full items-center justify-center overflow-visible ${imageBoxClass}`}
       >
+        {item.badge && (
+          <ProductBottleBadge text={item.badge.text} className={item.badge.className} />
+        )}
         {item.image ? (
           <Image
             src={item.image}
@@ -325,18 +372,18 @@ function ProductCard({
           />
         )}
       </div>
-      <div className="mt-2 flex min-h-[54px] flex-col items-center lg:min-h-[48px]">
+      <div className="mt-2 flex min-h-[54px] flex-col items-center lg:mt-3 lg:min-h-[86px]">
         <div className="flex items-baseline justify-center gap-1">
           {item.previousPrice && (
-            <span className="text-[10px] font-bold leading-none text-[#ef4444] line-through lg:text-[9px]">
+            <span className="text-[10px] font-bold leading-none text-[#ef4444] line-through lg:text-[15px]">
               {item.previousPrice}
             </span>
           )}
-          <p className="text-[17px] font-bold leading-none text-[#1e3a8a] lg:text-[12px]">
+          <p className="text-[17px] font-bold leading-none text-[#1e3a8a] lg:text-[19px]">
             {item.price}
           </p>
         </div>
-        <p className="mt-2 max-w-[92px] whitespace-pre-line text-[11px] font-bold leading-[1.05] text-[#6b7280] lg:max-w-[104px] lg:text-[9px]">
+        <p className="mt-2 max-w-[92px] whitespace-pre-line text-[11px] font-bold leading-[1.05] text-[#6b7280] lg:max-w-[210px] lg:text-[15px] lg:leading-[1.1]">
           {item.name}
         </p>
       </div>
@@ -361,16 +408,16 @@ async function FeaturedProducts() {
         </div>
       </div>
 
-      <div className="relative hidden rounded-[26px] border border-[#d7d7d7] bg-white px-7 pb-5 pt-4 shadow-[4px_7px_18px_rgba(0,0,0,0.18)] lg:block">
-        <div className="absolute left-[245px] top-4 z-10">
-          <h2 className="ph-display text-[25px] uppercase leading-none text-[#1e3a8a]">
+      <div className="relative hidden rounded-[26px] border border-[#d7d7d7] bg-white px-10 pb-8 pt-6 shadow-[4px_7px_18px_rgba(0,0,0,0.18)] lg:block">
+        <div className="absolute inset-x-0 top-6 z-10 text-center">
+          <h2 className="ph-display text-[34px] uppercase leading-none text-[#1e3a8a]">
             Presentaciones destacadas:
           </h2>
-          <p className="ph-condensed mt-1 text-[17px] font-bold leading-none text-[#6b7280]">
+          <p className="ph-condensed mt-1 text-[23px] font-bold leading-none text-[#6b7280]">
             Ahorra más, disfruta más cada día
           </p>
         </div>
-        <div className="grid grid-cols-4 items-end gap-x-8 pt-8">
+        <div className="grid grid-cols-4 items-end gap-x-[10px] pt-24">
           {FEATURED_PRODUCTS.map((item) => (
             <ProductCard key={item.name} item={item} featured />
           ))}
@@ -383,7 +430,7 @@ async function FeaturedProducts() {
 async function PetProducts() {
   const PET_PRODUCTS = await withDbPrices(PET_PRODUCTS_STATIC);
   return (
-    <section className="pt-12 lg:pt-12">
+    <section className="pt-12 lg:pt-16">
       <div className="lg:hidden">
         <SectionHeader
           title="Presentaciones en PET"
@@ -410,7 +457,7 @@ async function PetProducts() {
         </div>
       </div>
 
-      <div className="hidden lg:grid lg:grid-cols-4 lg:items-start lg:gap-x-10 lg:gap-y-11">
+      <div className="hidden lg:grid lg:grid-cols-4 lg:items-start lg:gap-x-[17px] lg:gap-y-16">
         {PET_PRODUCTS.slice(0, 3).map((item) => (
           <ProductCard key={item.name} item={item} />
         ))}
@@ -445,18 +492,18 @@ async function LowerCatalogSections() {
   );
 
   return (
-    <div className="pt-12 lg:pt-14">
-      <div className="grid grid-cols-2 gap-x-7 lg:gap-x-9">
+    <div className="pt-12 lg:pt-20">
+      <div className="grid grid-cols-2 gap-x-7 lg:gap-x-[17px]">
         {LOWER_SECTIONS.map((section) => (
           <SectionHeader
             key={section.id}
             title={section.title}
             subtitle={section.subtitle}
-            titleClassName="text-[26px] leading-none lg:text-[60px]"
+            titleClassName="text-[24px] leading-none lg:text-[60px]"
           />
         ))}
       </div>
-      <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4 lg:gap-x-9">
+      <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-4 lg:gap-x-[17px] lg:gap-y-14">
         {LOWER_SECTIONS.flatMap((section) =>
           section.products.map((item) => (
             <ProductCard key={item.slug} item={item} />
@@ -502,7 +549,7 @@ async function CatalogFromDb() {
         visualKey: p.visualKey,
         // Foto subida desde el admin (si hay); si no, ilustración visualKey.
         image: p.gallery?.[0]?.src,
-        imageClassName: "h-[126px] lg:h-[134px]",
+        imageClassName: "h-[126px] lg:h-[168px] lg:scale-x-[1.12]",
         slug: p.slug,
       }));
   } catch (error) {
@@ -513,12 +560,12 @@ async function CatalogFromDb() {
   if (items.length === 0) return null;
 
   return (
-    <section id="catalogo" className="pt-12 lg:pt-14">
+    <section id="catalogo" className="pt-12 lg:pt-20">
       <SectionHeader
         title="Todo el catálogo"
         subtitle="Nuestra línea completa de hidratación PH PLUS"
       />
-      <div className="mt-8 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-3 lg:gap-x-7">
+      <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-10 lg:grid-cols-3 lg:gap-x-[17px] lg:gap-y-14">
         {items.map((item) => (
           <ProductCard key={item.slug} item={item} />
         ))}
@@ -529,11 +576,11 @@ async function CatalogFromDb() {
 
 function PerfectPresentationCard() {
   return (
-    <section className="mx-auto mt-14 hidden max-w-[610px] rounded-[18px] bg-[#1e3a8a] px-8 py-6 text-center text-white shadow-[3px_5px_0_rgba(0,0,0,0.25)] lg:block">
-      <h2 className="ph-condensed text-[31px] font-bold leading-tight">
+    <section className="mx-auto mt-16 hidden max-w-[720px] rounded-[18px] bg-[#1e3a8a] px-10 py-8 text-center text-white shadow-[3px_5px_0_rgba(0,0,0,0.25)] lg:block">
+      <h2 className="ph-condensed text-[38px] font-bold leading-tight">
         ¡Descubre la presentación perfecta para ti!
       </h2>
-      <p className="ph-condensed mt-4 text-[17px] leading-relaxed opacity-90">
+      <p className="ph-condensed mt-4 text-[21px] leading-relaxed opacity-90">
         Cada estilo de vida es diferente, cada rutina es única.
         <br />
         Te ayudamos a encontrar tu presentación ideal.
@@ -625,11 +672,11 @@ export default function ProductsListingPage() {
       <main className="flex-1 bg-white">
         <TrustStrip />
 
-        <section className="mx-auto max-w-[390px] px-[35px] pb-10 pt-8 lg:max-w-[790px] lg:px-6 lg:pt-3">
+        <section className="mx-auto max-w-[390px] px-[35px] pb-10 pt-8 lg:max-w-[1200px] lg:px-0 lg:pt-8">
           <FeaturedProducts />
           <PetProducts />
           <LowerCatalogSections />
-          <CatalogFromDb />
+          {SHOW_FULL_CATALOG && <CatalogFromDb />}
           <PerfectPresentationCard />
         </section>
 
