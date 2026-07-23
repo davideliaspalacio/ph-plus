@@ -101,7 +101,7 @@ export default function Footer() {
     <>
       <NewsletterSignup />
       <footer id="footer" className="w-full bg-[#252bae] text-white">
-        <div className="ph-condensed mx-auto grid max-w-[860px] grid-cols-[1.08fr_1.16fr_1fr] gap-x-3 px-5 py-6 text-[7.2px] font-bold leading-[1.15] min-[700px]:gap-x-8 min-[700px]:px-10 min-[700px]:py-7 min-[700px]:text-[12px] lg:hidden">
+        <div className="ph-condensed mx-auto grid max-w-[860px] grid-cols-[1.08fr_1.16fr_1fr] gap-x-3 px-5 py-5 text-[7.2px] font-bold leading-[1.15] min-[700px]:gap-x-8 min-[700px]:px-10 min-[700px]:py-6 min-[700px]:text-[12px] lg:hidden">
           <div className="min-w-0">
             <div className="relative h-[38px] w-[132px] overflow-hidden min-[700px]:h-[64px] min-[700px]:w-[218px]">
               <Image
@@ -113,7 +113,7 @@ export default function Footer() {
               />
             </div>
 
-            <div className="mt-3 flex items-center gap-2 min-[700px]:mt-5 min-[700px]:gap-3">
+            <div className="mt-2.5 flex items-center gap-2 min-[700px]:mt-4 min-[700px]:gap-3">
               <Image
                 src="/home/icon-invima.png"
                 alt="INVIMA"
@@ -128,14 +128,14 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="mt-4 leading-[1.2] min-[700px]:mt-5">
+            <div className="mt-3 leading-[1.2] min-[700px]:mt-4">
               <p>Lunes a viernes: 8 am - 5pm</p>
               <p>info@aguaphplus.com</p>
               <p>whatsapp: +57 3234392470</p>
             </div>
           </div>
 
-          <div className="min-w-0 pt-7 min-[700px]:pt-10">
+          <div className="min-w-0 pt-6 min-[700px]:pt-9">
             <div className="flex items-start gap-1.5 min-[700px]:gap-4">
               <PinIcon className="h-[18px] w-[18px] min-[700px]:h-[34px] min-[700px]:w-[34px]" />
               <div className="min-w-0">
@@ -154,7 +154,7 @@ export default function Footer() {
               </div>
             </div>
 
-            <div className="mt-8 flex items-start gap-1.5 leading-none min-[700px]:mt-12 min-[700px]:gap-4">
+            <div className="mt-7 flex items-start gap-1.5 leading-none min-[700px]:mt-10 min-[700px]:gap-4">
               <LockIcon className="h-[18px] w-[18px] min-[700px]:h-[34px] min-[700px]:w-[34px]" />
               <div className="min-w-0">
                 <p>Pagos seguros SSL</p>
@@ -169,8 +169,8 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="min-w-0 pt-7 text-right min-[700px]:pt-10">
-            <nav className="flex flex-col gap-0.5 leading-[1.16]" aria-label="Enlaces legales">
+          <div className="min-w-0 pt-6 text-right min-[700px]:pt-9">
+            <nav className="flex flex-col items-end gap-0.5 leading-[1.16]" aria-label="Enlaces legales">
               <Link href="/politica-de-privacidad" className="hover:underline">
                 Política de Privacidad
               </Link>
@@ -181,12 +181,12 @@ export default function Footer() {
                 Política de Cambios
               </Link>
             </nav>
-            <div className="mt-6 leading-[1.16] min-[700px]:mt-9">
+            <div className="mt-5 leading-[1.16] min-[700px]:mt-8">
               <p>Agua PH PLUS © 2026</p>
               <p>Todos los derechos reservados</p>
               <p>NIT: 901.219.610.3</p>
             </div>
-            <div className="mt-4 flex justify-end min-[700px]:mt-7">
+            <div className="mt-3 flex justify-end min-[700px]:mt-6">
               <SocialLinks compact />
             </div>
           </div>
@@ -194,14 +194,14 @@ export default function Footer() {
 
         <div
           className="ph-condensed relative mx-auto hidden max-w-[2048px] lg:block"
-          style={{ height: "clamp(360px, 25vw, 512px)" }}
+          style={{ height: "clamp(324px, 22.5vw, 461px)" }}
         >
           <div
             className="absolute overflow-hidden"
             style={{
               left: "clamp(60px, 4.2vw, 86px)",
               top: "0px",
-              height: "clamp(96px, 6.4vw, 132px)",
+              height: "clamp(86px, 5.8vw, 119px)",
               width: "clamp(320px, 22vw, 455px)",
             }}
           >
@@ -222,7 +222,7 @@ export default function Footer() {
             className="absolute max-w-[320px] text-[22px] font-bold leading-[1.22]"
             style={{
               left: "clamp(60px, 4.2vw, 86px)",
-              top: "clamp(130px, 9.1vw, 186px)",
+              top: "clamp(117px, 8.2vw, 167px)",
             }}
           >
             Cuidarte empieza por lo que eliges cada día
@@ -232,7 +232,7 @@ export default function Footer() {
             className="absolute whitespace-pre-line text-[18px] font-bold leading-[1.32]"
             style={{
               left: "clamp(60px, 4.2vw, 86px)",
-              top: "clamp(238px, 16.3vw, 334px)",
+              top: "clamp(214px, 14.7vw, 301px)",
             }}
           >
             <p>Lunes a viernes: 8 am - 5pm</p>
@@ -244,7 +244,7 @@ export default function Footer() {
             className="absolute flex items-start gap-7 text-[18px] font-bold leading-[1.28]"
             style={{
               left: "clamp(522px, 38.2vw, 782px)",
-              top: "clamp(108px, 7.6vw, 156px)",
+              top: "clamp(97px, 6.8vw, 140px)",
             }}
           >
             <PinIcon className="h-[58px] w-[58px]" />
@@ -271,7 +271,7 @@ export default function Footer() {
             className="absolute flex items-start gap-7 text-[18px] font-bold leading-[1.28]"
             style={{
               left: "clamp(522px, 38.2vw, 782px)",
-              top: "clamp(240px, 16.8vw, 344px)",
+              top: "clamp(216px, 15.1vw, 310px)",
             }}
           >
             <LockIcon className="h-[58px] w-[58px]" />
@@ -288,10 +288,10 @@ export default function Footer() {
           </div>
 
           <nav
-            className="absolute flex w-[280px] flex-col items-center gap-1.5 text-center text-[18px] font-bold leading-[1.32]"
+            className="absolute flex w-[280px] flex-col items-end gap-1.5 text-right text-[18px] font-bold leading-[1.32]"
             style={{
               right: "clamp(60px, 4.2vw, 86px)",
-              top: "clamp(92px, 6.5vw, 133px)",
+              top: "clamp(83px, 5.9vw, 120px)",
             }}
             aria-label="Enlaces legales"
           >
@@ -307,10 +307,10 @@ export default function Footer() {
           </nav>
 
           <div
-            className="absolute w-[280px] text-center text-[18px] font-bold leading-[1.32]"
+            className="absolute w-[280px] text-right text-[18px] font-bold leading-[1.32]"
             style={{
               right: "clamp(60px, 4.2vw, 86px)",
-              top: "clamp(210px, 14.7vw, 301px)",
+              top: "clamp(189px, 13.2vw, 271px)",
             }}
           >
             <p>Agua PH PLUS © 2026</p>
@@ -322,10 +322,10 @@ export default function Footer() {
             className="absolute w-[280px]"
             style={{
               right: "clamp(60px, 4.2vw, 86px)",
-              top: "clamp(292px, 20.4vw, 418px)",
+              top: "clamp(263px, 18.4vw, 376px)",
             }}
           >
-            <div className="flex justify-center">
+            <div className="flex justify-end">
               <SocialLinks />
             </div>
           </div>
