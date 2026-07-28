@@ -8,7 +8,7 @@
  */
 
 import type { CartItem } from "../components/CartProvider";
-import { PRODUCTS, type Product } from "./products";
+import { getProduct, type Product } from "./products";
 import {
   buildCartSummary as buildSummaryDomain,
   FREE_SHIPPING_THRESHOLD as DOMAIN_FREE_SHIPPING_THRESHOLD,
@@ -36,7 +36,7 @@ export type CartSummary = {
 };
 
 const productLookup = (slug: string): Product | undefined =>
-  PRODUCTS.find((p) => p.slug === slug);
+  getProduct(slug);
 
 export function buildCartSummary(
   items: CartItem[],

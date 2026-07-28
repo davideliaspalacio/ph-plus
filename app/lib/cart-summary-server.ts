@@ -1,6 +1,7 @@
 import "server-only";
 
 import { buildCartSummary as buildLegacySummary } from "@/app/lib/cart-summary";
+import { getProductPriceOverride } from "@/app/lib/products";
 import {
   buildCartSummary as buildSummaryDomain,
   type CartSummaryOptions,
@@ -74,10 +75,11 @@ async function fetchPricesFromDb(
   for (const row of (data ?? []) as unknown as ProductPriceRow[]) {
     // Un producto desactivado no se vende, aunque siga en el carrito.
     if (!row.is_active) continue;
+    const priceOverride = getProductPriceOverride(row.slug);
     byslug.set(row.slug, {
       slug: row.slug,
       title: row.title,
-      priceValue: Number(row.price_value),
+      priceValue: priceOverride?.priceValue ?? Number(row.price_value),
     });
   }
   return byslug;

@@ -6,18 +6,17 @@ import { useMemo, useState } from "react";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import ProductVisual from "../components/ProductVisual";
+import ProductThumb from "../components/ProductThumb";
 import { useCart } from "../components/CartProvider";
 import { CartLineSkeleton } from "../components/Skeletons";
 import { useMockLoading } from "../components/useMockLoading";
 import { buildCartSummary } from "../lib/cart-summary";
+import { isMinimumOrderSubtotal, MIN_ORDER_VALUE } from "../lib/order-rules";
 import { formatCOP } from "../lib/products";
 import {
   getShippingDestination,
   SHIPPING_DESTINATION_GROUPS,
 } from "../lib/shipping-rates";
-
-const MIN_ORDER_VALUE = 50_000;
 
 function QtyInput({
   value,
@@ -82,9 +81,13 @@ export default function CartPage() {
   );
   const ready = hydrated && !initialLoading;
   const isEmpty = ready && summary.lines.length === 0;
-  const checkoutHref = selectedShippingDestination
+  const meetsMinimumOrder = isMinimumOrderSubtotal(summary.subtotal);
+  const amountToMinimumOrder = Math.max(0, MIN_ORDER_VALUE - summary.subtotal);
+  const checkoutHref = selectedShippingDestination && meetsMinimumOrder
     ? `/checkout?city=${encodeURIComponent(selectedShippingDestination.value)}`
-    : "#shipping-city";
+    : !meetsMinimumOrder
+      ? "#minimum-order"
+      : "#shipping-city";
 
   return (
     <>
@@ -154,9 +157,9 @@ export default function CartPage() {
                     className="flex flex-col gap-4 rounded-2xl border border-card-border bg-white p-4 sm:flex-row sm:items-center sm:p-5"
                   >
                     <div className="grid h-24 w-24 shrink-0 place-items-center rounded-xl bg-[#f4f5fa]">
-                      <ProductVisual
-                        visualKey={product.visualKey}
-                        className="h-20 w-auto"
+                      <ProductThumb
+                        product={product}
+                        className="h-20 w-20"
                       />
                     </div>
 
@@ -245,9 +248,19 @@ export default function CartPage() {
                   Resumen
                 </h2>
 
-                <div className="mt-4 rounded-lg bg-white px-3 py-2 text-center text-[12px] font-bold uppercase tracking-wide text-brand shadow-sm">
+                <div
+                  id="minimum-order"
+                  className="mt-4 rounded-lg bg-white px-3 py-2 text-center text-[12px] font-bold uppercase tracking-wide text-brand shadow-sm"
+                >
                   Pedido mínimo {formatCOP(MIN_ORDER_VALUE)}
                 </div>
+                {!meetsMinimumOrder && (
+                  <p className="mt-2 rounded-xl bg-red-50 px-3 py-2 text-center text-[12px] font-semibold leading-relaxed text-red-700">
+                    La compra mínima es {formatCOP(MIN_ORDER_VALUE)} en
+                    productos, sin incluir domicilio. Faltan{" "}
+                    {formatCOP(amountToMinimumOrder)}.
+                  </p>
+                )}
 
                 <dl className="mt-4 space-y-2 text-[14px]">
                   <div className="flex justify-between">
@@ -281,17 +294,22 @@ export default function CartPage() {
 
                 <Link
                   href={checkoutHref}
-                  aria-disabled={!selectedShippingDestination}
+                  aria-disabled={!meetsMinimumOrder}
+                  onClick={(event) => {
+                    if (!meetsMinimumOrder) event.preventDefault();
+                  }}
                   className={
                     "mt-5 flex w-full items-center justify-center rounded-full px-6 py-3 text-[14px] font-semibold text-white transition-all " +
-                    (selectedShippingDestination
+                    (meetsMinimumOrder
                       ? "bg-brand hover:scale-[1.02] hover:bg-brand-dark"
                       : "cursor-not-allowed bg-brand/45")
                   }
                 >
-                  {selectedShippingDestination
-                    ? "Proceder al pago"
-                    : "Selecciona ciudad para continuar"}
+                  {!meetsMinimumOrder
+                    ? "Agrega productos hasta $50.000"
+                    : selectedShippingDestination
+                      ? "Proceder al pago"
+                      : "Selecciona ciudad para continuar"}
                 </Link>
 
                 <a

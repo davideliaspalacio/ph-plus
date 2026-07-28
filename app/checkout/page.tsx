@@ -5,10 +5,11 @@ import { useEffect, useMemo, useState } from "react";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import ProductVisual from "../components/ProductVisual";
+import ProductThumb from "../components/ProductThumb";
 import { useCart } from "../components/CartProvider";
 import { useMockLoading } from "../components/useMockLoading";
 import { buildCartSummary } from "../lib/cart-summary";
+import { isMinimumOrderSubtotal, MIN_ORDER_VALUE } from "../lib/order-rules";
 import { formatCOP } from "../lib/products";
 import {
   getShippingDestination,
@@ -44,7 +45,7 @@ type PayuCheckoutResponse = {
   persisted: boolean;
 };
 
-const GUEST_BULLETS = ["Sin crear cuentas", "Sin contraseña", "Compra en 2 mn"];
+const GUEST_BULLETS = ["Sin crear cuentas", "Sin contraseña", "Compra en 2 minutos"];
 
 /** Ícono de "entrar" (flecha hacia un marco) usado en los títulos del paso 0. */
 function EnterIcon({ className = "h-12 w-12" }: { className?: string }) {
@@ -255,6 +256,7 @@ export default function CheckoutPage() {
       }),
     [items, selectedShippingDestination?.cost],
   );
+  const meetsMinimumOrder = isMinimumOrderSubtotal(summary.subtotal);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -338,6 +340,12 @@ export default function CheckoutPage() {
   }
 
   async function submitOrder() {
+    if (!meetsMinimumOrder) {
+      setSubmitError(
+        `La compra mínima es ${formatCOP(MIN_ORDER_VALUE)} en productos, sin incluir domicilio.`,
+      );
+      return;
+    }
     if (!validateDatos()) {
       setStep(0);
       return;
@@ -472,6 +480,52 @@ export default function CheckoutPage() {
               >
                 Ver productos
               </Link>
+            </div>
+          </section>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
+  if (!meetsMinimumOrder) {
+    return (
+      <>
+        <Header />
+        <main className="flex-1 bg-white">
+          <section className="mx-auto max-w-page px-5 py-12 sm:px-8 lg:px-12">
+            <div className="mx-auto flex max-w-xl flex-col items-center rounded-3xl border border-card-border bg-[#fafbfd] px-6 py-14 text-center">
+              <div className="grid h-16 w-16 place-items-center rounded-full bg-brand text-white">
+                <svg viewBox="0 0 48 46" className="h-7 w-7" fill="none" aria-hidden>
+                  <path
+                    d="M2 2H10L15.36 28.78C15.5429 29.7008 16.0438 30.5279 16.7751 31.1166C17.5064 31.7053 18.4214 32.018 19.36 32H38.8C39.7386 32.018 40.6536 31.7053 41.3849 31.1166C42.1162 30.5279 42.6171 29.7008 42.8 28.78L46 12H12"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+              <h1 className="mt-5 text-[22px] font-extrabold text-brand">
+                Compra mínima en productos
+              </h1>
+              <p className="mt-2 max-w-md text-[14px] leading-relaxed text-ink-muted">
+                La compra mínima es {formatCOP(MIN_ORDER_VALUE)} en productos,
+                sin incluir domicilio. Agrega más productos para continuar.
+              </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/productos"
+                  className="inline-flex items-center justify-center rounded-full bg-brand px-6 py-3 text-[14px] font-semibold text-white transition-transform hover:scale-[1.03] hover:bg-brand-dark"
+                >
+                  Ver productos
+                </Link>
+                <Link
+                  href="/carrito"
+                  className="inline-flex items-center justify-center rounded-full border border-brand px-6 py-3 text-[14px] font-semibold text-brand transition-colors hover:bg-brand hover:text-white"
+                >
+                  Volver al carrito
+                </Link>
+              </div>
             </div>
           </section>
         </main>
@@ -763,16 +817,6 @@ export default function CheckoutPage() {
                     </ul>
                   </div>
 
-                  <Field label="Notas para la entrega (opcional)">
-                    <textarea
-                      className={baseInput + " min-h-[88px] resize-y"}
-                      value={shipping.notes}
-                      onChange={(e) =>
-                        setShipping((s) => ({ ...s, notes: e.target.value }))
-                      }
-                      placeholder="Ej.: Llamar al portero, segundo piso..."
-                    />
-                  </Field>
                 </div>
               )}
 
@@ -798,20 +842,18 @@ export default function CheckoutPage() {
                       {shipping.address},{" "}
                       {selectedShippingDestination?.label ?? shipping.city}
                     </p>
-                    {shipping.notes && (
-                      <p className="mt-1 text-[13px] text-ink-muted">
-                        Notas: {shipping.notes}
-                      </p>
-                    )}
                   </div>
-                  <div>
-                    <p className="text-[12px] font-semibold uppercase tracking-wide text-brand">
-                      Método de pago
-                    </p>
-                    <p className="mt-1 text-[14px] text-ink">
-                      Pago en línea con PayU
-                    </p>
-                  </div>
+
+                  <Field label="Notas para la entrega (opcional)">
+                    <textarea
+                      className={baseInput + " min-h-[88px] resize-y"}
+                      value={shipping.notes}
+                      onChange={(e) =>
+                        setShipping((s) => ({ ...s, notes: e.target.value }))
+                      }
+                      placeholder="Ej.: Llamar al portero, segundo piso..."
+                    />
+                  </Field>
 
                   <div className="rounded-xl border border-card-border p-4">
                     <p className="text-[12px] font-semibold uppercase tracking-wide text-brand">
@@ -819,9 +861,21 @@ export default function CheckoutPage() {
                     </p>
                     <ul className="mt-2 space-y-2 text-[13px] text-ink">
                       {summary.lines.map((l) => (
-                        <li key={l.product.slug} className="flex justify-between">
-                          <span>
-                            {l.product.title} × {l.item.quantity}
+                        <li
+                          key={l.product.slug}
+                          className="flex items-center justify-between gap-3"
+                        >
+                          <span className="flex min-w-0 items-center gap-3">
+                            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-[#f4f5fa]">
+                              <ProductThumb
+                                product={l.product}
+                                className="h-10 w-10"
+                                sizes="44px"
+                              />
+                            </span>
+                            <span className="min-w-0">
+                              {l.product.title} × {l.item.quantity}
+                            </span>
                           </span>
                           <span className="font-semibold">
                             {formatCOP(l.lineTotal)}
@@ -864,7 +918,7 @@ export default function CheckoutPage() {
                     className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-2.5 text-[13px] font-semibold text-white transition-all hover:scale-[1.02] hover:bg-brand-dark disabled:cursor-wait disabled:opacity-70 disabled:hover:scale-100"
                   >
                     {submitting && <Spinner className="h-4 w-4" />}
-                    {submitting ? "Conectando con PayU..." : "Pagar con PayU"}
+                    {submitting ? "Conectando con PayU..." : "Escoge método de pago"}
                   </button>
                 )}
               </div>
@@ -878,9 +932,10 @@ export default function CheckoutPage() {
                 {summary.lines.map((l) => (
                   <li key={l.product.slug} className="flex items-center gap-3">
                     <div className="grid h-14 w-14 shrink-0 place-items-center rounded-lg bg-white">
-                      <ProductVisual
-                        visualKey={l.product.visualKey}
-                        className="h-12 w-auto"
+                      <ProductThumb
+                        product={l.product}
+                        className="h-12 w-12"
+                        sizes="56px"
                       />
                     </div>
                     <div className="flex-1 text-[12px]">

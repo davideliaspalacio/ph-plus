@@ -7,7 +7,8 @@ import { Suspense, useEffect, useState } from "react";
 
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import { formatCOP } from "../../lib/products";
+import ProductThumb from "../../components/ProductThumb";
+import { formatCOP, getProduct } from "../../lib/products";
 
 type OrderPayload = {
   orderId: string;
@@ -96,14 +97,29 @@ function SuccessContent() {
               Resumen
             </p>
             <ul className="mt-2 space-y-1.5 text-[13px] text-ink">
-              {order.lines.map((l) => (
-                <li key={l.slug} className="flex justify-between gap-3">
-                  <span>
-                    {l.title} × {l.quantity}
-                  </span>
-                  <span className="font-semibold">{formatCOP(l.total)}</span>
-                </li>
-              ))}
+              {order.lines.map((l) => {
+                const product = getProduct(l.slug);
+
+                return (
+                  <li key={l.slug} className="flex justify-between gap-3">
+                    <span className="flex min-w-0 items-center gap-3">
+                      {product && (
+                        <span className="grid h-11 w-11 shrink-0 place-items-center rounded-lg bg-[#f4f5fa]">
+                          <ProductThumb
+                            product={product}
+                            className="h-10 w-10"
+                            sizes="44px"
+                          />
+                        </span>
+                      )}
+                      <span>
+                        {l.title} × {l.quantity}
+                      </span>
+                    </span>
+                    <span className="font-semibold">{formatCOP(l.total)}</span>
+                  </li>
+                );
+              })}
             </ul>
             <div className="mt-3 flex justify-between border-t border-card-border pt-3 text-[13px]">
               <span className="text-ink-muted">Envío</span>

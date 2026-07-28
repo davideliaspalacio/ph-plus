@@ -5,7 +5,11 @@ import Footer from "../components/Footer";
 import Header from "../components/Header";
 import AddToCartButton from "../components/AddToCartButton";
 import ProductVisual from "../components/ProductVisual";
-import { formatCOP, type ProductVisualKey } from "../lib/products";
+import {
+  formatCOP,
+  getProductPriceOverride,
+  type ProductVisualKey,
+} from "../lib/products";
 import { productRepo } from "@/src/features/catalog";
 
 type CatalogItem = {
@@ -108,7 +112,7 @@ const FEATURED_PRODUCTS_STATIC: CatalogItem[] = [
 
 const PET_PRODUCTS_STATIC: CatalogItem[] = [
   {
-    name: "agua ph plus 300\nml KIDS x 24 ud",
+    name: "agua ph plus 300\nml KIDS x 24 unidades",
     price: "$57,600",
     visualKey: "garrafas",
     image: "/products/kids-300ml.jpg",
@@ -120,7 +124,7 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     slug: "agua-ph-plus-kids-300ml-x24",
   },
   {
-    name: "agua ph plus 300\nml x 24 ud",
+    name: "agua ph plus 300\nml x 24 unidades",
     price: "$57,600",
     visualKey: "garrafas",
     image: "/products/agua-300ml.jpg",
@@ -128,7 +132,7 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     slug: "agua-ph-plus-300ml-x24",
   },
   {
-    name: "agua ph plus 500\nml sport x 12 ud",
+    name: "agua ph plus 500\nml sport x 12 unidades",
     price: "$50,160",
     visualKey: "kit",
     image: "/products/agua-sport-500ml.jpg",
@@ -136,7 +140,7 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     slug: "agua-ph-plus-sport-500ml-x12",
   },
   {
-    name: "agua ph plus 500\nml x 12 ud",
+    name: "agua ph plus 500\nml x 12 unidades",
     price: "$48,480",
     visualKey: "kit",
     image: "/products/agua-500ml.jpg",
@@ -144,7 +148,7 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     slug: "agua-ph-plus-500ml-x12",
   },
   {
-    name: "agua ph plus FIT\n1LT x 6 ud",
+    name: "agua ph plus FIT\n1LT x 6 unidades",
     price: "$35,376",
     previousPrice: "$44,220",
     visualKey: "garrafas",
@@ -157,7 +161,7 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     slug: "agua-ph-plus-fit-1l-x6",
   },
   {
-    name: "agua ph plus\n1LT x 6 ud",
+    name: "agua ph plus\n1LT x 6 unidades",
     price: "$50,160",
     visualKey: "kit",
     image: "/products/agua-1l.jpg",
@@ -165,7 +169,7 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     slug: "agua-ph-plus-1l-x6",
   },
   {
-    name: "agua ph plus 5LT x\n1ud",
+    name: "agua ph plus 5LT x\n1 unidad",
     price: "$24,490",
     visualKey: "kit",
     image: "/products/agua-5l.jpg",
@@ -185,7 +189,7 @@ const LOWER_SECTIONS_STATIC: CatalogSection[] = [
     subtitle: "Eleva tu estilo a nivel premium",
     products: [
       {
-        name: "agua ph plus vidrio\n280 ml x 24 ud",
+        name: "agua ph plus vidrio\n280 ml x 24 unidades",
         price: "$108,000",
         visualKey: "kit",
         image: "/products/vidrio-280ml.jpg",
@@ -193,7 +197,7 @@ const LOWER_SECTIONS_STATIC: CatalogSection[] = [
         slug: "agua-ph-plus-vidrio-280ml-x24",
       },
       {
-        name: "agua ph plus vidrio\n477 ml x 24 ud",
+        name: "agua ph plus vidrio\n477 ml x 24 unidades",
         price: "$132,000",
         visualKey: "kit",
         image: "/products/vidrio-477ml.jpg",
@@ -208,7 +212,7 @@ const LOWER_SECTIONS_STATIC: CatalogSection[] = [
     subtitle: "Disfruta el agua que sabe diferente",
     products: [
       {
-        name: "agua SABORIZADA\nph plus HIERBABUENA\n500 ml x 12 ud",
+        name: "agua SABORIZADA\nph plus HIERBABUENA\n500 ml x 12 unidades",
         price: "$63,600",
         visualKey: "garrafas",
         image: "/products/hierbabuena-500ml.jpg",
@@ -216,7 +220,7 @@ const LOWER_SECTIONS_STATIC: CatalogSection[] = [
         slug: "agua-ph-plus-hierbabuena-500ml-x12",
       },
       {
-        name: "agua SABORIZADA\nph plus LIMONARIA\n500 ml x 12 ud",
+        name: "agua SABORIZADA\nph plus LIMONARIA\n500 ml x 12 unidades",
         price: "$63,600",
         visualKey: "garrafas",
         image: "/products/limonaria-500ml.jpg",
@@ -383,7 +387,7 @@ function ProductCard({
             {item.price}
           </p>
         </div>
-        <p className="mt-2 max-w-[92px] whitespace-pre-line text-[11px] font-bold leading-[1.05] text-[#6b7280] lg:max-w-[210px] lg:text-[15px] lg:leading-[1.1]">
+        <p className="mt-2 max-w-[108px] whitespace-pre-line text-[11px] font-bold leading-[1.05] text-[#6b7280] lg:max-w-[210px] lg:text-[15px] lg:leading-[1.1]">
           {item.name}
         </p>
       </div>
@@ -630,9 +634,9 @@ function FinalCta() {
  * Los arrays de esta página definen el LAYOUT (orden, imágenes, visualKey), que
  * la tabla `products` no tiene — por eso siguen acá. Pero el precio no puede
  * salir de un string hardcodeado: divergía de la DB apenas alguien lo editaba
- * en el admin (p. ej. `recarga-19lts-individual` mostraba $50.000 cuando la DB
- * ya decía $36.000), y el checkout cobra desde la DB. Se pisan sólo los slugs
- * que existen en la DB; el resto conserva el valor del código.
+ * en el admin. Algunos precios aprobados por cliente viven como override de
+ * negocio y deben prevalecer sobre valores viejos que puedan llegar desde la DB
+ * (p. ej. `recarga-19lts-individual` = $50.000).
  */
 async function withDbPrices(items: CatalogItem[]): Promise<CatalogItem[]> {
   let bySlug: Map<string, { priceValue: number; prevPriceValue?: number }>;
@@ -653,12 +657,20 @@ async function withDbPrices(items: CatalogItem[]): Promise<CatalogItem[]> {
 
   return items.map((item) => {
     const db = bySlug.get(item.slug);
-    if (!db) return item;
+    const override = getProductPriceOverride(item.slug);
+    if (!db && !override) return item;
+    const priceValue = override?.priceValue ?? db?.priceValue;
+    if (priceValue == null) return item;
+    const prevPriceValue =
+      override?.prevPriceValue !== undefined
+        ? override.prevPriceValue
+        : db?.prevPriceValue;
+
     return {
       ...item,
-      price: formatCOP(db.priceValue),
-      previousPrice: db.prevPriceValue
-        ? formatCOP(db.prevPriceValue)
+      price: formatCOP(priceValue),
+      previousPrice: prevPriceValue
+        ? formatCOP(prevPriceValue)
         : undefined,
     };
   });

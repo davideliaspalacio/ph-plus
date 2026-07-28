@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import ProductVisual from "@/app/components/ProductVisual";
+import ProductThumb from "@/app/components/ProductThumb";
 import { Drawer, Button, EmptyState } from "@/src/shared/ui";
 import { formatCOP } from "@/src/shared/lib/format";
 import { useCart } from "@/src/features/cart/store/useCart";
 import { buildCartSummary } from "@/src/features/cart/domain/pricing";
-import { PRODUCTS } from "@/app/lib/products";
+import { getProduct } from "@/app/lib/products";
 
 export interface MiniCartProps {
   isOpen: boolean;
@@ -20,7 +20,7 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
   const removeItem = useCart((s) => s.removeItem);
 
   const summary = useMemo(
-    () => buildCartSummary(items, (slug) => PRODUCTS.find((p) => p.slug === slug)),
+    () => buildCartSummary(items, getProduct),
     [items],
   );
 
@@ -75,13 +75,11 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
               key={line.product.slug}
               className="flex items-start gap-3 py-4"
             >
-              {/* Ilustración por visualKey, igual que /carrito. Antes se
-                  armaba `/products/${slug}.png`, pero esos archivos no existen
-                  para casi ningún slug → miniatura rota en todo el carrito. */}
               <div className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-card-border/30">
-                <ProductVisual
-                  visualKey={line.product.visualKey}
-                  className="h-14 w-auto"
+                <ProductThumb
+                  product={line.product}
+                  className="h-14 w-14"
+                  sizes="64px"
                 />
               </div>
               <div className="flex-1">
