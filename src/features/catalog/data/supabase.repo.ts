@@ -1,4 +1,4 @@
-import type { Product } from "@/app/lib/products";
+import { applyProductPriceOverride, type Product } from "@/app/lib/products";
 import { applyFilters, applySort } from "../domain/filters";
 import type {
   ProductCategory,
@@ -128,7 +128,7 @@ function mapRow(row: ProductDbRow): Product {
   if (row.badge) product.badge = row.badge;
   product.inStock = row.in_stock;
 
-  return product;
+  return applyProductPriceOverride(product);
 }
 
 async function getClient() {

@@ -54,6 +54,42 @@ export type Product = {
   rating: { average: number; count: number };
 };
 
+export type ProductPriceOverride = {
+  priceValue: number;
+  prevPriceValue?: number;
+};
+
+export const PRODUCT_PRICE_OVERRIDES: Record<string, ProductPriceOverride> = {
+  "recarga-19lts-individual": { priceValue: 50_000 },
+};
+
+export function getProductPriceOverride(
+  slug: string,
+): ProductPriceOverride | undefined {
+  return PRODUCT_PRICE_OVERRIDES[slug];
+}
+
+export function applyProductPriceOverride(product: Product): Product {
+  const override = getProductPriceOverride(product.slug);
+  if (!override) return product;
+
+  const next: Product = {
+    ...product,
+    price: formatCOP(override.priceValue),
+    priceValue: override.priceValue,
+  };
+
+  if (override.prevPriceValue !== undefined) {
+    next.prevPriceValue = override.prevPriceValue;
+    next.prevPrice = formatCOP(override.prevPriceValue);
+  } else {
+    delete next.prevPriceValue;
+    delete next.prevPrice;
+  }
+
+  return next;
+}
+
 export const CATEGORY_LABEL: Record<ProductCategory, string> = {
   botellon: "Botellones",
   garrafa: "Garrafas",
@@ -105,9 +141,17 @@ const COMMON_REVIEWS: Review[] = [
   },
 ];
 
-function makeGallery(visualKey: ProductVisualKey): GalleryImage[] {
+function makeGallery(
+  visualKey: ProductVisualKey,
+  primarySrc?: string,
+): GalleryImage[] {
   return [
-    { visualKey, bg: "#f4f6fb", caption: "Vista principal" },
+    {
+      visualKey,
+      bg: "#f4f6fb",
+      caption: "Vista principal",
+      ...(primarySrc ? { src: primarySrc } : {}),
+    },
     { visualKey, bg: "#eef0ff", caption: "Vista lateral" },
     { visualKey, bg: "#e8f4fb", caption: "Detalle" },
     { visualKey, bg: "#fafbfd", caption: "En contexto" },
@@ -121,6 +165,7 @@ type ListingProductInput = {
   visualKey: ProductVisualKey;
   size: ProductSize;
   prevPriceValue?: number;
+  imageSrc?: string;
 };
 
 function makeListingProduct(input: ListingProductInput): Product {
@@ -150,7 +195,7 @@ function makeListingProduct(input: ListingProductInput): Product {
     size: input.size,
     popularity: 50,
     inStock: true,
-    gallery: makeGallery(input.visualKey),
+    gallery: makeGallery(input.visualKey, input.imageSrc),
     specs: COMMON_SPECS,
     usage: COMMON_USAGE,
     reviews: COMMON_REVIEWS,
@@ -189,7 +234,7 @@ export const PRODUCTS: Product[] = [
     size: "19L",
     popularity: 95,
     inStock: true,
-    gallery: makeGallery("kit"),
+    gallery: makeGallery("kit", "/products/botellon-kit.jpg"),
     specs: [
       { label: "Contenido", value: "19 litros + dispensador" },
       { label: "Material del envase", value: "PET grado alimenticio, libre de BPA" },
@@ -235,7 +280,7 @@ export const PRODUCTS: Product[] = [
     size: "1.5L",
     popularity: 90,
     inStock: true,
-    gallery: makeGallery("garrafas"),
+    gallery: makeGallery("garrafas", "/products/oferta-garrafas.png"),
     specs: [
       { label: "Cantidad", value: "5 garrafas" },
       { label: "Tamaño individual", value: "1,5 litros" },
@@ -276,7 +321,7 @@ export const PRODUCTS: Product[] = [
     size: "19L",
     popularity: 80,
     inStock: true,
-    gallery: makeGallery("recargas"),
+    gallery: makeGallery("recargas", "/products/recargas-19.jpg"),
     specs: [
       { label: "Cantidad", value: "2 botellones de 19 L" },
       { label: "Total de agua", value: "38 litros" },
@@ -311,7 +356,7 @@ export const PRODUCTS: Product[] = [
     size: "19L",
     popularity: 70,
     inStock: true,
-    gallery: makeGallery("recargas"),
+    gallery: makeGallery("recargas", "/products/recarga-19-individual.jpg"),
     specs: [
       { label: "Contenido", value: "19 litros" },
       { label: "Tipo", value: "Recarga retornable" },
@@ -346,7 +391,7 @@ export const PRODUCTS: Product[] = [
     size: "19L",
     popularity: 65,
     inStock: true,
-    gallery: makeGallery("kit"),
+    gallery: makeGallery("kit", "/products/recarga-19-individual.jpg"),
     specs: [
       { label: "Contenido", value: "19 litros" },
       { label: "Material", value: "Policarbonato retornable" },
@@ -453,7 +498,7 @@ export const PRODUCTS: Product[] = [
     size: "5L",
     popularity: 50,
     inStock: true,
-    gallery: makeGallery("kit"),
+    gallery: makeGallery("kit", "/products/agua-5l.jpg"),
     specs: [
       { label: "Contenido", value: "5 litros" },
       { label: "Asa", value: "Integrada en el envase" },
@@ -589,86 +634,98 @@ export const PRODUCTS: Product[] = [
   },
   makeListingProduct({
     slug: "agua-ph-plus-kids-300ml-x24",
-    title: "Agua PH PLUS KIDS 300 ml x 24 ud",
+    title: "Agua PH PLUS KIDS 300 ml x 24 unidades",
     priceValue: 57_600,
     visualKey: "garrafas",
     size: "1L",
+    imageSrc: "/products/kids-300ml.jpg",
   }),
   makeListingProduct({
     slug: "agua-ph-plus-300ml-x24",
-    title: "Agua PH PLUS 300 ml x 24 ud",
+    title: "Agua PH PLUS 300 ml x 24 unidades",
     priceValue: 57_600,
     visualKey: "garrafas",
     size: "1L",
+    imageSrc: "/products/agua-300ml.jpg",
   }),
   makeListingProduct({
     slug: "agua-ph-plus-sport-500ml-x12",
-    title: "Agua PH PLUS Sport 500 ml x 12 ud",
+    title: "Agua PH PLUS Sport 500 ml x 12 unidades",
     priceValue: 50_160,
     visualKey: "kit",
     size: "1L",
+    imageSrc: "/products/agua-sport-500ml.jpg",
   }),
   makeListingProduct({
     slug: "agua-ph-plus-500ml-x12",
-    title: "Agua PH PLUS 500 ml x 12 ud",
+    title: "Agua PH PLUS 500 ml x 12 unidades",
     priceValue: 48_480,
     visualKey: "kit",
     size: "1L",
+    imageSrc: "/products/agua-500ml.jpg",
   }),
   makeListingProduct({
     slug: "agua-ph-plus-fit-1l-x6",
-    title: "Agua PH PLUS FIT 1 L x 6 ud",
+    title: "Agua PH PLUS FIT 1 L x 6 unidades",
     priceValue: 35_376,
     prevPriceValue: 44_220,
     visualKey: "garrafas",
     size: "1L",
+    imageSrc: "/products/agua-fit-1l.jpg",
   }),
   makeListingProduct({
     slug: "agua-ph-plus-1l-x6",
-    title: "Agua PH PLUS 1 L x 6 ud",
+    title: "Agua PH PLUS 1 L x 6 unidades",
     priceValue: 50_160,
     visualKey: "kit",
     size: "1L",
+    imageSrc: "/products/agua-1l.jpg",
   }),
   makeListingProduct({
     slug: "agua-ph-plus-5l-x1",
-    title: "Agua PH PLUS 5 L x 1 ud",
+    title: "Agua PH PLUS 5 L x 1 unidad",
     priceValue: 24_490,
     visualKey: "kit",
     size: "5L",
+    imageSrc: "/products/agua-5l.jpg",
   }),
   makeListingProduct({
     slug: "agua-ph-plus-vidrio-280ml-x24",
-    title: "Agua PH PLUS vidrio 280 ml x 24 ud",
+    title: "Agua PH PLUS vidrio 280 ml x 24 unidades",
     priceValue: 108_000,
     visualKey: "kit",
     size: "1L",
+    imageSrc: "/products/vidrio-280ml.jpg",
   }),
   makeListingProduct({
     slug: "agua-ph-plus-vidrio-477ml-x24",
-    title: "Agua PH PLUS vidrio 477 ml x 24 ud",
+    title: "Agua PH PLUS vidrio 477 ml x 24 unidades",
     priceValue: 132_000,
     visualKey: "kit",
     size: "1L",
+    imageSrc: "/products/vidrio-477ml.jpg",
   }),
   makeListingProduct({
     slug: "agua-ph-plus-hierbabuena-500ml-x12",
-    title: "Agua PH PLUS hierbabuena 500 ml x 12 ud",
+    title: "Agua PH PLUS hierbabuena 500 ml x 12 unidades",
     priceValue: 63_600,
     visualKey: "garrafas",
     size: "1L",
+    imageSrc: "/products/hierbabuena-500ml.jpg",
   }),
   makeListingProduct({
     slug: "agua-ph-plus-limonaria-500ml-x12",
-    title: "Agua PH PLUS limonaria 500 ml x 12 ud",
+    title: "Agua PH PLUS limonaria 500 ml x 12 unidades",
     priceValue: 63_600,
     visualKey: "garrafas",
     size: "1L",
+    imageSrc: "/products/limonaria-500ml.jpg",
   }),
 ];
 
 export function getProduct(slug: string): Product | undefined {
-  return PRODUCTS.find((p) => p.slug === slug);
+  const product = PRODUCTS.find((p) => p.slug === slug);
+  return product ? applyProductPriceOverride(product) : undefined;
 }
 
 export function formatCOP(value: number): string {

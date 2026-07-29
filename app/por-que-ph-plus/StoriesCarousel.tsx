@@ -1,7 +1,4 @@
-"use client";
-
 import Image from "next/image";
-import { useState } from "react";
 
 const STORIES = [
   {
@@ -50,21 +47,6 @@ function DropIcon({ className = "" }: { className?: string }) {
   );
 }
 
-function IdentifyBadge({ onClick }: { onClick: () => void }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="ph-condensed inline-flex h-8 items-center gap-2 rounded-full border-2 border-[#1e3a8a] bg-white px-3 text-[10px] font-bold uppercase leading-none text-[#6b7280] transition-transform hover:-translate-y-0.5 sm:h-10 sm:px-4 sm:text-[12px] lg:h-[46px] lg:border-[4px] lg:px-5 lg:text-[14px]"
-    >
-      <span className="grid h-5 w-5 place-items-center rounded-full bg-[#f43f5e] text-[14px] text-white sm:h-7 sm:w-7 sm:text-[18px]">
-        ♥
-      </span>
-      Me identifico
-    </button>
-  );
-}
-
 function TestimonialCard({ story }: { story: (typeof STORIES)[number] }) {
   const cardBg =
     story.variant === "solid"
@@ -98,16 +80,6 @@ function TestimonialCard({ story }: { story: (typeof STORIES)[number] }) {
 }
 
 export default function StoriesCarousel() {
-  const [counts, setCounts] = useState(() => STORIES.map(() => 100));
-
-  function identifyWithStory(index: number) {
-    setCounts((currentCounts) =>
-      currentCounts.map((count, currentIndex) =>
-        currentIndex === index ? count + 1 : count,
-      ),
-    );
-  }
-
   return (
     <section
       id="testimonios"
@@ -116,7 +88,7 @@ export default function StoriesCarousel() {
       <h2 className="sr-only">Gotas que cuentan historias</h2>
 
       <div className="mx-auto grid max-w-[420px] gap-9 sm:max-w-[760px] sm:grid-cols-2 lg:max-w-[1420px] lg:grid-cols-3 lg:gap-8">
-        {STORIES.map((story, index) => (
+        {STORIES.map((story) => (
           <article key={story.name} className="flex flex-col items-center">
             <h3 className="ph-condensed flex min-h-[58px] max-w-[310px] items-start justify-center gap-2 text-center text-[24px] font-bold leading-[1.05] text-[#6b7280] sm:min-h-[76px] sm:text-[28px] lg:min-h-[98px] lg:max-w-[360px] lg:text-[34px]">
               <DropIcon className="mt-0.5 h-6 w-4 sm:h-7 sm:w-5 lg:h-8 lg:w-6" />
@@ -125,13 +97,6 @@ export default function StoriesCarousel() {
 
             <div className="relative mt-4 w-full max-w-[250px] sm:max-w-[280px] lg:mt-6 lg:max-w-[382px]">
               <TestimonialCard story={story} />
-            </div>
-
-            <div className="mt-7 flex items-center justify-center gap-5 sm:mt-8 lg:mt-9 lg:gap-7">
-              <span className="ph-condensed text-[34px] font-bold leading-none text-[#6b7280] sm:text-[42px] lg:text-[52px]">
-                {counts[index]}
-              </span>
-              <IdentifyBadge onClick={() => identifyWithStory(index)} />
             </div>
           </article>
         ))}

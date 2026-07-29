@@ -3,6 +3,7 @@ import { z } from "zod";
 
 import { buildCartSummaryServer } from "@/app/lib/cart-summary-server";
 import { syncOrderToHubspot } from "@/app/lib/hubspot-server";
+import { isMinimumOrderSubtotal, MIN_ORDER_VALUE } from "@/app/lib/order-rules";
 import {
   buildItemsSummary,
   isSupabaseOrderPersistenceEnabled,
@@ -94,6 +95,15 @@ export async function POST(request: Request) {
   if (summary.lines.length === 0 || summary.total <= 0) {
     return NextResponse.json(
       { error: "El carrito no tiene productos válidos" },
+      { status: 400 },
+    );
+  }
+
+  if (!isMinimumOrderSubtotal(summary.subtotal)) {
+    return NextResponse.json(
+      {
+        error: `La compra mínima es ${MIN_ORDER_VALUE} COP en productos, sin incluir domicilio`,
+      },
       { status: 400 },
     );
   }

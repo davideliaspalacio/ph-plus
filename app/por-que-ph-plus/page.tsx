@@ -34,26 +34,6 @@ function VideoFrame({
   );
 }
 
-function MobileIntro() {
-  return (
-    <section className="bg-white px-7 pb-3 pt-5 lg:hidden">
-      <h1 className="ph-display text-center text-[28px] uppercase leading-none text-[#6b7280]">
-        ¿Por qué PH PLUS?
-      </h1>
-    </section>
-  );
-}
-
-function DesktopIntro() {
-  return (
-    <section className="hidden bg-white px-6 pb-2 pt-8 text-center lg:block">
-      <h1 className="ph-display text-[38px] uppercase leading-none text-[#1e3a8a]">
-        ¿Por qué PH PLUS?
-      </h1>
-    </section>
-  );
-}
-
 /** Educación en mobile: matchea el frame — texto IZQ + media DER en ambas. */
 function MobileEducation() {
   return (
@@ -144,7 +124,7 @@ function DesktopEducation() {
           </p>
         </div>
 
-        <div className="aspect-video w-[340px] overflow-hidden rounded-[6px] border-4 border-white bg-[#e8f6fb] shadow-[0_0_0_1px_rgba(0,0,0,0.08)]">
+        <div className="relative aspect-video overflow-hidden border-[4px] border-[#8a5cf6] bg-white">
           <VideoFrame
             src="/videos/planta-produccion.mp4"
             poster="/videos/posters/planta-produccion.jpg"
@@ -195,8 +175,6 @@ export default function PorQuePhPlusPage() {
     <>
       <Header />
       <main className="flex-1 bg-white">
-        <MobileIntro />
-        <DesktopIntro />
         <MobileEducation />
         <DesktopEducation />
         <StoriesCarousel />

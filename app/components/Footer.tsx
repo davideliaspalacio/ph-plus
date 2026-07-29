@@ -1,8 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import NewsletterSignup from "./NewsletterSignup";
-
 const MAPS_URL =
   "https://www.google.com/maps/search/?api=1&query=Av%20km%201.5%20via%20Siberia%20Parque%20Agroindustrial%20de%20Occidente%20Bodega%202%20local%2078%20Cota%20Cundinamarca";
 
@@ -98,8 +96,6 @@ function LockIcon({ className = "h-10 w-10" }: { className?: string }) {
 
 export default function Footer() {
   return (
-    <>
-      <NewsletterSignup />
       <footer id="footer" className="w-full bg-[#252bae] text-white">
         <div className="ph-condensed mx-auto grid max-w-[860px] grid-cols-[1.08fr_1.16fr_1fr] gap-x-3 px-5 py-5 text-[7.2px] font-bold leading-[1.15] min-[700px]:gap-x-8 min-[700px]:px-10 min-[700px]:py-6 min-[700px]:text-[12px] lg:hidden">
           <div className="min-w-0">
@@ -331,6 +327,5 @@ export default function Footer() {
           </div>
         </div>
       </footer>
-    </>
   );
 }

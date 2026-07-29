@@ -39,7 +39,7 @@ const CATEGORIES: Category[] = [
   },
   {
     title: "Supermercados",
-    gridClassName: "grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-5 lg:gap-x-16 lg:gap-y-8",
+    gridClassName: "grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-3 lg:gap-x-12 lg:gap-y-5",
     panelClassName: "min-h-[300px] lg:min-h-[230px]",
     logos: [
       { src: "/HOME PHPLUS/log de carulla recortado 1.png", alt: "Carulla", className: "max-w-[82px] lg:max-w-[124px]" },
@@ -47,7 +47,7 @@ const CATEGORIES: Category[] = [
       { src: "/HOME PHPLUS/jumbo sin fondo.png", alt: "Jumbo", className: "max-w-[58px] lg:max-w-[88px]" },
       { src: "/HOME PHPLUS/mercaldas.png", alt: "Mercaldas", className: "max-w-[72px] lg:max-w-[112px]" },
       { src: "/HOME PHPLUS/olimpica.png", alt: "Olímpica", className: "max-w-[82px] lg:max-w-[124px]" },
-      { src: "/HOME PHPLUS/fithub ok.png", alt: "Fithub", className: "max-w-[74px] lg:max-w-[116px]", cellClassName: "lg:col-start-3 lg:mt-1" },
+      { src: "/HOME PHPLUS/fithub ok.png", alt: "Fithub", className: "max-w-[74px] lg:max-w-[116px]" },
     ],
   },
   {
@@ -64,17 +64,17 @@ const CATEGORIES: Category[] = [
   },
   {
     title: "Restaurantes",
-    gridClassName: "grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-6 lg:gap-x-9 lg:gap-y-3",
-    panelClassName: "min-h-[416px] lg:min-h-[170px]",
+    gridClassName: "grid-cols-2 gap-x-6 gap-y-6 lg:grid-cols-4 lg:gap-x-10 lg:gap-y-6",
+    panelClassName: "min-h-[416px] lg:min-h-[230px]",
     logos: [
-      { src: "/HOME PHPLUS/ROKO.png", alt: "Rokko", className: "max-w-[70px] lg:max-w-[112px]" },
-      { src: "/HOME PHPLUS/HARRYS.png", alt: "Harrys", className: "max-w-[44px] lg:max-w-[72px]" },
-      { src: "/HOME PHPLUS/SALVAJE.png", alt: "Salvaje", className: "max-w-[38px] lg:max-w-[58px]" },
-      { src: "/HOME PHPLUS/LA ÚNICA.png", alt: "La Única", className: "max-w-[42px] lg:max-w-[68px]" },
-      { src: "/HOME PHPLUS/CUMBIA HOUSE.png", alt: "Cumbia House", className: "max-w-[46px] lg:max-w-[72px]" },
-      { src: "/HOME PHPLUS/OSAKA.png", alt: "Osaka", className: "max-w-[86px] lg:max-w-[132px]" },
-      { src: "/HOME PHPLUS/NOA.png", alt: "Noa", className: "max-w-[38px] lg:max-w-[60px]", cellClassName: "lg:col-start-3" },
-      { src: "/HOME PHPLUS/CALLE DRAGONES.png", alt: "Calle Dragones", className: "max-w-[46px] lg:max-w-[72px]" },
+      { src: "/HOME PHPLUS/ROKO.png", alt: "Rokko", className: "max-w-[70px] lg:max-w-[128px]" },
+      { src: "/HOME PHPLUS/HARRYS.png", alt: "Harrys", className: "max-w-[44px] lg:max-w-[86px]" },
+      { src: "/HOME PHPLUS/SALVAJE.png", alt: "Salvaje", className: "max-w-[38px] lg:max-w-[74px]" },
+      { src: "/HOME PHPLUS/LA ÚNICA.png", alt: "La Única", className: "max-w-[42px] lg:max-w-[84px]" },
+      { src: "/HOME PHPLUS/CUMBIA HOUSE.png", alt: "Cumbia House", className: "max-w-[46px] lg:max-w-[90px]" },
+      { src: "/HOME PHPLUS/OSAKA.png", alt: "Osaka", className: "max-w-[86px] lg:max-w-[150px]" },
+      { src: "/HOME PHPLUS/NOA.png", alt: "Noa", className: "max-w-[38px] lg:max-w-[78px]" },
+      { src: "/HOME PHPLUS/CALLE DRAGONES.png", alt: "Calle Dragones", className: "max-w-[46px] lg:max-w-[90px]" },
     ],
   },
   {
@@ -198,7 +198,7 @@ export default function PuntosDeVentaPage() {
           <p className="ph-condensed mx-auto mt-2 max-w-[330px] text-[22px] font-bold leading-[1.22] text-[#6b7280] lg:max-w-[760px] lg:text-[24px]">
             En puntos de venta a nivel nacional
             <br className="lg:hidden" />{" "}
-            <span className="text-[#1e3a8a]">y directo en tu domicilio.</span>
+            <span>y directo en tu domicilio.</span>
           </p>
         </section>
 
