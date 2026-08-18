@@ -43,7 +43,7 @@ export type PersistOrderInput = {
   shipping: OrderShippingInput;
 };
 
-export type OrderPaymentMethod = "payu" | "cash_on_delivery";
+export type OrderPaymentMethod = "payu" | "rapyd" | "cash_on_delivery";
 
 export function isSupabaseOrderPersistenceEnabled(): boolean {
   return (

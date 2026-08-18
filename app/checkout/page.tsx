@@ -34,14 +34,14 @@ type Shipping = {
   notes: string;
 };
 
-/** Métodos habilitados dentro de PayU, para mostrarlos como sello de confianza. */
-const PAYU_METHODS = ["Tarjetas", "PSE", "Nequi", "Otros"];
+/** Métodos habilitados en la pasarela, para mostrarlos como sello de confianza. */
+const RAPYD_METHODS = ["Tarjetas", "PSE", "Nequi", "Otros"];
 
-type PayuCheckoutResponse = {
-  action: string;
-  fields: Record<string, string>;
+type RapydCheckoutResponse = {
+  redirectUrl: string;
+  checkoutId: string;
   orderId: string;
-  referenceCode: string;
+  referenceId: string;
   persisted: boolean;
 };
 
@@ -202,8 +202,8 @@ function LockShield({ className = "h-6 w-6" }: { className?: string }) {
   );
 }
 
-/** Overlay a pantalla completa mientras se prepara el pago con PayU. */
-function PayuLoadingOverlay() {
+/** Overlay a pantalla completa mientras se prepara el pago en la pasarela. */
+function PaymentLoadingOverlay() {
   return (
     <div
       role="status"
@@ -215,7 +215,7 @@ function PayuLoadingOverlay() {
           <Spinner className="h-8 w-8" />
         </div>
         <p className="mt-5 text-[18px] font-extrabold text-brand">
-          Conectando con PayU…
+          Conectando con la pasarela de pago…
         </p>
         <p className="mt-2 text-[14px] leading-relaxed text-ink-muted">
           Te estamos redirigiendo a la pasarela de pago segura. No cierres ni
@@ -321,22 +321,10 @@ export default function CheckoutPage() {
     setStep((s) => (Math.max(0, s - 1) as Step));
   }
 
-  function redirectToPayu({ action, fields }: PayuCheckoutResponse) {
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = action;
-    form.style.display = "none";
-
-    for (const [name, value] of Object.entries(fields)) {
-      const input = document.createElement("input");
-      input.type = "hidden";
-      input.name = name;
-      input.value = value;
-      form.appendChild(input);
-    }
-
-    document.body.appendChild(form);
-    form.submit();
+  function redirectToRapyd({ redirectUrl }: RapydCheckoutResponse) {
+    // Hosted Checkout Page: Rapyd ya nos da la URL de su página alojada, no
+    // hace falta armar ni postear un formulario con datos sensibles.
+    window.location.href = redirectUrl;
   }
 
   async function submitOrder() {
@@ -362,7 +350,7 @@ export default function CheckoutPage() {
       orderId: fallbackOrderId,
       contact,
       shipping: normalizedShipping,
-      payment: "payu",
+      payment: "rapyd",
       customerType: isAuthenticated ? "authenticated" : "guest",
       lines: summary.lines.map((l) => ({
         slug: l.product.slug,
@@ -380,7 +368,7 @@ export default function CheckoutPage() {
     };
 
     try {
-      const response = await fetch("/api/payments/payu", {
+      const response = await fetch("/api/payments/rapyd", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -391,14 +379,14 @@ export default function CheckoutPage() {
         }),
       });
       const data = (await response.json()) as
-        | PayuCheckoutResponse
+        | RapydCheckoutResponse
         | { error?: string };
 
-      if (!response.ok || !("action" in data)) {
+      if (!response.ok || !("redirectUrl" in data)) {
         throw new Error(
           "error" in data && data.error
             ? data.error
-            : "No pudimos preparar el pago con PayU.",
+            : "No pudimos preparar el pago con la pasarela.",
         );
       }
 
@@ -408,7 +396,7 @@ export default function CheckoutPage() {
           JSON.stringify({
             ...payload,
             orderId: data.orderId,
-            payuReferenceCode: data.referenceCode,
+            rapydReferenceId: data.referenceId,
             persisted: data.persisted,
           }),
         );
@@ -417,14 +405,14 @@ export default function CheckoutPage() {
       }
 
       clear();
-      // El overlay sigue visible hasta que el navegador salta a PayU: por eso
-      // NO hacemos setSubmitting(false) en el camino feliz.
-      redirectToPayu(data);
+      // El overlay sigue visible hasta que el navegador salta a Rapyd: por
+      // eso NO hacemos setSubmitting(false) en el camino feliz.
+      redirectToRapyd(data);
     } catch (error) {
       setSubmitError(
         error instanceof Error
           ? error.message
-          : "No pudimos conectar con PayU. Intenta nuevamente.",
+          : "No pudimos conectar con la pasarela de pago. Intenta nuevamente.",
       );
       setSubmitting(false);
     }
@@ -749,7 +737,7 @@ export default function CheckoutPage() {
   /* ─────────────────── Pasos 1 y 2: Pago y Revisar ─────────────────────── */
   return (
     <>
-      {submitting && <PayuLoadingOverlay />}
+      {submitting && <PaymentLoadingOverlay />}
       <Header />
 
       <main className="flex-1 bg-white">
@@ -797,16 +785,16 @@ export default function CheckoutPage() {
                       </span>
                       <div>
                         <p className="text-[15px] font-bold text-ink">
-                          Pago en línea con PayU
+                          Pago en línea seguro
                         </p>
                         <p className="text-[12px] text-ink-muted">
-                          Te llevamos a la pasarela segura de PayU para
-                          finalizar el pago.
+                          Te llevamos a una pasarela segura para finalizar el
+                          pago.
                         </p>
                       </div>
                     </div>
                     <ul className="mt-4 flex flex-wrap gap-2">
-                      {PAYU_METHODS.map((m) => (
+                      {RAPYD_METHODS.map((m) => (
                         <li
                           key={m}
                           className="rounded-full bg-white px-3 py-1 text-[12px] font-semibold text-brand shadow-[0_1px_3px_rgba(27,34,166,0.12)]"
@@ -918,7 +906,7 @@ export default function CheckoutPage() {
                     className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-2.5 text-[13px] font-semibold text-white transition-all hover:scale-[1.02] hover:bg-brand-dark disabled:cursor-wait disabled:opacity-70 disabled:hover:scale-100"
                   >
                     {submitting && <Spinner className="h-4 w-4" />}
-                    {submitting ? "Conectando con PayU..." : "Escoge método de pago"}
+                    {submitting ? "Conectando con la pasarela..." : "Escoge método de pago"}
                   </button>
                 )}
               </div>
