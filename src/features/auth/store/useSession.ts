@@ -18,6 +18,16 @@ export type SessionData = {
 
 export type SessionState = {
   session: SessionData | null;
+  /**
+   * `false` hasta que el middleware `persist` termina de leer `localStorage`
+   * (siempre arranca en `false`, incluso client-side, porque la primera
+   * hidratación es asíncrona). `RequireAuth` lo usa para no mostrar
+   * "Iniciá sesión" un instante antes de saber si en realidad SÍ hay sesión
+   * — eso pasaba en toda carga dura de página (F5, link externo) porque la
+   * sesión vive sólo en localStorage, no en una cookie que el SSR pueda leer.
+   */
+  hasHydrated: boolean;
+  setHasHydrated: (value: boolean) => void;
   setSession: (data: SessionData) => void;
   clearSession: () => void;
   /** True si hay sesión y todavía no expiró. */
@@ -28,6 +38,9 @@ export const useSession = create<SessionState>()(
   persist(
     (set, get) => ({
       session: null,
+      hasHydrated: false,
+
+      setHasHydrated: (value) => set({ hasHydrated: value }),
 
       setSession: (data) => set({ session: data }),
 
@@ -53,6 +66,9 @@ export const useSession = create<SessionState>()(
       }),
       partialize: (state) => ({ session: state.session }),
       version: 1,
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true);
+      },
     },
   ),
 );

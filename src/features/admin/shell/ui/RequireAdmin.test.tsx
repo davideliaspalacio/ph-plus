@@ -1,13 +1,43 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { RequireAdmin } from "./RequireAdmin";
 import { useSession, SESSION_TTL_MS } from "@/src/features/auth";
 
+beforeEach(() => {
+  // El store real hidrata async desde localStorage; en tests no hay ese
+  // delay así que lo marcamos hidratado para probar el comportamiento
+  // post-hidratación (hay un test dedicado para el estado de carga).
+  useSession.setState({ hasHydrated: true });
+});
+
 afterEach(() => {
   useSession.getState().clearSession();
+  useSession.setState({ hasHydrated: false });
 });
 
 describe("RequireAdmin", () => {
+  it("muestra un estado de carga mientras el store no hidrató", () => {
+    useSession.setState({ hasHydrated: false });
+    render(
+      <RequireAdmin>
+        <div>contenido secreto</div>
+      </RequireAdmin>,
+    );
+    expect(screen.queryByText("contenido secreto")).not.toBeInTheDocument();
+    expect(screen.queryByText(/no autorizado/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/cargando/i)).toBeInTheDocument();
+  });
+
+  it("ignora la hidratación cuando sessionRole viene forzado (tests)", () => {
+    useSession.setState({ hasHydrated: false });
+    render(
+      <RequireAdmin sessionRole="staff">
+        <div>contenido secreto</div>
+      </RequireAdmin>,
+    );
+    expect(screen.getByText("contenido secreto")).toBeInTheDocument();
+  });
+
   it("muestra 'No autorizado' cuando no hay sesión", () => {
     render(
       <RequireAdmin>

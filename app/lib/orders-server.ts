@@ -61,6 +61,7 @@ export async function persistPendingOrder(
   input: PersistOrderInput,
   summary: CartSummary,
   method: OrderPaymentMethod,
+  userId?: string | null,
 ): Promise<string> {
   const orderId = newOrderId();
   if (!isSupabaseOrderPersistenceEnabled()) return orderId;
@@ -70,7 +71,12 @@ export async function persistPendingOrder(
 
   const { error: orderError } = await supabase.from("orders").insert({
     id: orderId,
-    user_id: null,
+    // Antes esto era siempre `null`, así que ningún pedido quedaba
+    // vinculado a la cuenta del comprador y "Mis pedidos" nunca mostraba
+    // nada aunque el usuario estuviera logueado. `userId` viene resuelto
+    // server-side contra la cookie de sesión real (nunca del body del
+    // request) — ver `resolveAuthenticatedUserId` en cada ruta de checkout.
+    user_id: userId ?? null,
     status: "pending_payment",
     contact: input.contact,
     shipping: {

@@ -56,6 +56,7 @@ export const PAYMENT_METHODS = [
   "nequi",
   "cash_on_delivery",
   "payu",
+  "rapyd",
 ] as const;
 
 export type CheckoutPaymentMethod = (typeof PAYMENT_METHODS)[number];

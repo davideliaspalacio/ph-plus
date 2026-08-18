@@ -228,7 +228,7 @@ function PaymentLoadingOverlay() {
 
 export default function CheckoutPage() {
   const initialLoading = useMockLoading();
-  const { items, hydrated, clear } = useCart();
+  const { items, hydrated } = useCart();
   const isAuthenticated = useSession((state) => state.isAuthenticated());
   const ready = hydrated && !initialLoading;
 
@@ -404,7 +404,13 @@ export default function CheckoutPage() {
         // ignore
       }
 
-      clear();
+      // OJO: el carrito NO se vacía acá. Antes se vaciaba antes de saber si
+      // el pago se completaba — si el comprador cancelaba o el pago fallaba
+      // en Rapyd, volvía con el carrito vacío y tenía que rearmar todo de
+      // cero. Ahora se vacía sólo cuando la página de retorno confirma
+      // "paid" contra la orden real (ver ClearCartOnPaid en
+      // checkout/rapyd/respuesta), así "volver a intentar" simplemente
+      // reusa el mismo carrito.
       // El overlay sigue visible hasta que el navegador salta a Rapyd: por
       // eso NO hacemos setSubmitting(false) en el camino feliz.
       redirectToRapyd(data);

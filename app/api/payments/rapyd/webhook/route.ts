@@ -34,6 +34,8 @@ type RapydWebhookBody = {
     payment?: {
       id?: string;
       status?: string;
+      merchant_reference_id?: string;
+      metadata?: { orderId?: string } | null;
     };
   };
 };
@@ -60,10 +62,21 @@ function statusFromRapydEvent(type: string | undefined): OrderStatus | null {
   }
 }
 
-async function findOrderId(body: RapydWebhookBody): Promise<string | null> {
+/**
+ * Busca el orderId en TODAS las formas en que Rapyd puede mandarlo, según el
+ * tipo de evento: para eventos de pago (PAYMENT_*) `data` suele ser el
+ * objeto Payment directamente (campos "planos"); para otros, `data` es el
+ * objeto Checkout con el Payment anidado en `data.payment`. Probamos ambas
+ * formas — nunca confirmado contra tráfico real de Rapyd (la cuenta todavía
+ * no tuvo un webhook real disparado), así que se cubre defensivamente en vez
+ * de asumir una sola forma.
+ */
+function findOrderId(body: RapydWebhookBody): string | null {
   return (
     body.data?.metadata?.orderId ||
     body.data?.merchant_reference_id ||
+    body.data?.payment?.metadata?.orderId ||
+    body.data?.payment?.merchant_reference_id ||
     null
   );
 }
@@ -122,7 +135,13 @@ export async function POST(request: Request) {
 
   // Sin forma de saber a qué orden corresponde: confirmamos recepción (para
   // que Rapyd no reintente indefinidamente) pero no hay nada que actualizar.
+  // Se loguea el body completo (visible en `vercel logs`) porque si esto
+  // pasa con tráfico real es la única forma de ver qué forma tiene el
+  // payload real de Rapyd y ajustar `findOrderId`.
   if (!orderId) {
+    console.error(
+      `[rapyd-webhook] No se pudo resolver el orderId. type=${body.type ?? "N/A"} body=${rawBody}`,
+    );
     return NextResponse.json({ received: true, matched: false });
   }
 
@@ -153,6 +172,9 @@ export async function POST(request: Request) {
     // Orden no encontrada: puede ser un reintento tardío de una orden ya
     // limpiada, o un ambiente cruzado (sandbox pegándole a prod). No es un
     // error del webhook en sí — devolvemos 200 para que Rapyd no reintente.
+    console.error(
+      `[rapyd-webhook] orderId "${orderId}" resuelto pero no existe en la DB. type=${body.type ?? "N/A"}`,
+    );
     return NextResponse.json({ received: true, matched: false });
   }
 

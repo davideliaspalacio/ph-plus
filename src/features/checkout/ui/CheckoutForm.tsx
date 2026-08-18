@@ -49,6 +49,7 @@ const PAYMENT_LABELS: Record<CheckoutPaymentMethod, string> = {
   nequi: "Nequi",
   cash_on_delivery: "Pago contra entrega",
   payu: "PayU",
+  rapyd: "Rapyd",
 };
 
 const EXPRESS_BUTTONS = [

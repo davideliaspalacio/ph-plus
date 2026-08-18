@@ -12,7 +12,20 @@ export interface RequireAuthProps {
 
 export function RequireAuth({ children, fallback }: RequireAuthProps) {
   const session = useSession((s) => s.session);
+  const hasHydrated = useSession((s) => s.hasHydrated);
   const isAuth = session != null && session.expiresAt > Date.now();
+
+  // La sesión vive en localStorage (no en una cookie que el SSR pueda leer),
+  // así que en toda carga dura de página el store arranca sin hidratar.
+  // Sin este check, un usuario SÍ logueado veía "Iniciá sesión" un instante
+  // antes de que Zustand terminara de leer el storage.
+  if (!hasHydrated) {
+    return (
+      <div className="flex justify-center py-12">
+        <p className="text-[14px] text-ink-muted">Cargando…</p>
+      </div>
+    );
+  }
 
   if (!isAuth) {
     if (fallback) return <>{fallback}</>;

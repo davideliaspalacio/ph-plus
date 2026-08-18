@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { resolveAuthenticatedUserId } from "@/app/lib/auth-server";
 import { buildCartSummaryServer } from "@/app/lib/cart-summary-server";
 import { syncOrderToHubspot } from "@/app/lib/hubspot-server";
 import { isMinimumOrderSubtotal, MIN_ORDER_VALUE } from "@/app/lib/order-rules";
@@ -127,12 +128,18 @@ export async function POST(request: Request) {
     );
   }
 
+  // Resuelto contra la cookie de sesión real, no contra `customerType` (que
+  // sólo lo manda el cliente para mostrar copy — no es una fuente confiable
+  // de identidad).
+  const userId = await resolveAuthenticatedUserId();
+
   let orderId: string;
   try {
     orderId = await persistPendingOrder(
       { ...parsed.data, shipping },
       summary,
       "rapyd",
+      userId,
     );
   } catch (error) {
     return NextResponse.json(

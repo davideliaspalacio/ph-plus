@@ -17,10 +17,23 @@ export interface RequireAdminProps {
 
 export function RequireAdmin({ children, sessionRole }: RequireAdminProps) {
   const storeSession = useSession((s) => s.session);
+  const hasHydrated = useSession((s) => s.hasHydrated);
   const role: Role | null =
     sessionRole !== undefined ? sessionRole : storeSession?.role ?? null;
 
   const isAdmin = role !== null && ADMIN_ROLES.includes(role);
+
+  // Mismo fix que RequireAuth: la sesión vive en localStorage, así que en
+  // toda carga dura un admin real vería "No autorizado" por un instante
+  // antes de que el store hidrate. `sessionRole` (tests) ignora esto porque
+  // no depende del store real.
+  if (sessionRole === undefined && !hasHydrated) {
+    return (
+      <div className="grid min-h-[60vh] place-items-center px-6">
+        <p className="text-[14px] text-ink-muted">Cargando…</p>
+      </div>
+    );
+  }
 
   if (!isAdmin) {
     return (
