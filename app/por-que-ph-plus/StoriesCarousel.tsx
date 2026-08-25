@@ -1,10 +1,9 @@
-import Image from "next/image";
-
 const STORIES = [
   {
     headline: "Un aliado clave en mi entrenamiento.",
     name: "Camilo Díaz",
-    personImage: "/about/camilo-diaz.png",
+    personVideo: "/videos/testimonios/camilo.mp4",
+    personPoster: "/videos/posters/testimonio-camilo.jpg",
     photoAlt: "Camilo Díaz compartiendo su testimonio",
     quote:
       "La hidratación es fundamental para construir músculo, y esta agua me ayuda a equilibrar la acidez que genera tanto la dieta estricta como los entrenamientos intensos. Tomo 5 litros diarios y los resultados hablan por sí solos.",
@@ -13,7 +12,8 @@ const STORIES = [
   {
     headline: "La pruebas una vez y no vuelves a la normalidad.",
     name: "Dra Martha Liliana López",
-    personImage: "/about/martha-liliana.png",
+    personVideo: "/videos/testimonios/martha.mp4",
+    personPoster: "/videos/posters/testimonio-martha.jpg",
     photoAlt: "Dra Martha Liliana López compartiendo su testimonio",
     quote:
       "Y no es solo para hidratarse: va increíble como tónico facial para una piel radiante, y aplicada en el cabello después del lavado. Además, elimina metales pesados, reduce, la acidez del cuerpo sin necesidad de agregarle nada.",
@@ -22,7 +22,8 @@ const STORIES = [
   {
     headline: "El agua que cuida tu salud desde adentro",
     name: "Daniel Rojas",
-    personImage: "/about/daniel-rojas.png",
+    personVideo: "/videos/testimonios/daniel.mp4",
+    personPoster: "/videos/posters/testimonio-daniel.jpg",
     photoAlt: "Daniel Rojas compartiendo su testimonio",
     quote:
       "Los cuerpos ácidos son terreno fértil para enfermedades, y consumir agua alcalina es una forma sencilla y natural de contrarrestar eso. Además, tienen sabores como limonaria sin saborizantes artificiales, 100% naturales y que mantienen el pH alcalino.",
@@ -58,13 +59,15 @@ function TestimonialCard({ story }: { story: (typeof STORIES)[number] }) {
       className={`ph-condensed relative aspect-[125/196] w-full overflow-hidden rounded-[18px] px-5 pb-7 pt-6 text-white shadow-[12px_14px_0_rgba(30,58,138,0.22)] sm:px-6 sm:pb-8 sm:pt-7 lg:rounded-[22px] lg:px-7 lg:pb-10 lg:pt-8 ${cardBg}`}
     >
       <div className="grid grid-cols-[47%_1fr] items-center gap-4 lg:gap-7">
-        <div className="relative aspect-[58/75] w-full overflow-hidden bg-white/5">
-          <Image
-            src={story.personImage}
-            alt={story.photoAlt}
-            fill
-            sizes="(min-width: 1024px) 160px, (min-width: 640px) 124px, 112px"
-            className="object-cover"
+        <div className="relative aspect-[58/75] w-full overflow-hidden rounded-[8px] bg-white/5">
+          <video
+            className="h-full w-full object-cover"
+            src={story.personVideo}
+            poster={story.personPoster}
+            controls
+            playsInline
+            preload="metadata"
+            aria-label={story.photoAlt}
           />
         </div>
         <p className="text-[17px] font-bold leading-[1.14] sm:text-[20px] lg:text-[26px]">
