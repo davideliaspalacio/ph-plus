@@ -29,7 +29,7 @@ export default function AdminResenasPage() {
       <header>
         <h1 className="text-[24px] font-extrabold text-brand">Reseñas</h1>
         <p className="mt-1 text-[14px] text-ink-muted">
-          Moderá las opiniones de los clientes.
+          Modera las opiniones de los clientes.
         </p>
       </header>
       <ReviewsModerationPanel

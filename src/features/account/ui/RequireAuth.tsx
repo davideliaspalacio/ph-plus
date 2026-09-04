@@ -32,10 +32,10 @@ export function RequireAuth({ children, fallback }: RequireAuthProps) {
     return (
       <div className="mx-auto flex max-w-md flex-col items-center gap-4 rounded-3xl border border-card-border bg-white px-6 py-12 text-center">
         <h2 className="text-[20px] font-extrabold text-brand">
-          Iniciá sesión para continuar
+          Inicia sesión para continuar
         </h2>
         <p className="text-[14px] text-ink-muted">
-          Accedé a tus pedidos, direcciones y favoritos.
+          Accede a tus pedidos, direcciones y favoritos.
         </p>
         <div className="flex gap-3">
           <Link href="/login">

@@ -327,7 +327,7 @@ export function ProductForm({
           {uploading ? "Subiendo…" : "Subir imágenes"}
         </span>
         <span className="text-[12px]">
-          JPG/PNG/WebP hasta 5MB. Podés seleccionar varias.
+          JPG/PNG/WebP hasta 5MB. Puedes seleccionar varias.
         </span>
         <input
           type="file"

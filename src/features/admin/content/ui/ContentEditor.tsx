@@ -142,7 +142,7 @@ export function ContentEditor({ initial, onSave }: ContentEditorProps) {
         {banners.length === 0 ? (
           <EmptyState
             title="Sin banners"
-            description="Agregá el primer banner para que aparezca en el home."
+            description="Agrega el primer banner para que aparezca en el home."
           />
         ) : (
           <div className="flex flex-col gap-4">
@@ -199,7 +199,7 @@ export function ContentEditor({ initial, onSave }: ContentEditorProps) {
         {faq.length === 0 ? (
           <EmptyState
             title="Sin preguntas frecuentes"
-            description="Agregá la primera pregunta para que aparezca en la página de FAQ."
+            description="Agrega la primera pregunta para que aparezca en la página de FAQ."
           />
         ) : (
           <div className="flex flex-col gap-4">

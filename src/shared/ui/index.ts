@@ -7,6 +7,7 @@
 
 export { Button, type ButtonProps, type ButtonVariant, type ButtonSize } from "./Button";
 export { Input, type InputProps } from "./Input";
+export { PasswordInput } from "./PasswordInput";
 export { Select, type SelectProps, type SelectOption } from "./Select";
 export { Badge, type BadgeTone } from "./Badge";
 export { Drawer, type DrawerProps, type DrawerSide } from "./Drawer";

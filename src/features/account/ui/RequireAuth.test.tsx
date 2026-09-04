@@ -17,7 +17,7 @@ describe("RequireAuth", () => {
       </RequireAuth>,
     );
     expect(screen.queryByText("secreto")).not.toBeInTheDocument();
-    expect(screen.queryByText(/iniciá sesión/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/inicia sesión/i)).not.toBeInTheDocument();
     expect(screen.getByText(/cargando/i)).toBeInTheDocument();
   });
 
@@ -29,7 +29,7 @@ describe("RequireAuth", () => {
       </RequireAuth>,
     );
     expect(screen.queryByText("secreto")).not.toBeInTheDocument();
-    expect(screen.getByText(/iniciá sesión/i)).toBeInTheDocument();
+    expect(screen.getByText(/inicia sesión/i)).toBeInTheDocument();
   });
 
   it("renderiza children cuando ya hidrató y hay sesión activa", () => {

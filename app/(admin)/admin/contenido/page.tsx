@@ -38,7 +38,7 @@ export default function AdminContenidoPage() {
         <div>
           <h1 className="text-[24px] font-extrabold text-brand">Contenido</h1>
           <p className="mt-1 text-[14px] text-ink-muted">
-            Editá hero del home, productos destacados, banners y FAQ.
+            Edita el hero del home, productos destacados, banners y FAQ.
           </p>
         </div>
         {saved && (

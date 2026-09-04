@@ -61,7 +61,7 @@ export function MiniCart({ isOpen, onClose }: MiniCartProps) {
       {empty ? (
         <EmptyState
           title="Tu carrito está vacío"
-          description="Agregá productos PH PLUS para empezar."
+          description="Agrega productos PH PLUS para empezar."
           action={
             <Link href="/productos" onClick={onClose}>
               <Button>Ver productos</Button>

@@ -13,7 +13,7 @@ export default function NewsletterSignup() {
     event.preventDefault();
     if (!/^\S+@\S+\.\S+$/.test(email)) {
       setStatus("error");
-      setMessage("Ingresá un email válido.");
+      setMessage("Ingresa un email válido.");
       return;
     }
 
@@ -31,7 +31,7 @@ export default function NewsletterSignup() {
       setEmail("");
     } catch {
       setStatus("error");
-      setMessage("No pudimos registrarte. Intentá de nuevo en un momento.");
+      setMessage("No pudimos registrarte. Intenta de nuevo en un momento.");
     }
   }
 

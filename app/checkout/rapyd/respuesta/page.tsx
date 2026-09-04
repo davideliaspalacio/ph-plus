@@ -241,7 +241,7 @@ export default async function RapydResponsePage({ searchParams }: PageProps) {
                   href={`/pedido/${encodeURIComponent(orderId)}`}
                   className="font-semibold text-brand hover:underline"
                 >
-                  podés consultar su estado más tarde acá
+                  puedes consultar su estado más tarde aquí
                 </Link>
                 .
               </p>

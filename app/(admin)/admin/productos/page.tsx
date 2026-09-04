@@ -45,7 +45,7 @@ export default function AdminProductosPage() {
       {products.length === 0 ? (
         <EmptyState
           title="Sin productos"
-          description="Empezá creando el primero."
+          description="Empieza creando el primero."
           action={<Button onClick={() => setCreating(true)}>Crear producto</Button>}
         />
       ) : (

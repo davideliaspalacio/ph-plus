@@ -11,7 +11,7 @@ export default function DireccionesPage() {
       <RequireAuth>
         <AccountShell
           title="Direcciones"
-          description="Guardá tus direcciones de envío para comprar más rápido."
+          description="Guarda tus direcciones de envío para comprar más rápido."
           active="/cuenta/direcciones"
         >
           <AddressesList />

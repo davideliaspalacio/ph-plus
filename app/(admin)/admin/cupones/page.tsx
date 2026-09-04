@@ -51,7 +51,7 @@ export default function AdminCuponesPage() {
       {coupons.length === 0 ? (
         <EmptyState
           title="Sin cupones"
-          description="Empezá creando el primero."
+          description="Empieza creando el primero."
           action={<Button onClick={() => setCreating(true)}>Crear cupón</Button>}
         />
       ) : (

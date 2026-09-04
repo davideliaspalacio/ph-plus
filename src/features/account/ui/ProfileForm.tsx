@@ -52,7 +52,7 @@ export function ProfileForm() {
         type="email"
         value={user.email}
         disabled
-        hint="No podés cambiar tu email."
+        hint="No puedes cambiar tu email."
       />
       <Input
         label="Nombre"

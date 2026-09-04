@@ -25,7 +25,7 @@ export function OrderNotes({ notes, onAddNote }: OrderNotesProps) {
       {notes.length === 0 ? (
         <EmptyState
           title="Sin notas internas"
-          description="Agregá la primera nota para llevar registro del pedido."
+          description="Agrega la primera nota para llevar registro del pedido."
         />
       ) : (
         <ul className="space-y-3">

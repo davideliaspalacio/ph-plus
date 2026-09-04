@@ -109,7 +109,7 @@ export default function Footer() {
               />
             </div>
 
-            <div className="mt-2.5 flex items-center gap-2 min-[700px]:mt-4 min-[700px]:gap-3">
+            <div className="mt-2.5 min-[700px]:mt-4">
               <Image
                 src="/home/icon-invima.png"
                 alt="INVIMA"
@@ -117,10 +117,10 @@ export default function Footer() {
                 height={70}
                 className="h-[42px] w-[58px] shrink-0 bg-white object-contain min-[700px]:h-[80px] min-[700px]:w-[112px]"
               />
-              <div className="min-w-0 leading-[1.13]">
+              <div className="mt-1.5 min-w-0 leading-[1.25] min-[700px]:mt-2">
                 <p>Registro sanitario INVIMA</p>
-                <p>RSA: 0030646-2024</p>
-                <p>RSA-0024829-2023</p>
+                <p className="whitespace-nowrap">RSA: 0030646-2024</p>
+                <p className="whitespace-nowrap">RSA-0024829-2023</p>
               </div>
             </div>
 

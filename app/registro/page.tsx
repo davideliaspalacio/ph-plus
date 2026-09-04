@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { Button, Input } from "@/src/shared/ui";
+import { Button, Input, PasswordInput } from "@/src/shared/ui";
 import { signup } from "@/src/features/auth";
 
 export default function RegistroPage() {
@@ -31,10 +31,10 @@ export default function RegistroPage() {
       const msg = err instanceof Error ? err.message : String(err);
       setError(
         msg === "EMAIL_TAKEN"
-          ? "Ese email ya está registrado. Iniciá sesión."
+          ? "Ese email ya está registrado. Inicia sesión."
           : msg === "ACCEPT_TERMS"
-            ? "Tenés que aceptar los términos."
-            : "No pudimos crear tu cuenta. Revisá los datos.",
+            ? "Tienes que aceptar los términos."
+            : "No pudimos crear tu cuenta. Revisa los datos.",
       );
     } finally {
       setLoading(false);
@@ -64,9 +64,8 @@ export default function RegistroPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Input
+          <PasswordInput
             label="Contraseña"
-            type="password"
             required
             hint="Mínimo 8 caracteres con al menos un número."
             value={password}
@@ -88,7 +87,7 @@ export default function RegistroPage() {
           </Button>
         </form>
         <p className="mt-6 text-center text-[14px] text-ink-muted">
-          ¿Ya tenés cuenta?{" "}
+          ¿Ya tienes cuenta?{" "}
           <Link href="/login" className="font-semibold text-brand">
             Iniciar sesión
           </Link>
