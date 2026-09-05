@@ -39,8 +39,8 @@ export function AddressesList() {
 
       {items.length === 0 ? (
         <EmptyState
-          title="No tenés direcciones guardadas"
-          description="Agregá una para acelerar el checkout."
+          title="No tienes direcciones guardadas"
+          description="Agrega una para acelerar el checkout."
         />
       ) : (
         <ul className="grid gap-3 sm:grid-cols-2">

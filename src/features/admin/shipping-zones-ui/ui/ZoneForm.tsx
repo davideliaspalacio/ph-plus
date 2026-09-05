@@ -81,7 +81,7 @@ export function ZoneForm({
     const next: Record<string, string> = {};
     if (state.name.trim().length < 1) next.name = "El nombre es requerido";
     if (regions.length < 1)
-      next.regions = "Ingresá al menos una región";
+      next.regions = "Ingresa al menos una región";
     if (!Number.isFinite(cost) || cost < 0)
       next.cost = "El costo debe ser un número >= 0";
     if (!Number.isFinite(leadTimeDaysMin) || leadTimeDaysMin < 1)

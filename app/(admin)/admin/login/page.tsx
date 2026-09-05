@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Input } from "@/src/shared/ui";
+import { Button, Input, PasswordInput } from "@/src/shared/ui";
 import { useAuth, type Role } from "@/src/features/auth";
 
 const ADMIN_ROLES: readonly Role[] = ["staff", "super_admin", "read_only"];
@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
       if (msg === "INVALID_CREDENTIALS") {
         setError("Email o contraseña incorrectos.");
       } else {
-        setError("No pudimos iniciar sesión. Probá de nuevo.");
+        setError("No pudimos iniciar sesión. Intenta de nuevo.");
       }
     } finally {
       setSubmitting(false);
@@ -57,7 +57,7 @@ export default function AdminLoginPage() {
             Panel de administración
           </h2>
           <p className="mt-3 max-w-md text-[15px] text-white/80">
-            Gestioná pedidos, inventario, cupones y clientes desde un solo
+            Gestiona pedidos, inventario, cupones y clientes desde un solo
             lugar. Acceso restringido a personal autorizado.
           </p>
         </div>
@@ -78,7 +78,7 @@ export default function AdminLoginPage() {
               Iniciar sesión
             </h1>
             <p className="mt-1 text-[14px] text-ink-muted">
-              Ingresá con tu cuenta admin para continuar.
+              Ingresa con tu cuenta admin para continuar.
             </p>
           </div>
 
@@ -92,9 +92,8 @@ export default function AdminLoginPage() {
             placeholder="tu@phplus.co"
           />
 
-          <Input
+          <PasswordInput
             label="Contraseña"
-            type="password"
             autoComplete="current-password"
             required
             value={password}

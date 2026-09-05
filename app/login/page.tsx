@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { Button, Input } from "@/src/shared/ui";
+import { Button, Input, PasswordInput } from "@/src/shared/ui";
 import { login } from "@/src/features/auth";
 
 export default function LoginPage() {
@@ -27,7 +27,7 @@ export default function LoginPage() {
       setError(
         msg === "INVALID_CREDENTIALS"
           ? "Email o contraseña incorrectos."
-          : "No pudimos iniciar tu sesión. Intentá de nuevo.",
+          : "No pudimos iniciar tu sesión. Intenta de nuevo.",
       );
     } finally {
       setLoading(false);
@@ -40,7 +40,7 @@ export default function LoginPage() {
       <main className="mx-auto max-w-md px-5 py-12 sm:px-8">
         <h1 className="text-[28px] font-extrabold text-brand">Iniciar sesión</h1>
         <p className="mt-1 text-[14px] text-ink-muted">
-          Accedé a tus pedidos, direcciones y favoritos.
+          Accede a tus pedidos, direcciones y favoritos.
         </p>
         <form onSubmit={submit} className="mt-6 grid gap-4">
           <Input
@@ -51,9 +51,8 @@ export default function LoginPage() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Input
+          <PasswordInput
             label="Contraseña"
-            type="password"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -64,7 +63,7 @@ export default function LoginPage() {
           </Button>
         </form>
         <p className="mt-6 text-center text-[14px] text-ink-muted">
-          ¿No tenés cuenta?{" "}
+          ¿No tienes cuenta?{" "}
           <Link href="/registro" className="font-semibold text-brand">
             Crear cuenta
           </Link>

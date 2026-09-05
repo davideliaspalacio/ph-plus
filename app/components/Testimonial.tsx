@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { DropClipDefs, PlayableDropVideo } from "./PlayableDropVideo";
 
 const QUOTE =
   "Durante mi proceso oncológico no toleraba el agua tradicional. Con PH PLUS todo cambió: puedo hidratarme con gusto y eso ha sido clave en mi recuperación.";
@@ -7,6 +7,7 @@ const QUOTE =
 export default function Testimonial() {
   return (
     <section className="w-full bg-white">
+      <DropClipDefs />
       {/* Mobile + tablet (< lg): título y subtítulo centrados arriba */}
       <div className="mx-auto max-w-[1100px] px-5 pb-5 pt-10 sm:px-8 sm:pb-12 sm:pt-16 lg:hidden">
         <h2 className="ph-display text-center text-[24px] uppercase leading-none text-[#1e3a8a] sm:text-[40px]">
@@ -18,15 +19,12 @@ export default function Testimonial() {
         </p>
 
         <div className="mx-auto mt-3 grid max-w-[330px] grid-cols-[119px_1fr] items-center gap-3 sm:mt-9 sm:max-w-none sm:grid-cols-1 sm:gap-8">
-          <div className="relative mx-auto h-[145px] w-[119px] bg-white sm:h-[340px] sm:w-[276px]">
-            <Image
-              src="/testimonial/sirley-drop-real.jpeg"
-              alt="Sirley Montoya con agua PH PLUS"
-              fill
-              sizes="(min-width: 640px) 276px, 119px"
-              className="object-contain"
-            />
-          </div>
+          <PlayableDropVideo
+            src="/videos/testimonios/sirley.mp4"
+            poster="/videos/posters/testimonio-sirley.jpg"
+            ariaLabel="Testimonio de Sirley Montoya sobre PH PLUS"
+            className="mx-auto h-[145px] w-[119px] sm:h-[340px] sm:w-[276px]"
+          />
 
           <div className="ph-condensed mx-auto w-full max-w-[640px] rounded-[20px] bg-[#1e3a8a] px-3 py-3 text-white shadow-[0_8px_24px_rgba(30,58,138,0.18)] sm:rounded-[26px] sm:px-8 sm:py-7">
             <p className="text-[12px] font-bold leading-[1.28] sm:text-[26px]">
@@ -52,21 +50,12 @@ export default function Testimonial() {
           derecha alineado a la izquierda (título, subtítulo, cita y botón). */}
       <div className="mx-auto hidden max-w-[1100px] px-6 pb-14 pt-24 lg:block">
         <div className="grid grid-cols-[340px_1fr] items-center gap-12">
-          <div className="relative mx-auto h-[360px] w-[294px] bg-white">
-            <Image
-              src="/testimonial/sirley-drop-real.jpeg"
-              alt="Sirley Montoya con agua PH PLUS"
-              fill
-              sizes="294px"
-              className="object-contain"
-            />
-            <span
-              aria-hidden
-              className="absolute bottom-[104px] right-[70px] grid h-11 w-11 place-items-center rounded-full bg-white text-[20px] font-black text-[#1e3a8a] shadow-[0_4px_12px_rgba(0,0,0,0.22)]"
-            >
-              →
-            </span>
-          </div>
+          <PlayableDropVideo
+            src="/videos/testimonios/sirley.mp4"
+            poster="/videos/posters/testimonio-sirley.jpg"
+            ariaLabel="Testimonio de Sirley Montoya sobre PH PLUS"
+            className="mx-auto h-[360px] w-[294px]"
+          />
 
           <div>
             <h2 className="ph-display text-[48px] uppercase leading-none text-[#1e3a8a]">

@@ -119,7 +119,7 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     imageClassName: "h-[126px] lg:h-[168px] lg:scale-x-[1.12]",
     badge: {
       text: "recomendado",
-      className: "left-[8%] top-[17px] lg:left-[16%] lg:top-[24px]",
+      className: "left-[-2%] top-[6px] lg:left-[16%] lg:top-[24px]",
     },
     slug: "agua-ph-plus-kids-300ml-x24",
   },
@@ -156,7 +156,7 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     imageClassName: "h-[126px] lg:h-[168px] lg:scale-x-[1.12]",
     badge: {
       text: "+ vendido",
-      className: "left-[8%] top-[16px] lg:left-[16%] lg:top-[23px]",
+      className: "left-[-2%] top-[5px] lg:left-[16%] lg:top-[23px]",
     },
     slug: "agua-ph-plus-fit-1l-x6",
   },
@@ -176,7 +176,7 @@ const PET_PRODUCTS_STATIC: CatalogItem[] = [
     imageClassName: "h-[132px] lg:h-[174px] lg:scale-x-[1.12]",
     badge: {
       text: "+ ahorro",
-      className: "left-[10%] top-[18px] lg:left-[16%] lg:top-[25px]",
+      className: "left-[0%] top-[7px] lg:left-[16%] lg:top-[25px]",
     },
     slug: "agua-ph-plus-5l-x1",
   },
@@ -306,8 +306,9 @@ function BuyButton({ item }: { item: CatalogItem }) {
       slug={item.slug}
       mode="cart"
       label="comprar ahora"
+      labelClassName="sr-only lg:not-sr-only"
       showFeedback={false}
-      className="ph-condensed mt-2 h-[26px] w-[104px] px-2 py-0 text-[9px] font-bold lg:mt-4 lg:h-[48px] lg:w-[230px] lg:text-[19px]"
+      className="ph-condensed mt-2 h-[26px] w-[42px] px-0 py-0 text-[9px] font-bold lg:mt-4 lg:h-[48px] lg:w-[230px] lg:px-2 lg:text-[19px]"
     />
   );
 }
@@ -324,13 +325,13 @@ function ProductBottleBadge({
       aria-hidden
       className={`pointer-events-none absolute z-20 -rotate-[48deg] ${className}`}
     >
-      <span className="absolute left-[51px] top-[-18px] h-[24px] w-[18px] rounded-t-full border-l-[2px] border-t-[2px] border-[#1f2937]" />
+      <span className="absolute left-[33px] top-[-12px] h-[16px] w-[12px] rounded-t-full border-l-[2px] border-t-[2px] border-[#1f2937] lg:left-[51px] lg:top-[-18px] lg:h-[24px] lg:w-[18px]" />
       <span
-        className="relative block h-[34px] w-[86px] rounded-[4px] border-b-[3px] border-r-[3px] border-[#233f9b] bg-[#bcefff] shadow-[1px_2px_0_rgba(30,58,138,0.18)] lg:h-[42px] lg:w-[104px]"
+        className="relative block h-[22px] w-[56px] rounded-[3px] border-b-[2px] border-r-[2px] border-[#233f9b] bg-[#bcefff] shadow-[1px_2px_0_rgba(30,58,138,0.18)] lg:h-[42px] lg:w-[104px] lg:border-b-[3px] lg:border-r-[3px]"
         style={{ clipPath: "polygon(0 0, 83% 0, 100% 50%, 83% 100%, 0 100%)" }}
       >
-        <span className="absolute right-[11px] top-1/2 h-[9px] w-[9px] -translate-y-1/2 rounded-full border-[2px] border-[#233f9b] bg-white lg:right-[14px] lg:h-[11px] lg:w-[11px]" />
-        <span className="ph-condensed absolute left-[9px] top-1/2 -translate-y-1/2 text-[11px] font-bold leading-none text-[#111827] lg:left-[12px] lg:text-[14px]">
+        <span className="absolute right-[7px] top-1/2 h-[6px] w-[6px] -translate-y-1/2 rounded-full border-[1.5px] border-[#233f9b] bg-white lg:right-[14px] lg:h-[11px] lg:w-[11px] lg:border-[2px]" />
+        <span className="ph-condensed absolute left-[6px] top-1/2 -translate-y-1/2 text-[7px] font-bold leading-none text-[#111827] lg:left-[12px] lg:text-[14px]">
           {text}
         </span>
       </span>

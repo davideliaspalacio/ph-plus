@@ -24,7 +24,7 @@ export function WishlistList() {
     return (
       <EmptyState
         title="Tu lista de favoritos está vacía"
-        description="Tocá el corazón en cualquier producto para guardarlo."
+        description="Toca el corazón en cualquier producto para guardarlo."
         action={
           <Link href="/productos">
             <Button>Ver productos</Button>

@@ -1,3 +1,5 @@
+import { DropClipDefs, PlayableDropVideo } from "../components/PlayableDropVideo";
+
 const STORIES = [
   {
     headline: "Un aliado clave en mi entrenamiento.",
@@ -59,17 +61,12 @@ function TestimonialCard({ story }: { story: (typeof STORIES)[number] }) {
       className={`ph-condensed relative aspect-[125/196] w-full overflow-hidden rounded-[18px] px-5 pb-7 pt-6 text-white shadow-[12px_14px_0_rgba(30,58,138,0.22)] sm:px-6 sm:pb-8 sm:pt-7 lg:rounded-[22px] lg:px-7 lg:pb-10 lg:pt-8 ${cardBg}`}
     >
       <div className="grid grid-cols-[47%_1fr] items-center gap-4 lg:gap-7">
-        <div className="relative aspect-[58/75] w-full overflow-hidden rounded-[8px] bg-white/5">
-          <video
-            className="h-full w-full object-cover"
-            src={story.personVideo}
-            poster={story.personPoster}
-            controls
-            playsInline
-            preload="metadata"
-            aria-label={story.photoAlt}
-          />
-        </div>
+        <PlayableDropVideo
+          src={story.personVideo}
+          poster={story.personPoster}
+          ariaLabel={story.photoAlt}
+          className="aspect-[18/24] w-full"
+        />
         <p className="text-[17px] font-bold leading-[1.14] sm:text-[20px] lg:text-[26px]">
           {story.name}
         </p>
@@ -89,6 +86,7 @@ export default function StoriesCarousel() {
       className="scroll-mt-28 bg-white px-5 pb-10 pt-8 lg:scroll-mt-32 lg:px-8 lg:pb-16 lg:pt-10"
     >
       <h2 className="sr-only">Gotas que cuentan historias</h2>
+      <DropClipDefs />
 
       <div className="mx-auto grid max-w-[420px] gap-9 sm:max-w-[760px] sm:grid-cols-2 lg:max-w-[1420px] lg:grid-cols-3 lg:gap-8">
         {STORIES.map((story) => (

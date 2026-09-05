@@ -70,7 +70,7 @@ const CATEGORIES: Category[] = [
       { src: "/HOME PHPLUS/ROKO.png", alt: "Rokko", className: "max-w-[70px] lg:max-w-[128px]" },
       { src: "/HOME PHPLUS/HARRYS.png", alt: "Harrys", className: "max-w-[44px] lg:max-w-[86px]" },
       { src: "/HOME PHPLUS/SALVAJE.png", alt: "Salvaje", className: "max-w-[38px] lg:max-w-[74px]" },
-      { src: "/HOME PHPLUS/LA ÚNICA.png", alt: "La Única", className: "max-w-[42px] lg:max-w-[84px]" },
+      { src: "/HOME PHPLUS/LA-UNICA.png", alt: "La Única", className: "max-w-[42px] lg:max-w-[84px]" },
       { src: "/HOME PHPLUS/CUMBIA HOUSE.png", alt: "Cumbia House", className: "max-w-[46px] lg:max-w-[90px]" },
       { src: "/HOME PHPLUS/OSAKA.png", alt: "Osaka", className: "max-w-[86px] lg:max-w-[150px]" },
       { src: "/HOME PHPLUS/NOA.png", alt: "Noa", className: "max-w-[38px] lg:max-w-[78px]" },

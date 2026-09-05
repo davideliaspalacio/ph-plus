@@ -23,7 +23,7 @@ describe("AddressesList", () => {
     login();
     render(<AddressesList />);
     expect(
-      await screen.findByText(/no tenés direcciones/i),
+      await screen.findByText(/no tienes direcciones/i),
     ).toBeInTheDocument();
   });
 

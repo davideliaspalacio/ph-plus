@@ -18,12 +18,11 @@ import {
 import { login, useSession } from "../../src/features/auth";
 
 /** 0 = datos (acceder / invitado) · 1 = método de pago · 2 = revisar */
-type Step = 0 | 1 | 2;
+type Step = 0 | 1;
 
 const STEPS = [
   { id: 0, label: "Datos" },
-  { id: 1, label: "Pago" },
-  { id: 2, label: "Revisar" },
+  { id: 1, label: "Revisar y pagar" },
 ] as const;
 
 type Contact = { name: string; email: string; phone: string };
@@ -33,9 +32,6 @@ type Shipping = {
   department: string;
   notes: string;
 };
-
-/** Métodos habilitados en la pasarela, para mostrarlos como sello de confianza. */
-const RAPYD_METHODS = ["Tarjetas", "PSE", "Nequi", "Otros"];
 
 type RapydCheckoutResponse = {
   redirectUrl: string;
@@ -178,6 +174,35 @@ function Spinner({ className = "h-5 w-5" }: { className?: string }) {
   );
 }
 
+/** Ícono de ojo (abierto/cerrado) para el toggle de mostrar/ocultar contraseña. */
+function EyeIcon({ open, className = "h-5 w-5" }: { open: boolean; className?: string }) {
+  if (open) {
+    return (
+      <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
+        <path
+          d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.8" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
+      <path
+        d="M3 3l18 18M10.6 10.6a2.5 2.5 0 0 0 3.5 3.5M6.6 6.7C4 8.4 2 12 2 12s4 7 10 7c1.7 0 3.2-.4 4.5-1.1M9.9 4.2C10.6 4.1 11.3 4 12 4c7 0 11 8 11 8a17.5 17.5 0 0 1-3.1 4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 function LockShield({ className = "h-6 w-6" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} fill="none" aria-hidden>
@@ -235,6 +260,7 @@ export default function CheckoutPage() {
   const [step, setStep] = useState<Step>(0);
   const [authEmail, setAuthEmail] = useState("");
   const [authPassword, setAuthPassword] = useState("");
+  const [showAuthPassword, setShowAuthPassword] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authNotice, setAuthNotice] = useState<string | null>(null);
@@ -262,18 +288,24 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    const city = new URLSearchParams(window.location.search).get("city");
-    const destination = city ? getShippingDestination(city) : undefined;
-    if (!destination) return;
-    setShipping((current) =>
-      current.city
-        ? current
-        : {
-            ...current,
-            city: destination.value,
-            department: destination.department,
-          },
-    );
+    // setState diferido (no sincrónico en el cuerpo del efecto) para no
+    // disparar el lint de "set-state-in-effect" — mismo patrón usado en
+    // app/pedido/[id]/page.tsx.
+    const t = setTimeout(() => {
+      const city = new URLSearchParams(window.location.search).get("city");
+      const destination = city ? getShippingDestination(city) : undefined;
+      if (!destination) return;
+      setShipping((current) =>
+        current.city
+          ? current
+          : {
+              ...current,
+              city: destination.value,
+              department: destination.department,
+            },
+      );
+    }, 0);
+    return () => clearTimeout(t);
   }, []);
 
   async function handleInlineLogin(event: React.FormEvent<HTMLFormElement>) {
@@ -569,14 +601,27 @@ export default function CheckoutPage() {
                   />
                 </DesignField>
                 <DesignField label="Contraseña" htmlFor="login-password">
-                  <input
-                    id="login-password"
-                    type="password"
-                    className={designInput}
-                    value={authPassword}
-                    onChange={(e) => setAuthPassword(e.target.value)}
-                    autoComplete="current-password"
-                  />
+                  <div className="relative">
+                    <input
+                      id="login-password"
+                      type={showAuthPassword ? "text" : "password"}
+                      className={designInput + " pr-11"}
+                      value={authPassword}
+                      onChange={(e) => setAuthPassword(e.target.value)}
+                      autoComplete="current-password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowAuthPassword((v) => !v)}
+                      aria-label={
+                        showAuthPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                      }
+                      aria-pressed={showAuthPassword}
+                      className="absolute right-3 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center text-ink-muted transition-colors hover:text-ink"
+                    >
+                      <EyeIcon open={showAuthPassword} />
+                    </button>
+                  </div>
                 </DesignField>
 
                 <a
@@ -701,7 +746,12 @@ export default function CheckoutPage() {
                         };
                       })
                     }
-                    autoComplete="address-level2"
+                    // Sin autocomplete: con autoComplete="address-level2" el
+                    // navegador puede autorellenar este select con una ciudad
+                    // guardada en el perfil del usuario (distinta a la que ya
+                    // eligió en el carrito), pisando el valor precargado por
+                    // el parámetro ?city= de la URL.
+                    autoComplete="off"
                   >
                     <option value="">Selecciona tu ciudad</option>
                     {SHIPPING_DESTINATION_GROUPS.map((group) => (
@@ -781,42 +831,6 @@ export default function CheckoutPage() {
               {step === 1 && (
                 <div className="space-y-5">
                   <h2 className="text-[16px] font-extrabold text-brand">
-                    Método de pago
-                  </h2>
-
-                  <div className="rounded-2xl border-2 border-brand bg-[#eef0ff] p-5">
-                    <div className="flex items-center gap-3">
-                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand text-white">
-                        <LockShield className="h-6 w-6" />
-                      </span>
-                      <div>
-                        <p className="text-[15px] font-bold text-ink">
-                          Pago en línea seguro
-                        </p>
-                        <p className="text-[12px] text-ink-muted">
-                          Te llevamos a una pasarela segura para finalizar el
-                          pago.
-                        </p>
-                      </div>
-                    </div>
-                    <ul className="mt-4 flex flex-wrap gap-2">
-                      {RAPYD_METHODS.map((m) => (
-                        <li
-                          key={m}
-                          className="rounded-full bg-white px-3 py-1 text-[12px] font-semibold text-brand shadow-[0_1px_3px_rgba(27,34,166,0.12)]"
-                        >
-                          {m}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                </div>
-              )}
-
-              {step === 2 && (
-                <div className="space-y-5">
-                  <h2 className="text-[16px] font-extrabold text-brand">
                     Confirma tu pedido
                   </h2>
 
@@ -887,7 +901,12 @@ export default function CheckoutPage() {
                 </p>
               )}
 
-              <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+              <p className="mt-6 flex items-center justify-center gap-2 text-[13px] font-semibold text-brand">
+                <LockShield className="h-4 w-4" />
+                Pago seguro en línea
+              </p>
+
+              <div className="mt-3 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
                 <button
                   type="button"
                   onClick={goBack}
@@ -896,25 +915,15 @@ export default function CheckoutPage() {
                   ← Atrás
                 </button>
 
-                {step < 2 ? (
-                  <button
-                    type="button"
-                    onClick={() => setStep(2)}
-                    className="inline-flex items-center justify-center rounded-full bg-brand px-6 py-2.5 text-[13px] font-semibold text-white transition-all hover:scale-[1.02] hover:bg-brand-dark"
-                  >
-                    Continuar
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={submitOrder}
-                    disabled={submitting}
-                    className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-2.5 text-[13px] font-semibold text-white transition-all hover:scale-[1.02] hover:bg-brand-dark disabled:cursor-wait disabled:opacity-70 disabled:hover:scale-100"
-                  >
-                    {submitting && <Spinner className="h-4 w-4" />}
-                    {submitting ? "Conectando con la pasarela..." : "Escoge método de pago"}
-                  </button>
-                )}
+                <button
+                  type="button"
+                  onClick={submitOrder}
+                  disabled={submitting}
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-brand px-6 py-2.5 text-[13px] font-semibold text-white transition-all hover:scale-[1.02] hover:bg-brand-dark disabled:cursor-wait disabled:opacity-70 disabled:hover:scale-100"
+                >
+                  {submitting && <Spinner className="h-4 w-4" />}
+                  {submitting ? "Conectando con la pasarela..." : "Confirmar pedido y elegir método de pago"}
+                </button>
               </div>
             </div>
 
@@ -943,19 +952,19 @@ export default function CheckoutPage() {
                 ))}
               </ul>
 
-              <dl className="mt-4 space-y-2 border-t border-card-border pt-4 text-[13px]">
-                <div className="flex justify-between">
+              <dl className="mt-4 space-y-2 border-t border-card-border pt-4 text-center text-[13px]">
+                <div className="flex items-center justify-center gap-2">
                   <dt className="text-ink-muted">Subtotal</dt>
                   <dd className="text-ink">{formatCOP(summary.subtotal)}</dd>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex items-center justify-center gap-2">
                   <dt className="text-ink-muted">Envío</dt>
                   <dd className="text-ink">
                     {formatCOP(summary.shipping)}
                   </dd>
                 </div>
               </dl>
-              <div className="mt-3 flex items-baseline justify-between border-t border-card-border pt-3">
+              <div className="mt-3 flex flex-col items-center gap-1 border-t border-card-border pt-3 text-center">
                 <span className="text-[14px] font-semibold">Total</span>
                 <span className="text-[20px] font-extrabold text-brand">
                   {formatCOP(summary.total)}

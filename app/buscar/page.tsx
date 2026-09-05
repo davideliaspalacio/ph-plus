@@ -37,8 +37,8 @@ function SearchContent() {
   if (q.length < 2) {
     return (
       <EmptyState
-        title="Escribí al menos 2 caracteres"
-        description="Buscá tus productos PH PLUS favoritos."
+        title="Escribe al menos 2 caracteres"
+        description="Busca tus productos PH PLUS favoritos."
         action={
           <Link href="/productos">
             <Button>Ver todos los productos</Button>
@@ -56,7 +56,7 @@ function SearchContent() {
     return (
       <EmptyState
         title={`Sin resultados para "${q}"`}
-        description="Probá con otros términos o revisá la lista completa de productos."
+        description="Prueba con otros términos o revisa la lista completa de productos."
         action={
           <Link href="/productos">
             <Button>Ver todos los productos</Button>
@@ -95,7 +95,7 @@ export default function BuscarPage() {
       <main className="mx-auto max-w-page px-5 py-10 sm:px-8 lg:px-12">
         <h1 className="text-[28px] font-extrabold text-brand">Búsqueda</h1>
         <p className="mt-1 text-[14px] text-ink-muted">
-          Encontrá lo que necesitás más rápido.
+          Encuentra lo que necesitas más rápido.
         </p>
         <div className="mt-8">
           <Suspense fallback={<p>Cargando…</p>}>

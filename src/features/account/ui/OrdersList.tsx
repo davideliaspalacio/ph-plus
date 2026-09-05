@@ -57,7 +57,7 @@ export function OrdersList() {
   if (orders.length === 0) {
     return (
       <EmptyState
-        title="Aún no tenés pedidos"
+        title="Aún no tienes pedidos"
         description="Cuando hagas tu primera compra aparecerá acá."
         action={
           <Link href="/productos">

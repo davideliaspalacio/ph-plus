@@ -17,12 +17,12 @@ export const metadata: Metadata = {
 };
 
 const DELIVERY_ROWS = [
-  { zone: "Alrededores Bogotá:", day: "jueves-viernes" },
-  { zone: "Medellín", day: "martes y jueves" },
-  { zone: "Alrededores Medellín", day: "martes y jueves" },
-  { zone: "Barranquilla y Villacampestre", day: "martes y jueves" },
-  { zone: "Cartagena y Manzanillo", day: "martes y jueves" },
-  { zone: "Cali", day: "martes y jueves" },
+  { zone: "Alrededores de Bogotá", day: "Jueves o viernes" },
+  {
+    zone:
+      "Medellín, alrededores de Medellín, Barranquilla, Villa Campestre, Cartagena, Manzanillo, Cali",
+    day: "Martes y viernes",
+  },
 ];
 
 function DeliveryTruckIcon() {
@@ -132,25 +132,20 @@ export default async function EnviosPage() {
                     3 días hábiles / Sur: hasta 4 días hábiles
                   </p>
 
-                  <div className="space-y-3 lg:pt-8">
+                  <div className="space-y-4 lg:col-span-2 lg:space-y-6 lg:pt-8">
                     {DELIVERY_ROWS.map((row) => (
-                      <p
+                      <div
                         key={row.zone}
-                        className="ph-condensed text-[18px] font-light leading-tight text-black lg:text-[24px]"
+                        className="grid gap-1 lg:grid-cols-[300px_1fr] lg:items-baseline lg:gap-x-12"
                       >
-                        <span className="mr-4">•</span>
-                        {row.zone}
-                      </p>
-                    ))}
-                  </div>
-                  <div className="space-y-3 lg:pt-8">
-                    {DELIVERY_ROWS.map((row) => (
-                      <p
-                        key={row.zone}
-                        className="ph-condensed text-[20px] font-bold leading-tight text-[#1e3a8a] lg:text-[25px]"
-                      >
-                        {row.day}
-                      </p>
+                        <p className="ph-condensed text-[18px] font-light leading-tight text-black lg:text-[24px]">
+                          <span className="mr-4">•</span>
+                          {row.zone}
+                        </p>
+                        <p className="ph-condensed text-[20px] font-bold leading-tight text-[#1e3a8a] lg:text-[25px]">
+                          {row.day}
+                        </p>
+                      </div>
                     ))}
                   </div>
                 </div>
