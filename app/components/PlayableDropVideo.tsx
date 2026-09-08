@@ -18,11 +18,21 @@ export function PlayableDropVideo({
   poster,
   ariaLabel,
   className = "",
+  objectPosition = "center 20%",
 }: {
   src: string;
   poster: string;
   ariaLabel: string;
   className?: string;
+  /**
+   * Punto de encuadre para `object-cover` (mismo formato que `object-position`
+   * en CSS). Por defecto sesgado hacia arriba porque el material de los
+   * testimonios encuadra a la persona con espacio de sobra arriba de la
+   * cabeza; sin esto `object-cover` recorta desde el centro y la gota
+   * termina cortando la frente/cara. Ajustable por video si alguno necesita
+   * otro encuadre.
+   */
+  objectPosition?: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -45,6 +55,7 @@ export function PlayableDropVideo({
       <video
         ref={videoRef}
         className="h-full w-full object-cover"
+        style={{ objectPosition }}
         src={src}
         poster={poster}
         controls={playing}
@@ -59,9 +70,17 @@ export function PlayableDropVideo({
           type="button"
           onClick={handlePlay}
           aria-label={`Reproducir: ${ariaLabel}`}
-          className="absolute inset-0 grid place-items-center bg-black/10 transition-colors hover:bg-black/20"
+          className="absolute inset-0"
         >
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-white/95 text-[#1e3a8a] shadow-[0_4px_12px_rgba(0,0,0,0.35)] sm:h-12 sm:w-12 lg:h-16 lg:w-16">
+          {/*
+            El ícono se ancla en el tercio inferior (la panza redonda de la
+            gota) en vez de quedar centrado en toda la caja: centrado caía
+            siempre sobre la cara de la persona, tapándola justo donde el
+            corte en punta de la gota ya la recortaba más. El botón sigue
+            cubriendo toda la gota como área clickeable/accesible, pero sin
+            oscurecer la imagen (antes tenía un overlay bg-black/10).
+          */}
+          <span className="absolute inset-x-0 bottom-[10%] mx-auto grid h-9 w-9 place-items-center rounded-full bg-white/95 text-[#1e3a8a] shadow-[0_4px_12px_rgba(0,0,0,0.35)] sm:h-12 sm:w-12 lg:h-16 lg:w-16">
             <svg
               viewBox="0 0 24 24"
               className="ml-0.5 h-4 w-4 sm:h-6 sm:w-6 lg:h-8 lg:w-8"

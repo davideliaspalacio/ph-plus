@@ -32,13 +32,8 @@ export const SHIPPING_COST_ROWS: ShippingCostRow[] = [
     cost: SHIPPING_SECONDARY_COST,
   },
   {
-    text: "Envío Alrededores Medellín",
+    text: "Envío Alrededores Medellín: Bello, Sabaneta, Envigado, Itagüí",
     cost: SHIPPING_SECONDARY_COST,
-  },
-  {
-    text: "Bello, Sabaneta, Envigado, Itagui",
-    cost: SHIPPING_SECONDARY_COST,
-    noBullet: true,
   },
   {
     text: "Envío Alrededores Barranquilla: Villacampestre",
