@@ -155,10 +155,19 @@ export function ProductsTable({
                     />
                   </td>
                   <td className="px-3 py-3">
-                    <div
-                      aria-hidden
-                      className="h-10 w-10 rounded-lg bg-card-border/40"
-                    />
+                    {p.gallery?.[0]?.src ? (
+                      // eslint-disable-next-line @next/next/no-img-element -- miniatura de una URL externa (Supabase Storage), no un asset local optimizable por next/image
+                      <img
+                        src={p.gallery[0].src}
+                        alt={p.title}
+                        className="h-10 w-10 rounded-lg object-cover"
+                      />
+                    ) : (
+                      <div
+                        aria-hidden
+                        className="h-10 w-10 rounded-lg bg-card-border/40"
+                      />
+                    )}
                   </td>
                   <td className="px-3 py-3 font-semibold text-ink">
                     {p.title}
