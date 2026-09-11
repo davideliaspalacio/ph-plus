@@ -1,4 +1,4 @@
-import { DropClipDefs, PlayableDropVideo } from "../components/PlayableDropVideo";
+import { PlayableDropVideo } from "../components/PlayableDropVideo";
 
 const STORIES = [
   {
@@ -65,7 +65,7 @@ function TestimonialCard({ story }: { story: (typeof STORIES)[number] }) {
           src={story.personVideo}
           poster={story.personPoster}
           ariaLabel={story.photoAlt}
-          className="aspect-[18/24] w-full"
+          className="aspect-square w-full"
         />
         <p className="text-[17px] font-bold leading-[1.14] sm:text-[20px] lg:text-[26px]">
           {story.name}
@@ -86,7 +86,6 @@ export default function StoriesCarousel() {
       className="scroll-mt-28 bg-white px-5 pb-10 pt-8 lg:scroll-mt-32 lg:px-8 lg:pb-16 lg:pt-10"
     >
       <h2 className="sr-only">Gotas que cuentan historias</h2>
-      <DropClipDefs />
 
       <div className="mx-auto grid max-w-[420px] gap-9 sm:max-w-[760px] sm:grid-cols-2 lg:max-w-[1420px] lg:grid-cols-3 lg:gap-8">
         {STORIES.map((story) => (

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { DropClipDefs, PlayableDropVideo } from "./PlayableDropVideo";
+import { PlayableDropVideo } from "./PlayableDropVideo";
 
 const QUOTE =
   "Durante mi proceso oncológico no toleraba el agua tradicional. Con PH PLUS todo cambió: puedo hidratarme con gusto y eso ha sido clave en mi recuperación.";
@@ -7,7 +7,6 @@ const QUOTE =
 export default function Testimonial() {
   return (
     <section className="w-full bg-white">
-      <DropClipDefs />
       {/* Mobile + tablet (< lg): título y subtítulo centrados arriba */}
       <div className="mx-auto max-w-[1100px] px-5 pb-5 pt-10 sm:px-8 sm:pb-12 sm:pt-16 lg:hidden">
         <h2 className="ph-display text-center text-[24px] uppercase leading-none text-[#1e3a8a] sm:text-[40px]">

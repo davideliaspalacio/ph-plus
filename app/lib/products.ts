@@ -209,8 +209,8 @@ export const PRODUCTS: Product[] = [
     visualKey: "kit",
     title: "Kit inicial de botellón 19 lts",
     shortTitle: "Kit inicial de\nbotellón 19 lts",
-    price: "$85.000",
-    priceValue: 85000,
+    price: "$78.000",
+    priceValue: 78000,
     tagline: "Empieza a hidratarte mejor desde el primer día",
     description:
       "Kit completo con botellón de 19 litros más dispensador manual. Ideal para hogares y oficinas que quieren empezar con PH PLUS. Agua alcalina PH 9, lista para servir.",

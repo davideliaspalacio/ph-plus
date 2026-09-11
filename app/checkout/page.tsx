@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -287,26 +287,10 @@ export default function CheckoutPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    // setState diferido (no sincrónico en el cuerpo del efecto) para no
-    // disparar el lint de "set-state-in-effect" — mismo patrón usado en
-    // app/pedido/[id]/page.tsx.
-    const t = setTimeout(() => {
-      const city = new URLSearchParams(window.location.search).get("city");
-      const destination = city ? getShippingDestination(city) : undefined;
-      if (!destination) return;
-      setShipping((current) =>
-        current.city
-          ? current
-          : {
-              ...current,
-              city: destination.value,
-              department: destination.department,
-            },
-      );
-    }, 0);
-    return () => clearTimeout(t);
-  }, []);
+  // A propósito NO se prellena la ciudad desde `?city=` (valor elegido en el
+  // carrito): el cliente pidió explícitamente que este campo quede vacío
+  // hasta que la persona la seleccione ella misma en el desplegable, porque
+  // un valor precargado podía no coincidir con lo elegido antes y confundir.
 
   async function handleInlineLogin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

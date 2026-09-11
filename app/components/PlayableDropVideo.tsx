@@ -3,7 +3,8 @@
 import { useRef, useState } from "react";
 
 /**
- * Video recortado en forma de gota con un botón de play explícito.
+ * Video con esquinas redondeadas (cuadrado/rectangular) y un botón de play
+ * explícito.
  *
  * Usado en el testimonio de Sirley (home) y en "Gotas que cuentan
  * historias" (Camilo/Martha/Daniel). Antes: en el de Sirley había una
@@ -12,17 +13,31 @@ import { useRef, useState } from "react";
  * cada persona en pantallas chicas. Ahora el botón de play sólo se
  * muestra antes de reproducir, y los controles nativos aparecen recién
  * cuando el video ya está sonando.
+ *
+ * Nota: se probó un recorte en forma de gota (ver `DropClipDefs`, que se
+ * deja sin usar por si se retoma), pero el cliente pidió volver a la forma
+ * cuadrada/rectangular simple porque la gota recortaba mal las caras.
  */
 export function PlayableDropVideo({
   src,
   poster,
   ariaLabel,
   className = "",
+  objectPosition = "center 20%",
 }: {
   src: string;
   poster: string;
   ariaLabel: string;
   className?: string;
+  /**
+   * Punto de encuadre para `object-cover` (mismo formato que `object-position`
+   * en CSS). Por defecto sesgado hacia arriba porque el material de los
+   * testimonios encuadra a la persona con espacio de sobra arriba de la
+   * cabeza; sin esto `object-cover` recorta desde el centro y la gota
+   * termina cortando la frente/cara. Ajustable por video si alguno necesita
+   * otro encuadre.
+   */
+  objectPosition?: string;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
@@ -39,12 +54,12 @@ export function PlayableDropVideo({
 
   return (
     <div
-      className={`relative overflow-hidden bg-[#e8f6fb] ${className}`}
-      style={{ clipPath: "url(#ph-drop-clip)" }}
+      className={`relative overflow-hidden rounded-2xl bg-[#e8f6fb] ${className}`}
     >
       <video
         ref={videoRef}
         className="h-full w-full object-cover"
+        style={{ objectPosition }}
         src={src}
         poster={poster}
         controls={playing}
