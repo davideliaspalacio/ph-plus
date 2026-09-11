@@ -3,19 +3,36 @@
 import { useEffect, useState } from "react";
 import { Badge, Button, EmptyState, Input, Modal, Select } from "@/src/shared/ui";
 import { inventoryRepo, type StockItem, type StockMovement } from "@/src/features/admin/inventory";
-import { PRODUCTS } from "@/app/lib/products";
+import { adminProductRepo } from "@/src/features/admin/products";
 import { formatDate } from "@/src/shared/lib/format";
 
 export default function AdminInventarioPage() {
   const [items, setItems] = useState<StockItem[] | null>(null);
   const [adjusting, setAdjusting] = useState<StockItem | null>(null);
   const [movements, setMovements] = useState<StockMovement[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const reload = async () => {
-    // Asegurar seeds desde PRODUCTS
-    await inventoryRepo.seedFromProducts(PRODUCTS.map((p) => p.slug));
-    setItems(await inventoryRepo.listStock());
-    setMovements(await inventoryRepo.listMovements());
+    try {
+      // Sembrar desde los productos reales (no un catálogo estático viejo):
+      // usar `PRODUCTS` (el array hardcodeado de app/lib/products.ts) acá
+      // rompía en producción porque tiene slugs legacy que ya no existen en
+      // la tabla `products` de Supabase — el upsert de seedFromProducts
+      // violaba la FK `stock_items.product_slug -> products.slug` y el error
+      // sin catch dejaba la página en "Cargando…" para siempre.
+      const products = await adminProductRepo.list();
+      await inventoryRepo.seedFromProducts(products.map((p) => p.slug));
+      const [stock, stockMovements] = await Promise.all([
+        inventoryRepo.listStock(),
+        inventoryRepo.listMovements(),
+      ]);
+      setError(null);
+      setItems(stock);
+      setMovements(stockMovements);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Error cargando inventario");
+      setItems([]);
+    }
   };
 
   useEffect(() => {
@@ -24,6 +41,15 @@ export default function AdminInventarioPage() {
 
   if (items == null) {
     return <p className="text-[14px] text-ink-muted">Cargando inventario…</p>;
+  }
+
+  if (error) {
+    return (
+      <EmptyState
+        title="No se pudo cargar el inventario"
+        description={error}
+      />
+    );
   }
 
   const lowStock = items.filter((i) => i.current <= i.low).length;
