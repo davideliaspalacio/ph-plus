@@ -34,7 +34,10 @@ type CatalogSection = {
 };
 
 const WHATSAPP_NUMBER = "573234392470";
-const SHOW_FULL_CATALOG = false;
+// Los productos creados en el admin (sin slot curado arriba) se listan en
+// "Todo el catálogo". Hoy todos los productos reales están curados, así que la
+// sección no se dibuja hasta que se cree uno nuevo.
+const SHOW_FULL_CATALOG = true;
 
 function DeliveryTruckIcon() {
   return (

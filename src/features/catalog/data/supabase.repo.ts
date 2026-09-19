@@ -188,6 +188,8 @@ export class SupabaseProductRepo implements ProductRepository<Product> {
       .from("products")
       .select("*")
       .eq("slug", slug)
+      // Un producto archivado en el admin no debe seguir accesible por URL.
+      .eq("is_active", true)
       .maybeSingle();
 
     if (error) {
