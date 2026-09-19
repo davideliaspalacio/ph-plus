@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 
 import type { OrderStatus } from "@/src/features/orders";
 import { createSupabaseServiceClient } from "@/src/shared/supabase/server";
+import { notificarPedidoPagado } from "@/app/lib/correos/pedido-pagado";
 import {
   buildRapydWebhookSignature,
   getRapydConfig,
@@ -232,6 +233,13 @@ export async function POST(request: Request) {
       body.data?.status || body.data?.payment?.status || "N/A"
     }${shouldTransition ? ` → orden marcada como "${nextStatus}"` : " (sin cambio de estado)"}.`,
   } as never);
+
+  // Aviso por correo de pedido pagado. Va en `after` para no demorar la
+  // respuesta a Rapyd; como la transición a `paid` ocurre una sola vez por
+  // orden, el correo tampoco se duplica con reintentos del webhook.
+  if (shouldTransition && nextStatus === "paid") {
+    after(() => notificarPedidoPagado(orderId));
+  }
 
   return NextResponse.json({ received: true, matched: true, applied: shouldTransition });
 }
