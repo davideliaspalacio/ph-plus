@@ -61,8 +61,8 @@ describe("computeKpis", () => {
     expect(kpis.totalOrders).toBe(3);
     // 100 + 200 (cancelled 50 excluido de ventas).
     expect(kpis.totalSales).toBe(300);
-    // avgTicket = totalSales / totalOrders = 300 / 3 = 100.
-    expect(kpis.avgTicket).toBe(100);
+    // avgTicket = totalSales / pedidos vendidos = 300 / 2 = 150.
+    expect(kpis.avgTicket).toBe(150);
   });
 
   it("agrupa pedidos por estado", () => {
@@ -107,5 +107,14 @@ describe("computeKpis", () => {
     const kpis = computeKpis(orders, new Date("2026-05-05"), new Date("2026-05-15"));
     expect(kpis.totalOrders).toBe(1);
     expect(kpis.totalSales).toBe(200);
+  });
+
+  it("no cuenta como venta los pedidos sin pagar (draft/pending_payment)", () => {
+    const kpis = computeKpis([
+      makeOrder({ id: "1", status: "paid", totals: { subtotal: 100, discount: 0, shipping: 0, total: 100 } }),
+      makeOrder({ id: "2", status: "pending_payment", totals: { subtotal: 500, discount: 0, shipping: 0, total: 500 } }),
+    ]);
+    expect(kpis.totalSales).toBe(100);
+    expect(kpis.totalOrders).toBe(2);
   });
 });

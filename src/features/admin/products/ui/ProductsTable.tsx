@@ -55,9 +55,23 @@ export function ProductsTable({
   }
 
   function exportCsv() {
-    if (typeof window !== "undefined") {
-      window.alert("Exportar CSV: próximamente");
-    }
+    if (typeof window === "undefined") return;
+    // Exporta los seleccionados; si no hay selección, todo el catálogo.
+    const rows = selected.size > 0 ? products.filter((p) => selected.has(p.slug)) : products;
+    const esc = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const header = ["slug", "titulo", "categoria", "tamano", "precio", "precio_anterior", "popularidad", "activo"];
+    const lines = rows.map((p) =>
+      [p.slug, p.title, p.category, p.size, p.priceValue, p.prevPriceValue ?? "", p.popularity, p.inStock !== false ? "si" : "no"]
+        .map(esc)
+        .join(","),
+    );
+    const csv = "\ufeff" + [header.join(","), ...lines].join("\n");
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "productos-phplus.csv";
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   return (

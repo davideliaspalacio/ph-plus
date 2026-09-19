@@ -8,12 +8,19 @@ import type { Order, OrderStatus } from "@/src/features/orders";
  *
  * Reglas:
  * - `totalSales` suma `totals.total` de los pedidos en rango EXCLUYENDO
- *   los estados `cancelled` y `refunded`. `totalOrders` y `ordersByStatus`
+ *   los estados `draft`, `pending_payment`, `cancelled` y `refunded`. `totalOrders` y `ordersByStatus`
  *   sí los cuentan (para que el admin vea volumen total).
- * - `avgTicket` = `totalSales / totalOrders` (redondeado).
+ * - `avgTicket` = `totalSales / pedidos vendidos` (redondeado).
  * - `topProducts` ordena por `count` descendente.
  * - `from`/`to` son inclusivos. Si no se pasan, no filtra.
  */
+
+const NOT_A_SALE = new Set<OrderStatus>([
+  "draft",
+  "pending_payment",
+  "cancelled",
+  "refunded",
+]);
 
 export type TopProduct = {
   slug: string;
@@ -66,12 +73,16 @@ export function computeKpis(
 
   const ordersByStatus = emptyByStatus();
   let totalSales = 0;
+  let soldOrders = 0;
   const productCounts = new Map<string, { title: string; count: number }>();
 
   for (const order of filtered) {
     ordersByStatus[order.status] += 1;
-    if (order.status !== "cancelled" && order.status !== "refunded") {
+    // Solo cuentan como venta los pedidos realmente cobrados: un pedido en
+    // "draft"/"pending_payment" es un checkout sin pagar (o abandonado).
+    if (!NOT_A_SALE.has(order.status)) {
       totalSales += order.totals.total;
+      soldOrders += 1;
     }
 
     for (const line of order.lines) {
@@ -88,7 +99,7 @@ export function computeKpis(
   }
 
   const totalOrders = filtered.length;
-  const avgTicket = totalOrders > 0 ? Math.round(totalSales / totalOrders) : 0;
+  const avgTicket = soldOrders > 0 ? Math.round(totalSales / soldOrders) : 0;
 
   const topProducts: TopProduct[] = Array.from(productCounts.entries())
     .map(([slug, { title, count }]) => ({ slug, title, count }))

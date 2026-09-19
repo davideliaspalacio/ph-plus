@@ -56,6 +56,18 @@ export default function AdminProductosPage() {
             await adminProductRepo.archive(p.slug);
             await reload();
           }}
+          onDuplicate={async (p) => {
+            // Copia inactiva, para que no aparezca en la tienda hasta que
+            // el admin la revise y la active.
+            await adminProductRepo.create({
+              ...p,
+              slug: `${p.slug}-copia-${Date.now().toString(36)}`,
+              title: `${p.title} (copia)`,
+              inStock: false,
+            });
+            await reload();
+            router.refresh();
+          }}
           onBulkUpdate={async (slugs, patch) => {
             await adminProductRepo.bulkUpdate(slugs, patch);
             await reload();
