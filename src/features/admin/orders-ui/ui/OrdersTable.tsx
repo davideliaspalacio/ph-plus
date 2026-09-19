@@ -123,6 +123,7 @@ export function OrdersTable({ orders, onSelect }: OrdersTableProps) {
                 <th className="px-4 py-3">#</th>
                 <th className="px-4 py-3">Fecha</th>
                 <th className="px-4 py-3">Cliente</th>
+                <th className="px-4 py-3">Envío a</th>
                 <th className="px-4 py-3">Total</th>
                 <th className="px-4 py-3">Estado</th>
                 <th className="px-4 py-3">Pago</th>
@@ -143,6 +144,12 @@ export function OrdersTable({ orders, onSelect }: OrdersTableProps) {
                     <div className="font-semibold text-ink">{o.contact.name}</div>
                     <div className="text-[12px] text-ink-muted">
                       {o.contact.email}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-[12px] text-ink-muted">
+                    <div className="text-ink">{o.shipping.address}</div>
+                    <div>
+                      {o.shipping.city}, {o.shipping.department}
                     </div>
                   </td>
                   <td className="px-4 py-3 font-bold text-ink">
