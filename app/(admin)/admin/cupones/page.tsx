@@ -41,7 +41,7 @@ export default function AdminCuponesPage() {
         <div>
           <h1 className="text-[24px] font-extrabold text-brand">Cupones</h1>
           <p className="mt-1 text-[14px] text-ink-muted">
-            {coupons.length} cupón{coupons.length === 1 ? "" : "es"} configurado
+            {coupons.length} {coupons.length === 1 ? "cupón" : "cupones"} configurado
             {coupons.length === 1 ? "" : "s"}.
           </p>
         </div>
