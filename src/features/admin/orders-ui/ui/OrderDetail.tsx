@@ -110,6 +110,12 @@ export function OrderDetail({
           <p className="text-[13px] text-ink-muted">
             {order.shipping.city}, {order.shipping.department}
           </p>
+          {order.shipping.notes && (
+            <p className="mt-2 text-[13px]">
+              <span className="font-semibold text-ink">Notas de entrega:</span>{" "}
+              {order.shipping.notes}
+            </p>
+          )}
           {order.shipping.postalCode && (
             <p className="text-[13px] text-ink-muted">
               CP {order.shipping.postalCode}
