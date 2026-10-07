@@ -33,7 +33,7 @@ type Shipping = {
   notes: string;
 };
 
-type RapydCheckoutResponse = {
+type PaymentCheckoutResponse = {
   redirectUrl: string;
   checkoutId: string;
   orderId: string;
@@ -337,9 +337,9 @@ export default function CheckoutPage() {
     setStep((s) => (Math.max(0, s - 1) as Step));
   }
 
-  function redirectToRapyd({ redirectUrl }: RapydCheckoutResponse) {
-    // Hosted Checkout Page: Rapyd ya nos da la URL de su página alojada, no
-    // hace falta armar ni postear un formulario con datos sensibles.
+  function redirectToGateway({ redirectUrl }: PaymentCheckoutResponse) {
+    // Página de pago alojada por Wompi: ya nos da la URL, no hace falta armar
+    // ni postear un formulario con datos sensibles de tarjeta.
     window.location.href = redirectUrl;
   }
 
@@ -366,7 +366,7 @@ export default function CheckoutPage() {
       orderId: fallbackOrderId,
       contact,
       shipping: normalizedShipping,
-      payment: "rapyd",
+      payment: "wompi",
       customerType: isAuthenticated ? "authenticated" : "guest",
       lines: summary.lines.map((l) => ({
         slug: l.product.slug,
@@ -384,7 +384,7 @@ export default function CheckoutPage() {
     };
 
     try {
-      const response = await fetch("/api/payments/rapyd", {
+      const response = await fetch("/api/payments/wompi", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -395,7 +395,7 @@ export default function CheckoutPage() {
         }),
       });
       const data = (await response.json()) as
-        | RapydCheckoutResponse
+        | PaymentCheckoutResponse
         | { error?: string };
 
       if (!response.ok || !("redirectUrl" in data)) {
@@ -412,7 +412,7 @@ export default function CheckoutPage() {
           JSON.stringify({
             ...payload,
             orderId: data.orderId,
-            rapydReferenceId: data.referenceId,
+            wompiReferenceId: data.referenceId,
             persisted: data.persisted,
           }),
         );
@@ -422,14 +422,14 @@ export default function CheckoutPage() {
 
       // OJO: el carrito NO se vacía acá. Antes se vaciaba antes de saber si
       // el pago se completaba — si el comprador cancelaba o el pago fallaba
-      // en Rapyd, volvía con el carrito vacío y tenía que rearmar todo de
+      // en la pasarela, volvía con el carrito vacío y tenía que rearmar todo de
       // cero. Ahora se vacía sólo cuando la página de retorno confirma
       // "paid" contra la orden real (ver ClearCartOnPaid en
-      // checkout/rapyd/respuesta), así "volver a intentar" simplemente
+      // checkout/wompi/respuesta), así "volver a intentar" simplemente
       // reusa el mismo carrito.
-      // El overlay sigue visible hasta que el navegador salta a Rapyd: por
+      // El overlay sigue visible hasta que el navegador salta a Wompi: por
       // eso NO hacemos setSubmitting(false) en el camino feliz.
-      redirectToRapyd(data);
+      redirectToGateway(data);
     } catch (error) {
       setSubmitError(
         error instanceof Error

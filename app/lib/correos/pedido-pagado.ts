@@ -81,7 +81,7 @@ export function renderPedidoPagado(data: PedidoPagadoData): { subject: string; h
 
 /**
  * Carga la orden + líneas desde Supabase y manda el aviso. Nunca tira.
- * Se llama desde el webhook de Rapyd justo cuando la orden pasa a `paid`,
+ * Se llama desde el webhook de la pasarela (Wompi) justo cuando la orden pasa a `paid`,
  * que ocurre una sola vez por orden (la transición sólo sale de
  * `pending_payment`/`draft`), así que no hay avisos duplicados.
  */

@@ -20,9 +20,12 @@ const MAX_ATTEMPTS = 40;
 export function PendingPaymentWatcher({
   orderId,
   initialStatus,
+  statusUrl,
 }: {
   orderId: string;
   initialStatus: string;
+  /** URL completa a consultar; por defecto el endpoint de estado de Rapyd. */
+  statusUrl?: string;
 }) {
   const router = useRouter();
   const [timedOut, setTimedOut] = useState(false);
@@ -42,7 +45,8 @@ export function PendingPaymentWatcher({
 
       try {
         const res = await fetch(
-          `/api/payments/rapyd/status?orderId=${encodeURIComponent(orderId)}`,
+          statusUrl ??
+            `/api/payments/rapyd/status?orderId=${encodeURIComponent(orderId)}`,
           { cache: "no-store" },
         );
         const data = (await res.json()) as { status?: string | null };
@@ -64,7 +68,7 @@ export function PendingPaymentWatcher({
       cancelled = true;
       clearTimeout(t);
     };
-  }, [orderId, initialStatus, router]);
+  }, [orderId, initialStatus, statusUrl, router]);
 
   if (!timedOut) return null;
 
