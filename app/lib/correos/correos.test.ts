@@ -129,3 +129,36 @@ describe("destinatariosPedidos", () => {
     ]);
   });
 });
+
+describe("renderPedidoConfirmacion", () => {
+  it("saluda por el primer nombre, lista productos y escapa HTML", async () => {
+    const { renderPedidoConfirmacion } = await import("./pedido-confirmacion");
+    const { subject, html } = renderPedidoConfirmacion({
+      orderId: "ORD-9",
+      contact: { name: "Ana <b>María</b> López", email: "a@x.co", phone: "300" },
+      shipping: { address: "Calle 1 # 2-3", city: "Bogotá", department: "Bogotá D.C.", notes: "Timbre <3" },
+      totals: { subtotal: 78000, discount: 5000, shipping: 11000, total: 84000 },
+      lines: [{ title: "Kit <script>", quantity: 2, line_total: 78000 }],
+    });
+    expect(subject).toContain("ORD-9");
+    expect(html).toContain("¡Gracias por tu compra, Ana");
+    expect(html).not.toContain("<script>");
+    expect(html).not.toContain("<b>María</b>");
+    expect(html).toContain("Descuento");
+    expect(html).toContain("/pedido/ORD-9");
+    expect(html).toContain("Timbre &lt;3");
+  });
+
+  it("omite el descuento cuando es cero y el saludo si no hay nombre", async () => {
+    const { renderPedidoConfirmacion } = await import("./pedido-confirmacion");
+    const { html } = renderPedidoConfirmacion({
+      orderId: "ORD-8",
+      contact: { name: "", email: "a@x.co", phone: "" },
+      shipping: { address: "Calle 1", city: "Cali", department: "Valle", notes: "" },
+      totals: { subtotal: 10000, discount: 0, shipping: 0, total: 10000 },
+      lines: [],
+    });
+    expect(html).toContain("¡Gracias por tu compra!");
+    expect(html).not.toContain("Descuento");
+  });
+});
