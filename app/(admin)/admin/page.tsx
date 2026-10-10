@@ -1,7 +1,7 @@
 import { DashboardOverview } from "@/src/features/admin/dashboard";
 
 export const metadata = {
-  title: "Dashboard · PH PLUS Admin",
+  title: { absolute: "Dashboard · PH PLUS Admin" },
 };
 
 export default function AdminDashboardPage() {

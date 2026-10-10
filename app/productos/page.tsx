@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,6 +12,13 @@ import {
   type ProductVisualKey,
 } from "../lib/products";
 import { productRepo } from "@/src/features/catalog";
+
+export const metadata: Metadata = {
+  title: "Productos: botellones, garrafas y agua PET alcalina",
+  description:
+    "Catálogo PH PLUS: kit inicial de botellón 19 L, recargas, garrafas y presentaciones PET y vidrio de agua alcalina PH 9. Compra en línea con envío a domicilio.",
+  alternates: { canonical: "/productos" },
+};
 
 type CatalogItem = {
   name: string;

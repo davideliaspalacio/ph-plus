@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import LegalContentPage from "../components/LegalContentPage";
 
 export const metadata: Metadata = {
-  title: "Términos y Condiciones | PH PLUS",
+  title: "Términos y Condiciones",
   description:
     "Consulta las condiciones generales de compra y uso de los canales digitales de PH PLUS.",
 };
