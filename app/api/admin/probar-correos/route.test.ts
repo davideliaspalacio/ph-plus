@@ -67,4 +67,19 @@ describe("POST /api/admin/probar-correos", () => {
     const body = await (await POST()).json();
     expect(body.avisoInterno).toMatchObject({ enviado: false, motivo: "Sin proveedor de correo" });
   });
+
+  it("envía la confirmación al correo indicado y rechaza uno inválido", async () => {
+    sessionUser = { id: "a1", email: "admin@aguaphplus.com" };
+    role = "super_admin";
+    const req = (email: string) =>
+      new Request("http://x/api", { method: "POST", body: JSON.stringify({ email }) });
+
+    const ok = await (await POST(req("cliente@empresa.co"))).json();
+    expect(ok.confirmacionCliente).toMatchObject({ a: "cliente@empresa.co", enviado: true });
+
+    enviarCorreo.mockClear();
+    const bad = await POST(req("no-es-correo"));
+    expect(bad.status).toBe(400);
+    expect(enviarCorreo).not.toHaveBeenCalled();
+  });
 });

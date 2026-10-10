@@ -20,12 +20,17 @@ type TestResult = {
 function EnviarPrueba() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<TestResult | null>(null);
+  const [email, setEmail] = useState("");
 
   async function run() {
     setLoading(true);
     setResult(null);
     try {
-      const res = await fetch("/api/admin/probar-correos", { method: "POST" });
+      const res = await fetch("/api/admin/probar-correos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim() }),
+      });
       setResult((await res.json()) as TestResult);
     } catch {
       setResult({ error: "No se pudo conectar con el servidor" });
@@ -54,8 +59,17 @@ function EnviarPrueba() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-[13px] text-ink-muted">
           Envía los correos de una compra (aviso interno y confirmación al cliente) con datos de
-          ejemplo, sin pasar por la pasarela. La confirmación llega a tu correo de sesión.
+          ejemplo, sin pasar por la pasarela. La confirmación llega al correo que escribas
+          abajo (si lo dejas vacío, a tu correo de sesión).
         </p>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Correo del cliente (opcional)"
+          aria-label="Correo al que llegará la confirmación de prueba"
+          className="w-full rounded-full border border-card-border px-4 py-2 text-[13px] sm:w-72"
+        />
         <button
           type="button"
           onClick={run}
