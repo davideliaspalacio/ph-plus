@@ -7,9 +7,21 @@ import { enviarCorreo, type EnviarCorreoResult } from "./enviar";
 
 /**
  * Aviso interno "llegó un pedido pagado". Por ahora va a un solo destinatario
- * (`CORREO_PEDIDOS`, por defecto el de abajo); no se le escribe al cliente.
+ * (`CORREO_PEDIDOS`, por defecto los de abajo); no se le escribe al cliente.
  */
-const DEFAULT_DESTINATARIO = "comercial2@aguaphplus.com";
+const DEFAULT_DESTINATARIOS = [
+  "comercial2@aguaphplus.com",
+  "davideliaspalacioo@gmail.com",
+];
+
+/** `CORREO_PEDIDOS` admite varias direcciones separadas por coma o punto y coma. */
+export function destinatariosPedidos(raw: string | undefined): string[] {
+  const list = (raw ?? "")
+    .split(/[,;]/)
+    .map((v) => v.trim())
+    .filter(Boolean);
+  return list.length > 0 ? list : DEFAULT_DESTINATARIOS;
+}
 
 export type PedidoPagadoData = {
   orderId: string;
@@ -109,7 +121,7 @@ export async function notificarPedidoPagado(orderId: string): Promise<EnviarCorr
     });
 
     return await enviarCorreo({
-      to: process.env.CORREO_PEDIDOS?.trim() || DEFAULT_DESTINATARIO,
+      to: destinatariosPedidos(process.env.CORREO_PEDIDOS),
       subject,
       html,
       reference: orderId,

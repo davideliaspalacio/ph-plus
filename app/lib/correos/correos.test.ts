@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
 
 import { enviarCorreo, normalizeZeptoToken, parseAddress } from "./enviar";
-import { renderPedidoPagado } from "./pedido-pagado";
+import { destinatariosPedidos, renderPedidoPagado } from "./pedido-pagado";
 
 describe("ZeptoMail helpers", () => {
   it("acepta el token con o sin prefijo Zoho-enczapikey", () => {
@@ -111,5 +111,21 @@ describe("renderPedidoPagado", () => {
     expect(html).toContain("Calle 1, Bogotá, Cundinamarca");
     expect(html).toContain("&lt;b&gt;Ana&lt;/b&gt;");
     expect(html).not.toContain("<b>Ana</b>");
+  });
+});
+
+describe("destinatariosPedidos", () => {
+  it("usa el destinatario por defecto si no hay variable", () => {
+    const porDefecto = ["comercial2@aguaphplus.com", "davideliaspalacioo@gmail.com"];
+    expect(destinatariosPedidos(undefined)).toEqual(porDefecto);
+    expect(destinatariosPedidos("  ")).toEqual(porDefecto);
+  });
+
+  it("acepta varios separados por coma o punto y coma, sin espacios sobrantes", () => {
+    expect(destinatariosPedidos("a@x.co, b@y.co ;c@z.co,")).toEqual([
+      "a@x.co",
+      "b@y.co",
+      "c@z.co",
+    ]);
   });
 });
