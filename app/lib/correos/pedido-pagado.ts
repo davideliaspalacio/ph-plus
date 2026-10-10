@@ -11,6 +11,15 @@ import { enviarCorreo, type EnviarCorreoResult } from "./enviar";
  */
 const DEFAULT_DESTINATARIO = "comercial2@aguaphplus.com";
 
+/** `CORREO_PEDIDOS` admite varias direcciones separadas por coma o punto y coma. */
+export function destinatariosPedidos(raw: string | undefined): string[] {
+  const list = (raw ?? "")
+    .split(/[,;]/)
+    .map((v) => v.trim())
+    .filter(Boolean);
+  return list.length > 0 ? list : [DEFAULT_DESTINATARIO];
+}
+
 export type PedidoPagadoData = {
   orderId: string;
   contact: { name?: string; email?: string; phone?: string };
@@ -109,7 +118,7 @@ export async function notificarPedidoPagado(orderId: string): Promise<EnviarCorr
     });
 
     return await enviarCorreo({
-      to: process.env.CORREO_PEDIDOS?.trim() || DEFAULT_DESTINATARIO,
+      to: destinatariosPedidos(process.env.CORREO_PEDIDOS),
       subject,
       html,
       reference: orderId,
