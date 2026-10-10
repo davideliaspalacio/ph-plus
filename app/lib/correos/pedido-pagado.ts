@@ -4,6 +4,7 @@ import { formatCOP } from "@/src/shared/lib/format";
 import { createSupabaseServiceClient } from "@/src/shared/supabase/server";
 
 import { enviarCorreo, type EnviarCorreoResult } from "./enviar";
+import { renderPedidoConfirmacion } from "./pedido-confirmacion";
 
 /**
  * Aviso interno "llegó un pedido pagado". Por ahora va a un solo destinatario
@@ -27,7 +28,7 @@ export type PedidoPagadoData = {
   orderId: string;
   contact: { name?: string; email?: string; phone?: string };
   shipping: { address?: string; city?: string; department?: string; notes?: string };
-  totals: { subtotal?: number; shipping?: number; total?: number };
+  totals: { subtotal?: number; discount?: number; shipping?: number; total?: number };
   lines: Array<{ title: string; quantity: number; line_total: number }>;
 };
 
@@ -91,13 +92,24 @@ export function renderPedidoPagado(data: PedidoPagadoData): { subject: string; h
   };
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 /**
- * Carga la orden + líneas desde Supabase y manda el aviso. Nunca tira.
- * Se llama desde el webhook de la pasarela (Wompi) justo cuando la orden pasa a `paid`,
- * que ocurre una sola vez por orden (la transición sólo sale de
+ * Carga la orden + líneas y manda DOS correos independientes:
+ *  1. Aviso interno a PH PLUS (`CORREO_PEDIDOS`, por defecto comercial2@ y el
+ *     correo anterior) para gestionar el despacho.
+ *  2. Confirmación de compra al CLIENTE, al correo que escribió en el checkout.
+ *
+ * Nunca tira, y un correo que falla no impide el otro: cada envío es
+ * fail-safe por sí mismo. Se llama justo cuando la orden pasa a `paid`, que
+ * ocurre una sola vez por orden (la transición sólo sale de
  * `pending_payment`/`draft`), así que no hay avisos duplicados.
+ *
+ * Devuelve el resultado del aviso interno (el que importa operativamente);
+ * el del cliente se registra en el log.
  */
 export async function notificarPedidoPagado(orderId: string): Promise<EnviarCorreoResult> {
+  let data: PedidoPagadoData;
   try {
     const supabase = await createSupabaseServiceClient();
     const [{ data: order, error: orderError }, { data: lines, error: linesError }] =
@@ -112,23 +124,65 @@ export async function notificarPedidoPagado(orderId: string): Promise<EnviarCorr
     if (linesError) throw new Error(linesError.message);
 
     const row = order as unknown as Omit<PedidoPagadoData, "orderId" | "lines">;
-    const { subject, html } = renderPedidoPagado({
+    data = {
       orderId,
       contact: row.contact ?? {},
       shipping: row.shipping ?? {},
       totals: row.totals ?? {},
       lines: (lines ?? []) as PedidoPagadoData["lines"],
-    });
+    };
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    console.error(`[correos] No se pudo cargar el pedido pagado ${orderId}: ${reason}`);
+    return { sent: false, reason };
+  }
 
-    return await enviarCorreo({
+  const interno = enviarAvisoInterno(data);
+  const cliente = enviarConfirmacionCliente(data);
+  const [resultadoInterno] = await Promise.all([interno, cliente]);
+  return resultadoInterno;
+}
+
+async function enviarAvisoInterno(data: PedidoPagadoData): Promise<EnviarCorreoResult> {
+  try {
+    const { subject, html } = renderPedidoPagado(data);
+    const result = await enviarCorreo({
       to: destinatariosPedidos(process.env.CORREO_PEDIDOS),
       subject,
       html,
-      reference: orderId,
+      reference: data.orderId,
     });
+    if (!result.sent) {
+      console.error(`[correos] Aviso interno no enviado (${data.orderId}): ${result.reason}`);
+    }
+    return result;
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
-    console.error(`[correos] No se pudo notificar el pedido pagado ${orderId}: ${reason}`);
+    console.error(`[correos] Aviso interno falló (${data.orderId}): ${reason}`);
+    return { sent: false, reason };
+  }
+}
+
+async function enviarConfirmacionCliente(data: PedidoPagadoData): Promise<EnviarCorreoResult> {
+  const to = data.contact.email?.trim();
+  if (!to || !EMAIL_RE.test(to)) {
+    return { sent: false, reason: "el pedido no tiene un correo de cliente válido" };
+  }
+  try {
+    const { subject, html } = renderPedidoConfirmacion(data);
+    const result = await enviarCorreo({
+      to,
+      subject,
+      html,
+      reference: `${data.orderId}-cliente`,
+    });
+    if (!result.sent) {
+      console.error(`[correos] Confirmación al cliente no enviada (${data.orderId}): ${result.reason}`);
+    }
+    return result;
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    console.error(`[correos] Confirmación al cliente falló (${data.orderId}): ${reason}`);
     return { sent: false, reason };
   }
 }
