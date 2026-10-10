@@ -3,7 +3,7 @@ import Footer from "../components/Footer";
 import { AccountOverview, AccountShell, RequireAuth } from "@/src/features/account";
 
 export const metadata = {
-  title: "Mi cuenta · PH PLUS",
+  title: "Mi cuenta",
 };
 
 export default function CuentaPage() {

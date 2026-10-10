@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import LegalContentPage from "../components/LegalContentPage";
 
 export const metadata: Metadata = {
-  title: "Política de Privacidad | PH PLUS",
+  title: "Política de Privacidad",
   description:
     "Consulta cómo PH PLUS trata los datos personales recibidos en sus canales digitales.",
 };

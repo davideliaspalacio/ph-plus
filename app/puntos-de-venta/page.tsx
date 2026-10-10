@@ -4,7 +4,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export const metadata: Metadata = {
-  title: "Puntos de venta | Agua PH PLUS",
+  title: "Puntos de venta: dónde comprar agua PH PLUS",
   description:
     "Encuentra Agua PH PLUS en farmacias, hoteles, supermercados, restaurantes y clubes deportivos.",
 };

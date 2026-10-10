@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import LegalContentPage from "../components/LegalContentPage";
 
 export const metadata: Metadata = {
-  title: "Política de Cambios | PH PLUS",
+  title: "Política de Cambios",
   description:
     "Consulta las condiciones generales para cambios o novedades con productos PH PLUS.",
 };

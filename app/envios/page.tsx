@@ -11,7 +11,7 @@ import { mockServerDelay } from "../lib/mock-loading";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Costos de envío y tiempos de entrega | PH PLUS",
+  title: "Costos de envío y tiempos de entrega",
   description:
     "Consulta los costos de envío, cobertura y tiempos estimados de entrega de Agua PH PLUS.",
 };

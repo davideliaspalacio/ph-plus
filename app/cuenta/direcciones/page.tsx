@@ -2,7 +2,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { AccountShell, AddressesList, RequireAuth } from "@/src/features/account";
 
-export const metadata = { title: "Direcciones · PH PLUS" };
+export const metadata = { title: "Direcciones" };
 
 export default function DireccionesPage() {
   return (

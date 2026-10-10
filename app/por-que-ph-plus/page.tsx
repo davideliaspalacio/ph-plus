@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 import StoriesCarousel from "./StoriesCarousel";
 
 export const metadata: Metadata = {
-  title: "Por qué PH PLUS | Agua PH PLUS",
+  title: "Por qué PH PLUS: agua alcalina, filtración y testimonios",
   description:
     "Conoce por qué PH PLUS ofrece hidratación consciente, procesos de filtración y testimonios reales.",
 };

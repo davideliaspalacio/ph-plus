@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { SITE_URL } from "@/app/lib/site";
 import type { Metadata } from "next";
 
 import Header from "../../components/Header";
@@ -25,10 +26,28 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const product = await productRepo.bySlug(slug);
-  if (!product) return { title: "Producto no encontrado — PH PLUS" };
+  if (!product) {
+    return { title: "Producto no encontrado", robots: { index: false, follow: false } };
+  }
+  const image = product.gallery?.find((g) => g.src)?.src;
+  const description = product.description || product.tagline;
   return {
-    title: `${product.title} — PH PLUS`,
-    description: product.tagline,
+    title: product.title,
+    description,
+    alternates: { canonical: `/productos/${product.slug}` },
+    openGraph: {
+      type: "website",
+      title: `${product.title} | PH PLUS`,
+      description,
+      url: `/productos/${product.slug}`,
+      images: image ? [{ url: image, alt: product.title }] : undefined,
+    },
+    twitter: {
+      card: image ? "summary_large_image" : "summary",
+      title: `${product.title} | PH PLUS`,
+      description,
+      images: image ? [image] : undefined,
+    },
   };
 }
 
@@ -75,12 +94,37 @@ export default async function ProductDetailPage({
   const product = await productRepo.bySlug(slug);
   if (!product) notFound();
 
+  const productImage = product.gallery?.find((g) => g.src)?.src;
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: product.description || product.tagline,
+    sku: product.slug,
+    brand: { "@type": "Brand", name: "PH PLUS" },
+    ...(productImage ? { image: [productImage] } : {}),
+    offers: {
+      "@type": "Offer",
+      url: `${SITE_URL}/productos/${product.slug}`,
+      priceCurrency: "COP",
+      price: product.priceValue,
+      availability:
+        product.inStock === false
+          ? "https://schema.org/OutOfStock"
+          : "https://schema.org/InStock",
+    },
+  };
+
   const waMessage = encodeURIComponent(
     `Hola, quiero comprar ${product.title} (${product.price}).`,
   );
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
       <Header />
 
       <main className="flex-1 bg-white">
