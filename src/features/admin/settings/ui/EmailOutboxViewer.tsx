@@ -9,6 +9,78 @@ import {
 } from "@/src/features/notifications";
 import { formatDate } from "@/src/shared/lib/format";
 
+type TestResult = {
+  pedidoDePrueba?: string;
+  avisoInterno?: { a: string[]; enviado: boolean; motivo?: string };
+  confirmacionCliente?: { a: string; enviado: boolean; motivo?: string };
+  error?: string;
+};
+
+/** Manda los dos correos reales con datos de ejemplo, sin pasar por la pasarela. */
+function EnviarPrueba() {
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<TestResult | null>(null);
+
+  async function run() {
+    setLoading(true);
+    setResult(null);
+    try {
+      const res = await fetch("/api/admin/probar-correos", { method: "POST" });
+      setResult((await res.json()) as TestResult);
+    } catch {
+      setResult({ error: "No se pudo conectar con el servidor" });
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const line = (
+    label: string,
+    r: { a: string | string[]; enviado: boolean; motivo?: string } | undefined,
+  ) =>
+    r && (
+      <li>
+        <strong>{label}</strong> → {Array.isArray(r.a) ? r.a.join(", ") : r.a}:{" "}
+        {r.enviado ? (
+          <span className="font-semibold text-green-700">enviado ✓</span>
+        ) : (
+          <span className="font-semibold text-red-600">no se envió — {r.motivo}</span>
+        )}
+      </li>
+    );
+
+  return (
+    <div className="mb-4 rounded-2xl border border-card-border bg-white p-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-[13px] text-ink-muted">
+          Envía los correos de una compra (aviso interno y confirmación al cliente) con datos de
+          ejemplo, sin pasar por la pasarela. La confirmación llega a tu correo de sesión.
+        </p>
+        <button
+          type="button"
+          onClick={run}
+          disabled={loading}
+          className="rounded-full bg-brand px-5 py-2 text-[13px] font-semibold text-white disabled:opacity-60"
+        >
+          {loading ? "Enviando…" : "Enviar correos de prueba"}
+        </button>
+      </div>
+      {result && (
+        <div className="mt-3 text-[13px]" role="status">
+          {result.error ? (
+            <p className="font-semibold text-red-600">{result.error}</p>
+          ) : (
+            <ul className="space-y-1">
+              {line("Aviso interno", result.avisoInterno)}
+              {line("Confirmación al cliente", result.confirmacionCliente)}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export interface EmailOutboxViewerProps {
   /**
    * Lista de emails opcional para tests / SSR. Si no se pasa, el componente
@@ -101,6 +173,7 @@ export function EmailOutboxViewer({ emails }: EmailOutboxViewerProps) {
 
   return (
     <div className="flex flex-col gap-4">
+      <EnviarPrueba />
       <Tabs
         defaultActiveId="all"
         onChange={(id) => setFilter(id as Filter)}
