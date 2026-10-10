@@ -24,8 +24,9 @@ const ADMIN_ROLES = new Set(["staff", "super_admin"]);
  * No crea pedidos ni toca la DB. Devuelve el resultado de cada envío (con el
  * motivo si falló) para poder diagnosticar la configuración del proveedor.
  *
- * El correo "del cliente" es SIEMPRE el de la sesión, nunca uno del body:
- * así el endpoint no sirve para mandar correo a terceros.
+ * La confirmación va al correo de la sesión, o al que el admin indique en
+ * `{ email }` (para probar con el correo real del cliente). Sólo admins
+ * autenticados llegan hasta ahí.
  */
 async function resolveAdminEmail(): Promise<{ email: string } | { error: string; status: number }> {
   if (
@@ -59,14 +60,25 @@ function describe(result: EnviarCorreoResult) {
     : { enviado: false, motivo: result.reason };
 }
 
-export async function POST() {
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export async function POST(request?: Request) {
   const who = await resolveAdminEmail();
   if ("error" in who) return NextResponse.json({ error: who.error }, { status: who.status });
+
+  // Destino opcional de la confirmación de prueba (p. ej. el correo del
+  // cliente). Sólo llega acá si ya pasó la verificación de admin de arriba.
+  const body = (await request?.json().catch(() => null)) as { email?: unknown } | null;
+  const pedido = typeof body?.email === "string" ? body.email.trim() : "";
+  if (pedido && !EMAIL_RE.test(pedido)) {
+    return NextResponse.json({ error: "El correo de destino no es válido" }, { status: 400 });
+  }
+  const destinoCliente = pedido || who.email;
 
   const orderId = `PRUEBA-${Date.now().toString(36).toUpperCase()}`;
   const data: PedidoPagadoData = {
     orderId,
-    contact: { name: "Cliente de Prueba", email: who.email, phone: "3000000000" },
+    contact: { name: "Cliente de Prueba", email: destinoCliente, phone: "3000000000" },
     shipping: {
       address: "Calle 100 # 15-20, apto 301",
       city: "Bogotá",
@@ -89,7 +101,7 @@ export async function POST() {
       reference: orderId,
     }),
     enviarCorreo({
-      to: who.email,
+      to: destinoCliente,
       subject: `[PRUEBA] ${cliente.subject}`,
       html: cliente.html,
       reference: `${orderId}-cliente`,
@@ -99,6 +111,6 @@ export async function POST() {
   return NextResponse.json({
     pedidoDePrueba: orderId,
     avisoInterno: { a: destinatarios, ...describe(resInterno) },
-    confirmacionCliente: { a: who.email, ...describe(resCliente) },
+    confirmacionCliente: { a: destinoCliente, ...describe(resCliente) },
   });
 }
