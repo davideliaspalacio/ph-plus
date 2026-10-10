@@ -9,7 +9,7 @@ import { enviarCorreo, type EnviarCorreoResult } from "./enviar";
  * Aviso interno "llegó un pedido pagado". Por ahora va a un solo destinatario
  * (`CORREO_PEDIDOS`, por defecto el de abajo); no se le escribe al cliente.
  */
-const DEFAULT_DESTINATARIO = "davideliaspalacioo@gmail.com";
+const DEFAULT_DESTINATARIO = "comercial2@aguaphplus.com";
 
 export type PedidoPagadoData = {
   orderId: string;
