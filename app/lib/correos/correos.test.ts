@@ -116,8 +116,9 @@ describe("renderPedidoPagado", () => {
 
 describe("destinatariosPedidos", () => {
   it("usa el destinatario por defecto si no hay variable", () => {
-    expect(destinatariosPedidos(undefined)).toEqual(["comercial2@aguaphplus.com"]);
-    expect(destinatariosPedidos("  ")).toEqual(["comercial2@aguaphplus.com"]);
+    const porDefecto = ["comercial2@aguaphplus.com", "davideliaspalacioo@gmail.com"];
+    expect(destinatariosPedidos(undefined)).toEqual(porDefecto);
+    expect(destinatariosPedidos("  ")).toEqual(porDefecto);
   });
 
   it("acepta varios separados por coma o punto y coma, sin espacios sobrantes", () => {
