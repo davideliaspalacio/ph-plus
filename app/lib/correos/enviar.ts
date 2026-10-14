@@ -15,11 +15,26 @@ import "server-only";
  * se devuelve `{ sent: false, reason }` y se loguea. Un correo que no sale
  * nunca debe romper el webhook de pagos.
  *
- * Env opcional: CORREO_RESPUESTA (reply-to), RESEND_FROM_EMAIL (remitente
+ * Env opcional: ZEPTOMAIL_API_URL (host, p. ej. cpaas.zoho.com), CORREO_RESPUESTA (reply-to), RESEND_FROM_EMAIL (remitente
  * de Resend una vez verificado un dominio ahí).
  */
 
-const ZEPTOMAIL_URL = "https://api.zeptomail.com/v1.1/email";
+/**
+ * Endpoint por defecto de ZeptoMail. Las cuentas/agentes nuevos de Zoho que
+ * viven en la plataforma "CPaaS" (el panel muestra Anfitrión `cpaas.zoho.com`)
+ * usan otro host: `https://cpaas.zoho.com/v1.1/email`. Se sobreescribe con
+ * `ZEPTOMAIL_API_URL`; el token y el formato del body son los mismos.
+ */
+const ZEPTOMAIL_DEFAULT_URL = "https://api.zeptomail.com/v1.1/email";
+
+/** `cpaas.zoho.com` o URL completa → URL del endpoint de envío. */
+export function resolveZeptoUrl(raw: string | undefined): string {
+  const value = raw?.trim();
+  if (!value) return ZEPTOMAIL_DEFAULT_URL;
+  const withProtocol = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+  const url = withProtocol.replace(/\/+$/, "");
+  return /\/v\d+(\.\d+)?\/email$/i.test(url) ? url : `${url}/v1.1/email`;
+}
 const RESEND_URL = "https://api.resend.com/emails";
 const RESEND_DEFAULT_FROM = "PH PLUS <onboarding@resend.dev>";
 const REQUEST_TIMEOUT_MS = 8000;
@@ -81,7 +96,7 @@ async function sendWithZeptoMail(
     ...(input.reference ? { client_reference: input.reference } : {}),
   };
 
-  return post(input.subject, "zeptomail", ZEPTOMAIL_URL, body, {
+  return post(input.subject, "zeptomail", resolveZeptoUrl(process.env.ZEPTOMAIL_API_URL), body, {
     Authorization: `Zoho-enczapikey ${normalizeZeptoToken(rawToken)}`,
   });
 }
