@@ -4,6 +4,7 @@ vi.mock("server-only", () => ({}));
 const enviarCorreo = vi.fn();
 vi.mock("./enviar", () => ({ enviarCorreo: (...a: unknown[]) => enviarCorreo(...a) }));
 
+const notes: Array<Record<string, unknown>> = [];
 let orderRow: Record<string, unknown> | null = null;
 let orderError: { message: string } | null = null;
 vi.mock("@/src/shared/supabase/server", () => ({
@@ -12,6 +13,10 @@ vi.mock("@/src/shared/supabase/server", () => ({
       const q = {
         select: () => q,
         eq: () => q,
+        insert: async (row: Record<string, unknown>) => {
+          if (table === "order_notes") notes.push(row);
+          return { error: null };
+        },
         maybeSingle: async () => ({ data: orderRow, error: orderError }),
         then: (resolve: (v: unknown) => void) =>
           resolve({
@@ -34,6 +39,7 @@ const ORDER = {
 
 describe("notificarPedidoPagado", () => {
   beforeEach(() => {
+    notes.length = 0;
     enviarCorreo.mockReset();
     enviarCorreo.mockResolvedValue({ sent: true, provider: "zeptomail" });
     orderRow = { ...ORDER };
@@ -101,5 +107,23 @@ describe("notificarPedidoPagado", () => {
     const result = await notificarPedidoPagado("ORD-X");
     expect(result).toMatchObject({ sent: false });
     expect(enviarCorreo).not.toHaveBeenCalled();
+  });
+
+  it("anota en el pedido qué pasó con cada correo", async () => {
+    await notificarPedidoPagado("ORD-1");
+    expect(notes).toHaveLength(1);
+    expect(notes[0]).toMatchObject({ order_id: "ORD-1", author: "Correos" });
+    expect(String(notes[0].text)).toContain("Aviso interno: enviado por zeptomail");
+    expect(String(notes[0].text)).toContain("Confirmación al cliente (maria@example.com): enviado");
+  });
+
+  it("anota el motivo cuando el correo al cliente falla", async () => {
+    enviarCorreo.mockImplementation(async (input: { to: unknown }) =>
+      input.to === "maria@example.com"
+        ? { sent: false, reason: "zeptomail 400: Invalid email address" }
+        : { sent: true, provider: "zeptomail" },
+    );
+    await notificarPedidoPagado("ORD-1");
+    expect(String(notes[0].text)).toContain("NO enviado — zeptomail 400: Invalid email address");
   });
 });

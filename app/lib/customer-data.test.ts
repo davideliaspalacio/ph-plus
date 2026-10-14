@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  suggestEmailFix,
+  validateEmail,
   isFullName,
   normalizeDocumentNumber,
   normalizeMobile,
@@ -70,5 +72,34 @@ describe("normalizeMobile", () => {
     expect(normalizeMobile("6011234567")).toBeNull();
     expect(normalizeMobile("300123")).toBeNull();
     expect(normalizeMobile("")).toBeNull();
+  });
+});
+
+describe("correo: errores de tipeo", () => {
+  it("detecta .comm y otras terminaciones mal escritas", () => {
+    expect(suggestEmailFix("patricia@spotinvestments.comm")).toBe("patricia@spotinvestments.com");
+    expect(suggestEmailFix("a@empresa.con")).toBe("a@empresa.com");
+    expect(suggestEmailFix("a@empresa.cm")).toBe("a@empresa.com");
+  });
+
+  it("corrige dominios conocidos mal escritos", () => {
+    expect(suggestEmailFix("juan@gmial.com")).toBe("juan@gmail.com");
+    expect(suggestEmailFix("juan@gmail.co")).toBe("juan@gmail.com");
+    expect(suggestEmailFix("JUAN@Hotmial.com")).toBe("juan@hotmail.com");
+  });
+
+  it("no toca correos correctos, incluido .co (válido en Colombia)", () => {
+    expect(suggestEmailFix("juan@gmail.com")).toBeNull();
+    expect(suggestEmailFix("ventas@empresa.co")).toBeNull();
+    expect(suggestEmailFix("comercial2@aguaphplus.com")).toBeNull();
+    expect(suggestEmailFix("sin-arroba")).toBeNull();
+  });
+
+  it("validateEmail: formato inválido y sugerencia", () => {
+    expect(validateEmail("")).toBe("Email no válido");
+    expect(validateEmail("a@b")).toBe("Email no válido");
+    expect(validateEmail("a@b.c")).toBe("Email no válido");
+    expect(validateEmail("a@gmial.com")).toBe("¿Quisiste decir a@gmail.com?");
+    expect(validateEmail("a@empresa.com")).toBeNull();
   });
 });

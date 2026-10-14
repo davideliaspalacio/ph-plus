@@ -23,6 +23,7 @@ import {
   isFullName,
   normalizeMobile,
   validateDocument,
+  validateEmail,
   type DocumentType,
 } from "../lib/customer-data";
 
@@ -341,7 +342,10 @@ export default function CheckoutPage() {
     if (!isFullName(contact.name)) err.name = FULL_NAME_ERROR;
     const docError = validateDocument(contact.documentType, contact.documentNumber);
     if (docError) err.documentNumber = docError;
-    if (!/^\S+@\S+\.\S+$/.test(contact.email)) err.email = "Email no válido";
+    {
+      const emailError = validateEmail(contact.email);
+      if (emailError) err.email = emailError;
+    }
     if (normalizeMobile(contact.phone) === null) err.phone = MOBILE_ERROR;
     if (!shipping.address.trim()) err.address = "Ingresa una dirección";
     if (!selectedShippingDestination) {

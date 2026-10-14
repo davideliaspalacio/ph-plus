@@ -18,6 +18,7 @@ import {
   normalizeDocumentNumber,
   normalizeMobile,
   validateDocument,
+  validateEmail,
 } from "@/app/lib/customer-data";
 import { getShippingDestination } from "@/app/lib/shipping-rates";
 import { attachWompiLink } from "@/app/lib/wompi-orders";
@@ -38,7 +39,14 @@ const itemSchema = z.object({
 const contactSchema = z
   .object({
     name: z.string().trim().max(80).refine(isFullName, FULL_NAME_ERROR),
-    email: z.string().email(),
+    email: z
+      .string()
+      .trim()
+      .max(120)
+      .superRefine((v, ctx) => {
+        const error = validateEmail(v);
+        if (error) ctx.addIssue({ code: "custom", message: error });
+      }),
     phone: z.string().max(30).refine((v) => normalizeMobile(v) !== null, MOBILE_ERROR),
     documentType: z.enum(DOCUMENT_TYPE_VALUES),
     documentNumber: z.string().max(30),

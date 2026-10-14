@@ -81,3 +81,55 @@ export function normalizeMobile(raw: string): string | null {
 }
 
 export const MOBILE_ERROR = "Ingresa un celular de 10 dígitos (ej. 3001234567)";
+
+/* ── Correo: detectar errores de tipeo comunes ───────────────────────────── */
+
+const DOMAIN_FIXES: Record<string, string> = {
+  "gmial.com": "gmail.com",
+  "gmai.com": "gmail.com",
+  "gamil.com": "gmail.com",
+  "gnail.com": "gmail.com",
+  "gmail.co": "gmail.com",
+  "gmail.con": "gmail.com",
+  "gmail.comm": "gmail.com",
+  "gmail.cm": "gmail.com",
+  "hotmial.com": "hotmail.com",
+  "hotmal.com": "hotmail.com",
+  "hotmail.co": "hotmail.com",
+  "hotmail.con": "hotmail.com",
+  "outlok.com": "outlook.com",
+  "outlook.con": "outlook.com",
+  "yaho.com": "yahoo.com",
+  "yahoo.con": "yahoo.com",
+  "yahoo.es.co": "yahoo.es",
+};
+
+/** Terminaciones mal escritas de `.com` (domain.comm, domain.con, domain.cm…). */
+const TLD_TYPOS = /\.(comm|coom|con|cmo|ocm|vom|xom|cm|om)$/i;
+
+export const EMAIL_FORMAT_ERROR = "Email no válido";
+
+/**
+ * Si el correo parece tener un error de tipeo, devuelve la dirección corregida
+ * sugerida; si se ve bien (o no se puede saber), `null`. `.co` NO se toca:
+ * es un dominio válido y muy usado en Colombia.
+ */
+export function suggestEmailFix(raw: string): string | null {
+  const email = raw.trim().toLowerCase();
+  const at = email.lastIndexOf("@");
+  if (at < 1) return null;
+  const local = email.slice(0, at);
+  const domain = email.slice(at + 1);
+
+  if (DOMAIN_FIXES[domain]) return `${local}@${DOMAIN_FIXES[domain]}`;
+  if (TLD_TYPOS.test(domain)) return `${local}@${domain.replace(TLD_TYPOS, ".com")}`;
+  return null;
+}
+
+/** Mensaje de error para un correo, o `null` si es válido. */
+export function validateEmail(raw: string): string | null {
+  const email = raw.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return EMAIL_FORMAT_ERROR;
+  const fix = suggestEmailFix(email);
+  return fix ? `¿Quisiste decir ${fix}?` : null;
+}
