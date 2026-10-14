@@ -583,88 +583,8 @@ export default function CheckoutPage() {
           </section>
 
           <section className="mx-auto max-w-[820px] px-5 py-10 sm:px-8 sm:py-14">
-            {/* ── Acceder ── */}
-            <div className="rounded-2xl border border-card-border bg-white p-6 shadow-[0_10px_28px_rgba(27,34,166,0.08)] sm:p-8">
-              <div className="flex items-center gap-4">
-                <EnterIcon className="h-11 w-11 shrink-0 text-ink" />
-                <h2 className="ph-display text-[20px] uppercase leading-none text-brand sm:text-[24px]">
-                  Acceder
-                </h2>
-              </div>
-              <p className="ph-condensed mt-2 text-[15px] leading-snug text-ink sm:text-[17px]">
-                Si ya tienes cuenta, inicia sesión para continuar con tu
-                información guardada.
-              </p>
-
-              <form onSubmit={handleInlineLogin} className="mt-6 space-y-5">
-                <DesignField label="Email" htmlFor="login-email">
-                  <input
-                    id="login-email"
-                    type="email"
-                    className={designInput}
-                    value={authEmail}
-                    onChange={(e) => setAuthEmail(e.target.value)}
-                    autoComplete="email"
-                  />
-                </DesignField>
-                <DesignField label="Contraseña" htmlFor="login-password">
-                  <div className="relative">
-                    <input
-                      id="login-password"
-                      type={showAuthPassword ? "text" : "password"}
-                      className={designInput + " pr-11"}
-                      value={authPassword}
-                      onChange={(e) => setAuthPassword(e.target.value)}
-                      autoComplete="current-password"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowAuthPassword((v) => !v)}
-                      aria-label={
-                        showAuthPassword ? "Ocultar contraseña" : "Mostrar contraseña"
-                      }
-                      aria-pressed={showAuthPassword}
-                      className="absolute right-3 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center text-ink-muted transition-colors hover:text-ink"
-                    >
-                      <EyeIcon open={showAuthPassword} />
-                    </button>
-                  </div>
-                </DesignField>
-
-                <a
-                  href="mailto:info@aguaphplus.com?subject=Recuperar%20contrase%C3%B1a"
-                  className="ph-condensed block text-[15px] text-ink hover:underline"
-                >
-                  Olvidaste tu contraseña
-                </a>
-
-                {authError && (
-                  <p className="rounded-lg bg-red-50 px-3 py-2 text-[13px] font-semibold text-red-700">
-                    {authError}
-                  </p>
-                )}
-                {authNotice && (
-                  <p className="rounded-lg bg-[#eef0ff] px-3 py-2 text-[13px] font-semibold text-brand">
-                    {authNotice}
-                  </p>
-                )}
-
-                <button type="submit" disabled={authLoading} className={designButton}>
-                  {authLoading ? "Accediendo..." : "Acceder"}
-                  <EnterIcon className="h-6 w-6" />
-                </button>
-              </form>
-
-              <p className="ph-condensed mt-3 text-center text-[15px] text-ink">
-                ¿No tienes cuenta?{" "}
-                <Link href="/cuenta" className="font-bold text-[#6b7280] hover:underline">
-                  Regístrate
-                </Link>
-              </p>
-            </div>
-
             {/* ── Acceder como invitado ── */}
-            <div className="mt-10 rounded-2xl border border-card-border bg-white p-6 shadow-[0_10px_28px_rgba(27,34,166,0.08)] sm:p-8">
+            <div className="rounded-2xl border border-card-border bg-white p-6 shadow-[0_10px_28px_rgba(27,34,166,0.08)] sm:p-8">
               <div className="flex items-center gap-4">
                 <EnterIcon className="h-11 w-11 shrink-0 text-ink" />
                 <h2 className="ph-display text-[20px] uppercase leading-none text-brand sm:text-[24px]">
@@ -821,6 +741,86 @@ export default function CheckoutPage() {
               </button>
               <p className="ph-condensed mt-3 text-center text-[15px] text-ink">
                 Después podrás crear cuenta si lo deseas
+              </p>
+            </div>
+
+            {/* ── Acceder ── */}
+            <div className="mt-10 rounded-2xl border border-card-border bg-white p-6 shadow-[0_10px_28px_rgba(27,34,166,0.08)] sm:p-8">
+              <div className="flex items-center gap-4">
+                <EnterIcon className="h-11 w-11 shrink-0 text-ink" />
+                <h2 className="ph-display text-[20px] uppercase leading-none text-brand sm:text-[24px]">
+                  Acceder
+                </h2>
+              </div>
+              <p className="ph-condensed mt-2 text-[15px] leading-snug text-ink sm:text-[17px]">
+                Si ya tienes cuenta, inicia sesión para continuar con tu
+                información guardada.
+              </p>
+
+              <form onSubmit={handleInlineLogin} className="mt-6 space-y-5">
+                <DesignField label="Email" htmlFor="login-email">
+                  <input
+                    id="login-email"
+                    type="email"
+                    className={designInput}
+                    value={authEmail}
+                    onChange={(e) => setAuthEmail(e.target.value)}
+                    autoComplete="email"
+                  />
+                </DesignField>
+                <DesignField label="Contraseña" htmlFor="login-password">
+                  <div className="relative">
+                    <input
+                      id="login-password"
+                      type={showAuthPassword ? "text" : "password"}
+                      className={designInput + " pr-11"}
+                      value={authPassword}
+                      onChange={(e) => setAuthPassword(e.target.value)}
+                      autoComplete="current-password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowAuthPassword((v) => !v)}
+                      aria-label={
+                        showAuthPassword ? "Ocultar contraseña" : "Mostrar contraseña"
+                      }
+                      aria-pressed={showAuthPassword}
+                      className="absolute right-3 top-1/2 grid h-6 w-6 -translate-y-1/2 place-items-center text-ink-muted transition-colors hover:text-ink"
+                    >
+                      <EyeIcon open={showAuthPassword} />
+                    </button>
+                  </div>
+                </DesignField>
+
+                <a
+                  href="mailto:info@aguaphplus.com?subject=Recuperar%20contrase%C3%B1a"
+                  className="ph-condensed block text-[15px] text-ink hover:underline"
+                >
+                  Olvidaste tu contraseña
+                </a>
+
+                {authError && (
+                  <p className="rounded-lg bg-red-50 px-3 py-2 text-[13px] font-semibold text-red-700">
+                    {authError}
+                  </p>
+                )}
+                {authNotice && (
+                  <p className="rounded-lg bg-[#eef0ff] px-3 py-2 text-[13px] font-semibold text-brand">
+                    {authNotice}
+                  </p>
+                )}
+
+                <button type="submit" disabled={authLoading} className={designButton}>
+                  {authLoading ? "Accediendo..." : "Acceder"}
+                  <EnterIcon className="h-6 w-6" />
+                </button>
+              </form>
+
+              <p className="ph-condensed mt-3 text-center text-[15px] text-ink">
+                ¿No tienes cuenta?{" "}
+                <Link href="/cuenta" className="font-bold text-[#6b7280] hover:underline">
+                  Regístrate
+                </Link>
               </p>
             </div>
 
