@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("server-only", () => ({}));
 
-import { enviarCorreo, normalizeZeptoToken, parseAddress } from "./enviar";
+import { enviarCorreo, normalizeZeptoToken, parseAddress, resolveZeptoUrl } from "./enviar";
 import { destinatariosPedidos, renderPedidoPagado } from "./pedido-pagado";
 
 describe("ZeptoMail helpers", () => {
@@ -160,5 +160,23 @@ describe("renderPedidoConfirmacion", () => {
     });
     expect(html).toContain("¡Gracias por tu compra!");
     expect(html).not.toContain("Descuento");
+  });
+});
+
+describe("resolveZeptoUrl", () => {
+  it("usa api.zeptomail.com por defecto", () => {
+    expect(resolveZeptoUrl(undefined)).toBe("https://api.zeptomail.com/v1.1/email");
+    expect(resolveZeptoUrl("  ")).toBe("https://api.zeptomail.com/v1.1/email");
+  });
+
+  it("acepta solo el host (como lo muestra el panel de Zoho)", () => {
+    expect(resolveZeptoUrl("cpaas.zoho.com")).toBe("https://cpaas.zoho.com/v1.1/email");
+  });
+
+  it("acepta URL con protocolo, con barra final o con la ruta completa", () => {
+    expect(resolveZeptoUrl("https://cpaas.zoho.com/")).toBe("https://cpaas.zoho.com/v1.1/email");
+    expect(resolveZeptoUrl("https://cpaas.zoho.com/v1.1/email")).toBe(
+      "https://cpaas.zoho.com/v1.1/email",
+    );
   });
 });
