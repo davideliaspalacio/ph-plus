@@ -10,6 +10,15 @@ import {
   isSupabaseOrderPersistenceEnabled,
   persistPendingOrder,
 } from "@/app/lib/orders-server";
+import {
+  DOCUMENT_TYPE_VALUES,
+  FULL_NAME_ERROR,
+  MOBILE_ERROR,
+  isFullName,
+  normalizeDocumentNumber,
+  normalizeMobile,
+  validateDocument,
+} from "@/app/lib/customer-data";
 import { getShippingDestination } from "@/app/lib/shipping-rates";
 import { attachWompiLink } from "@/app/lib/wompi-orders";
 import {
@@ -26,11 +35,23 @@ const itemSchema = z.object({
   quantity: z.number().int().positive().max(99),
 });
 
-const contactSchema = z.object({
-  name: z.string().min(2).max(80),
-  email: z.string().email(),
-  phone: z.string().min(7).max(30),
-});
+const contactSchema = z
+  .object({
+    name: z.string().trim().max(80).refine(isFullName, FULL_NAME_ERROR),
+    email: z.string().email(),
+    phone: z.string().max(30).refine((v) => normalizeMobile(v) !== null, MOBILE_ERROR),
+    documentType: z.enum(DOCUMENT_TYPE_VALUES),
+    documentNumber: z.string().max(30),
+  })
+  .superRefine((c, ctx) => {
+    const error = validateDocument(c.documentType, c.documentNumber);
+    if (error) ctx.addIssue({ code: "custom", path: ["documentNumber"], message: error });
+  })
+  .transform((c) => ({
+    ...c,
+    phone: normalizeMobile(c.phone) as string,
+    documentNumber: normalizeDocumentNumber(c.documentType, c.documentNumber),
+  }));
 
 const shippingSchema = z.object({
   address: z.string().min(3).max(120),
@@ -53,8 +74,14 @@ export async function POST(request: Request) {
   const parsed = wompiRequestSchema.safeParse(await request.json().catch(() => null));
 
   if (!parsed.success) {
+    // Mensaje legible para el comprador (la 1.ª regla incumplida), no el genérico.
+    const first = parsed.error.issues[0];
     return NextResponse.json(
-      { error: "Datos de checkout inválidos", issues: parsed.error.flatten() },
+      {
+        error: first?.message || "Datos de checkout inválidos",
+        field: first?.path.join("."),
+        issues: parsed.error.flatten(),
+      },
       { status: 400 },
     );
   }

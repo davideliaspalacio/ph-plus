@@ -102,6 +102,14 @@ export function OrderDetail({
         <section className="rounded-3xl border border-card-border bg-white p-5">
           <h3 className="mb-3 text-[14px] font-bold text-brand">Contacto</h3>
           <p className="text-[14px] text-ink">{order.contact.name}</p>
+          {order.contact.documentNumber && (
+            <p className="text-[13px] text-ink">
+              <span className="font-semibold">
+                {order.contact.documentType ?? "Documento"}:
+              </span>{" "}
+              {order.contact.documentNumber}
+            </p>
+          )}
           <p className="text-[13px] text-ink-muted">{order.contact.email}</p>
           <p className="text-[13px] text-ink-muted">{order.contact.phone}</p>
 

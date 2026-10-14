@@ -26,7 +26,13 @@ export function destinatariosPedidos(raw: string | undefined): string[] {
 
 export type PedidoPagadoData = {
   orderId: string;
-  contact: { name?: string; email?: string; phone?: string };
+  contact: {
+    name?: string;
+    email?: string;
+    phone?: string;
+    documentType?: string;
+    documentNumber?: string;
+  };
   shipping: { address?: string; city?: string; department?: string; notes?: string };
   totals: { subtotal?: number; discount?: number; shipping?: number; total?: number };
   lines: Array<{ title: string; quantity: number; line_total: number }>;
@@ -65,7 +71,11 @@ export function renderPedidoPagado(data: PedidoPagadoData): { subject: string; h
 
   <h2 style="font-size:15px;margin:0 0 8px">Cliente</h2>
   <p style="margin:0 0 20px;line-height:1.5">
-    ${e(contact.name)}<br>${e(contact.email)}<br>${e(contact.phone)}
+    ${e(contact.name)}<br>${
+      contact.documentNumber
+        ? `${e(contact.documentType ?? "Documento")}: ${e(contact.documentNumber)}<br>`
+        : ""
+    }${e(contact.email)}<br>${e(contact.phone)}
   </p>
 
   <h2 style="font-size:15px;margin:0 0 8px">Envío</h2>

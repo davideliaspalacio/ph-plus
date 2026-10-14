@@ -29,6 +29,8 @@ export type OrderContactInput = {
   name: string;
   email: string;
   phone: string;
+  documentType?: "CC" | "CE" | "NIT" | "PASAPORTE";
+  documentNumber?: string;
 };
 
 export type OrderShippingInput = {
