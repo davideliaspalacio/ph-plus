@@ -46,6 +46,9 @@ export const OrderContactSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
   phone: z.string().min(1),
+  /** Para facturar. Opcionales: los pedidos anteriores a este campo no lo tienen. */
+  documentType: z.enum(["CC", "CE", "NIT", "PASAPORTE"]).optional(),
+  documentNumber: z.string().optional(),
 });
 export type OrderContact = z.infer<typeof OrderContactSchema>;
 

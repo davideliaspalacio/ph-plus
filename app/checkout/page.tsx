@@ -16,6 +16,15 @@ import {
   SHIPPING_DESTINATION_GROUPS,
 } from "../lib/shipping-rates";
 import { login, useSession } from "../../src/features/auth";
+import {
+  DOCUMENT_TYPES,
+  FULL_NAME_ERROR,
+  MOBILE_ERROR,
+  isFullName,
+  normalizeMobile,
+  validateDocument,
+  type DocumentType,
+} from "../lib/customer-data";
 
 /** 0 = datos (acceder / invitado) · 1 = método de pago · 2 = revisar */
 type Step = 0 | 1;
@@ -25,7 +34,13 @@ const STEPS = [
   { id: 1, label: "Revisar y pagar" },
 ] as const;
 
-type Contact = { name: string; email: string; phone: string };
+type Contact = {
+  name: string;
+  email: string;
+  phone: string;
+  documentType: DocumentType;
+  documentNumber: string;
+};
 type Shipping = {
   address: string;
   city: string;
@@ -264,7 +279,13 @@ export default function CheckoutPage() {
   const [authLoading, setAuthLoading] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authNotice, setAuthNotice] = useState<string | null>(null);
-  const [contact, setContact] = useState<Contact>({ name: "", email: "", phone: "" });
+  const [contact, setContact] = useState<Contact>({
+    name: "",
+    email: "",
+    phone: "",
+    documentType: "CC",
+    documentNumber: "",
+  });
   const [shipping, setShipping] = useState<Shipping>({
     address: "",
     city: "",
@@ -317,9 +338,11 @@ export default function CheckoutPage() {
   /** El paso 0 pide contacto + envío juntos (como en el diseño). */
   function validateDatos(): boolean {
     const err: Record<string, string> = {};
-    if (!contact.name.trim()) err.name = "Ingresa tu nombre completo";
+    if (!isFullName(contact.name)) err.name = FULL_NAME_ERROR;
+    const docError = validateDocument(contact.documentType, contact.documentNumber);
+    if (docError) err.documentNumber = docError;
     if (!/^\S+@\S+\.\S+$/.test(contact.email)) err.email = "Email no válido";
-    if (!/^[\d\s+()-]{7,}$/.test(contact.phone)) err.phone = "Teléfono no válido";
+    if (normalizeMobile(contact.phone) === null) err.phone = MOBILE_ERROR;
     if (!shipping.address.trim()) err.address = "Ingresa una dirección";
     if (!selectedShippingDestination) {
       err.city = "Selecciona una ciudad disponible";
@@ -661,7 +684,7 @@ export default function CheckoutPage() {
               </p>
 
               <div className="mt-6 space-y-5">
-                <DesignField label="Nombre*" htmlFor="guest-name" error={errors.name}>
+                <DesignField label="Nombre completo*" htmlFor="guest-name" error={errors.name}>
                   <input
                     id="guest-name"
                     className={designInput}
@@ -670,7 +693,47 @@ export default function CheckoutPage() {
                       setContact((c) => ({ ...c, name: e.target.value }))
                     }
                     autoComplete="name"
+                    placeholder="Nombres y apellidos"
                   />
+                </DesignField>
+
+                <DesignField
+                  label="Documento de identidad*"
+                  htmlFor="guest-document"
+                  error={errors.documentNumber}
+                >
+                  <div className="flex gap-3">
+                    <select
+                      aria-label="Tipo de documento"
+                      className={designInput + " w-[34%]! shrink-0"}
+                      value={contact.documentType}
+                      onChange={(e) =>
+                        setContact((c) => ({
+                          ...c,
+                          documentType: e.target.value as DocumentType,
+                        }))
+                      }
+                    >
+                      {DOCUMENT_TYPES.map((d) => (
+                        <option key={d.value} value={d.value}>
+                          {d.value === "PASAPORTE" ? "Pasaporte" : d.value}
+                        </option>
+                      ))}
+                    </select>
+                    <input
+                      id="guest-document"
+                      className={designInput}
+                      inputMode={contact.documentType === "PASAPORTE" ? "text" : "numeric"}
+                      placeholder={
+                        contact.documentType === "PASAPORTE" ? "Número de pasaporte" : "Número de documento"
+                      }
+                      value={contact.documentNumber}
+                      onChange={(e) =>
+                        setContact((c) => ({ ...c, documentNumber: e.target.value }))
+                      }
+                      autoComplete="off"
+                    />
+                  </div>
                 </DesignField>
 
                 <DesignField label="Email*" htmlFor="guest-email" error={errors.email}>
@@ -686,32 +749,18 @@ export default function CheckoutPage() {
                   />
                 </DesignField>
 
-                <DesignField label="Teléfono*" htmlFor="guest-phone" error={errors.phone}>
+                <DesignField label="Celular*" htmlFor="guest-phone" error={errors.phone}>
                   <input
                     id="guest-phone"
                     type="tel"
+                    inputMode="numeric"
+                    placeholder="3001234567"
                     className={designInput}
                     value={contact.phone}
                     onChange={(e) =>
                       setContact((c) => ({ ...c, phone: e.target.value }))
                     }
-                    autoComplete="tel"
-                  />
-                </DesignField>
-
-                <DesignField
-                  label="Dirección*"
-                  htmlFor="guest-address"
-                  error={errors.address}
-                >
-                  <input
-                    id="guest-address"
-                    className={designInput}
-                    value={shipping.address}
-                    onChange={(e) =>
-                      setShipping((s) => ({ ...s, address: e.target.value }))
-                    }
-                    autoComplete="street-address"
+                    autoComplete="tel-national"
                   />
                 </DesignField>
 
@@ -749,6 +798,22 @@ export default function CheckoutPage() {
                     ))}
                   </select>
                 </DesignField>
+                <DesignField
+                  label="Dirección*"
+                  htmlFor="guest-address"
+                  error={errors.address}
+                >
+                  <input
+                    id="guest-address"
+                    className={designInput}
+                    value={shipping.address}
+                    onChange={(e) =>
+                      setShipping((s) => ({ ...s, address: e.target.value }))
+                    }
+                    autoComplete="street-address"
+                  />
+                </DesignField>
+
               </div>
 
               <button type="button" onClick={goToPayment} className={`${designButton} mt-8`}>
@@ -823,7 +888,7 @@ export default function CheckoutPage() {
                       Contacto
                     </p>
                     <p className="mt-1 text-[14px] text-ink">
-                      {contact.name} · {contact.email} · {contact.phone}
+                      {contact.name} · {contact.documentType} {contact.documentNumber} · {contact.email} · {contact.phone}
                     </p>
                   </div>
                   <div>

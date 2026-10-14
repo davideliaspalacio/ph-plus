@@ -180,3 +180,34 @@ describe("resolveZeptoUrl", () => {
     );
   });
 });
+
+describe("renderPedidoPagado — documento del cliente", () => {
+  const base = {
+    orderId: "ORD-7",
+    shipping: { address: "Calle 1", city: "Cali", department: "Valle", notes: "" },
+    totals: { subtotal: 1, shipping: 0, total: 1 },
+    lines: [],
+  };
+
+  it("incluye tipo y número de documento para facturar", () => {
+    const { html } = renderPedidoPagado({
+      ...base,
+      contact: {
+        name: "Ana Pérez",
+        email: "a@x.co",
+        phone: "3001234567",
+        documentType: "NIT",
+        documentNumber: "901219610-3",
+      },
+    });
+    expect(html).toContain("NIT: 901219610-3");
+  });
+
+  it("no rompe con pedidos viejos sin documento", () => {
+    const { html } = renderPedidoPagado({
+      ...base,
+      contact: { name: "Ana Pérez", email: "a@x.co", phone: "3001234567" },
+    });
+    expect(html).not.toContain("undefined");
+  });
+});
