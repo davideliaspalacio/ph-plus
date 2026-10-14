@@ -147,10 +147,42 @@ export async function notificarPedidoPagado(orderId: string): Promise<EnviarCorr
     return { sent: false, reason };
   }
 
-  const interno = enviarAvisoInterno(data);
-  const cliente = enviarConfirmacionCliente(data);
-  const [resultadoInterno] = await Promise.all([interno, cliente]);
+  const [resultadoInterno, resultadoCliente] = await Promise.all([
+    enviarAvisoInterno(data),
+    enviarConfirmacionCliente(data),
+  ]);
+  await anotarResultado(orderId, data.contact.email, resultadoInterno, resultadoCliente);
   return resultadoInterno;
+}
+
+/**
+ * Deja en las notas internas del pedido qué pasó con cada correo. Sin esto un
+ * correo que falla (o rebota) sólo queda en el log del servidor y nadie sabe
+ * por qué el cliente no recibió nada. Nunca tira.
+ */
+async function anotarResultado(
+  orderId: string,
+  clienteEmail: string | undefined,
+  interno: EnviarCorreoResult,
+  cliente: EnviarCorreoResult,
+): Promise<void> {
+  const linea = (nombre: string, r: EnviarCorreoResult, destino?: string) =>
+    r.sent
+      ? `${nombre}${destino ? ` (${destino})` : ""}: enviado por ${r.provider}`
+      : `${nombre}${destino ? ` (${destino})` : ""}: NO enviado — ${r.reason}`;
+  try {
+    const supabase = await createSupabaseServiceClient();
+    await supabase.from("order_notes").insert({
+      order_id: orderId,
+      author: "Correos",
+      text: [
+        linea("Aviso interno", interno),
+        linea("Confirmación al cliente", cliente, clienteEmail),
+      ].join(". ") + ".",
+    } as never);
+  } catch (error) {
+    console.error(`[correos] No se pudo anotar el resultado en ${orderId}:`, error);
+  }
 }
 
 async function enviarAvisoInterno(data: PedidoPagadoData): Promise<EnviarCorreoResult> {

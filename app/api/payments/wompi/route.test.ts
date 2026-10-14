@@ -79,4 +79,12 @@ describe("POST /api/payments/wompi — datos del cliente", () => {
     expect(res.status).toBe(400);
     expect((await res.json()).field).toBe("contact.phone");
   });
+
+  it("rechaza un correo con error de tipeo y sugiere el correcto", async () => {
+    const res = await call(withContact({ email: "patricia@spotinvestments.comm" }));
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toBe("¿Quisiste decir patricia@spotinvestments.com?");
+    expect(body.field).toBe("contact.email");
+  });
 });
